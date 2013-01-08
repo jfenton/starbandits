@@ -89,6 +89,9 @@ namespace :assets do
     models = Dir["resources/models/*.obj"].map do |model| 
       system "pixelboost/bin/modeltool '#{model}' #{File.join MODELS_DIRECTORY, model.gsub(/.*\/([^\/]*).obj/, '\1')}.mdl"
     end
+    models = Dir["resources/models/*.fbx"].map do |model| 
+      system "pixelboost/bin/modeltool '#{model}' #{File.join MODELS_DIRECTORY, model.gsub(/.*\/([^\/]*).fbx/, '\1')}.mdl"
+    end
     textures = Dir["resources/models/*.png"].map do |texture| 
       system "cp '#{texture}' #{MODELS_DIRECTORY}"
     end

@@ -2,6 +2,7 @@
 #include "pixelboost/graphics/camera/camera.h"
 #include "pixelboost/graphics/camera/viewport.h"
 #include "pixelboost/graphics/device/device.h"
+#include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/system/debug/render.h"
@@ -57,6 +58,8 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
         pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
         
         _Camera = new pb::OrthographicCamera();

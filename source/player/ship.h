@@ -27,4 +27,7 @@ private:
     float _ThrustBackward;
     float _ThrustRight;
     float _ThrustLeft;
+    
+    bool _Firing;
+    float _FiringDelay;
 };

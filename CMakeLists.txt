@@ -12,6 +12,8 @@ set (GAME_SOURCES
 	"source/background/background.h"
 	"source/game/game.cpp"
 	"source/game/game.h"
+	"source/player/projectile.cpp"
+	"source/player/projectile.h"
 	"source/player/ship.cpp"
 	"source/player/ship.h"
 	"source/screens/game.cpp"
