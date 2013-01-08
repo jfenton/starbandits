@@ -2,13 +2,7 @@
 
 #include "pixelboost/framework/engine.h"
 
-namespace pb
-{
-    class OrthographicCamera; 
-    class RenderLayer;
-    class Scene;
-    class Viewport;
-}
+class GameScreen;
 
 class Game : public pb::Engine
 {
@@ -20,10 +14,5 @@ public:
     virtual void Render();
     
 private:
-    pb::OrthographicCamera* _Camera;
-    pb::Viewport* _Viewport;
-    
-    pb::RenderLayer* _Layer;
-    
-    pb::Scene* _Scene;
+    GameScreen* _GameScreen;
 };
