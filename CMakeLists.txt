@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8.10)
-project (pbtemplate)
+project (doublewow)
 
 include (pixelboost/build.cmake)
 
-pixelboost_setup_pre(pixelboost pbtemplate "com.pixelboost.template" "Pixelboost Template")
+pixelboost_setup_pre(pixelboost doublewow "com.pixelballoon.doublewow" "The Double Wow Factor")
 
 include_directories("source")
 
