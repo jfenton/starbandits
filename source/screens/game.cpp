@@ -32,6 +32,8 @@ void GameScreen::Update(float time)
     _Scene->Update(time);
     
     _Camera->Position.y = _Player->GetComponentByType<pb::TransformComponent>()->GetPosition().y;
+    float zoom = 1.f / glm::clamp(_Player->GetSpeedPercentage(), 0.6f, 1.f);
+    _Camera->Scale = glm::vec2(zoom, zoom);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     

@@ -2,7 +2,7 @@
 
 namespace pb
 {
-    class Camera;
+    class OrthographicCamera;
     class Scene;
     class Viewport;
 }
@@ -21,7 +21,7 @@ public:
     virtual void SetActive(bool active);
     
 private:
-    pb::Camera* _Camera;
+    pb::OrthographicCamera* _Camera;
     pb::Scene* _Scene;
     pb::Viewport* _Viewport;
     

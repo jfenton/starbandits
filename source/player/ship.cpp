@@ -1,5 +1,6 @@
 #include "Box2D/Box2D.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtx/noise.hpp"
 
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
@@ -13,6 +14,7 @@
 
 PlayerShip::PlayerShip(pb::Scene* scene)
     : pb::Entity(scene, 0)
+    , _Firing(false)
     , _ThrustBackward(0)
     , _ThrustForward(0)
     , _ThrustLeft(0)
@@ -54,21 +56,23 @@ void PlayerShip::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     float thrustPowerX = 6000.f * updateMessage.GetDelta();
-    float thrustPowerY = 5000.f * updateMessage.GetDelta();
+    float thrustPowerY = 1000.f * updateMessage.GetDelta();
     
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
-    body->ApplyForceToCenter(b2Vec2(_ThrustLeft * -thrustPowerX + _ThrustRight * thrustPowerX, _ThrustForward * thrustPowerY + _ThrustBackward * 0.15f * -thrustPowerY));
+    body->ApplyForceToCenter(b2Vec2(_ThrustLeft * -thrustPowerX + _ThrustRight * thrustPowerX, _ThrustForward * thrustPowerY + _ThrustBackward * 0.5f * -thrustPowerY));
     
     b2Vec2 velocity = body->GetLinearVelocity();
     velocity.x = glm::clamp(velocity.x, -8.f, 8.f) * 0.97f;
     velocity.y = glm::clamp(velocity.y, 1.f, 10.f) * 0.996f;
     body->SetLinearVelocity(velocity);
     
+    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    
     glm::mat4x4 transform;
     transform = glm::rotate(transform, 90.f, glm::vec3(1,0,0));
     transform = glm::rotate(transform, 180.f, glm::vec3(0,1,0));
-    transform = glm::rotate(transform, 10.f * velocity.x, glm::vec3(0,0,1));
-    transform = glm::scale(transform, glm::vec3(0.3, 0.3, 0.3));
+    transform = glm::rotate(transform, 10.f * velocity.x + glm::cos(pb::Engine::Instance()->GetGameTime() / 2.f) * 6.f, glm::vec3(0,0,1));
+    transform = glm::scale(transform, glm::vec3(0.65, 0.65, 0.65));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
     
     if (_Firing)
@@ -79,8 +83,8 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         {
             _FiringDelay += 0.5f;
             
-            new Projectile(GetScene(), GetComponentByType<pb::TransformComponent>()->GetPosition() - glm::vec3(0.8, 0, 0), velocity.y + 10.f);
-            new Projectile(GetScene(), GetComponentByType<pb::TransformComponent>()->GetPosition() + glm::vec3(2.3, 0, 0), velocity.y + 10.f);
+            new Projectile(GetScene(), position - glm::vec3(0.8, 0, 0), velocity.y + 10.f);
+            new Projectile(GetScene(), position + glm::vec3(2.3, 0, 0), velocity.y + 10.f);
 
         }
     }
@@ -144,4 +148,10 @@ bool PlayerShip::OnKeyUp(pb::KeyboardKey key, char character)
     }
     
     return false;
+}
+
+float PlayerShip::GetSpeedPercentage()
+{
+    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+    return body->GetLinearVelocity().y / 10.f;
 }

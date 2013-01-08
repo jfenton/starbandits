@@ -22,6 +22,8 @@ public:
     virtual bool OnKeyDown(pb::KeyboardKey key, char character);
     virtual bool OnKeyUp(pb::KeyboardKey key, char character);
     
+    float GetSpeedPercentage();
+    
 private:
     float _ThrustForward;
     float _ThrustBackward;
