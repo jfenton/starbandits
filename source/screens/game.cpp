@@ -11,6 +11,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "background/background.h"
+#include "enemies/asteroid.h"
 #include "player/ship.h"
 #include "screens/game.h"
 
@@ -31,9 +32,9 @@ void GameScreen::Update(float time)
 {
     _Scene->Update(time);
     
-    _Camera->Position.y = _Player->GetComponentByType<pb::TransformComponent>()->GetPosition().y;
-    float zoom = 1.f / glm::clamp(_Player->GetSpeedPercentage(), 0.6f, 1.f);
-    _Camera->Scale = glm::vec2(zoom, zoom);
+    //_Camera->Position.y = _Player->GetComponentByType<pb::TransformComponent>()->GetPosition().y;
+    //float zoom = 1.f / glm::clamp(_Player->GetSpeedPercentage(), 0.6f, 1.f);
+    //_Camera->Scale = glm::vec2(zoom, zoom);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
@@ -62,9 +63,18 @@ void GameScreen::SetActive(bool active)
     {
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_01", "/data/models/asteroid01.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_02", "/data/models/asteroid02.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_03", "/data/models/asteroid03.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_04", "/data/models/asteroid04.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "asteroid", "/data/models/asteroid.png");
         pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
         
-        _Camera = new pb::OrthographicCamera();
+        _Camera = new pb::PerspectiveCamera();
+        _Camera->FieldOfView = 45.f;
+        _Camera->Position.z = 50.f;
+        _Camera->ZNear = 1.f;
+        _Camera->ZFar = 10000.f;
         
         _Scene = new pb::Scene();
         _Scene->AddSystem(new pb::BoundsRenderSystem());
@@ -73,8 +83,13 @@ void GameScreen::SetActive(bool active)
         
         _Player = new PlayerShip(_Scene);
         new BackgroundTile(_Scene, glm::vec2(0,0));
+        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
+        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
+        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         
-        pb::GraphicsDevice::Instance()->SetClearColor(glm::vec4(0.5,0.5,0.5,1));
+        //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true);
+        
+        pb::GraphicsDevice::Instance()->SetClearColor(glm::vec4(0.2,0.2,0.2,1));
         
         _Viewport = new pb::Viewport(0, _Camera);
         _Viewport->SetScene(_Scene);

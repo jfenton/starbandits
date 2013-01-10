@@ -6,11 +6,11 @@ namespace pb
     class Scene;
 }
 
-class Projectile : public pb::Entity
+class Asteroid : public pb::Entity
 {
 public:
-    Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed);
-    ~Projectile();
+    Asteroid(pb::Scene* scene, glm::vec2 position);
+    ~Asteroid();
     
 public:
     virtual pb::Uid GetType() const;
@@ -19,5 +19,8 @@ public:
     void OnUpdate(const pb::Message& message);
     
 private:
-    float _Life;
+    float _Roll;
+    float _Rotation;
+    float _Speed;
+    float _Size;
 };

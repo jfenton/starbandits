@@ -12,7 +12,7 @@ BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
     : pb::Entity(scene, 0)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(glm::vec3(position, 0));
+    transform->SetPosition(glm::vec3(0, 0, 0));
     
     new pb::SpriteComponent(this, "starfield");
 }
