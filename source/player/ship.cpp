@@ -270,10 +270,13 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     body->SetTransform(body->GetPosition(), rotation);
     
-    float power = glm::length(_Input->_Thrust)*thrustPower;
-
     glm::vec2 force;
     glm::vec2 rotForce(glm::cos(rotation + glm::radians(90.f)), glm::sin(rotation + glm::radians(90.f)));
+    
+    if (glm::length(_Input->_Thrust) > 0.f)
+        thrustPower *= glm::dot(rotForce, glm::normalize(_Input->_Thrust));
+             
+    float power = glm::length(_Input->_Thrust)*thrustPower;
     
     if (_Input->_Boost)
     {
@@ -287,8 +290,6 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         
         force = glm::vec2(_Input->_Thrust*power);
     }    
-    
-    //force *= glm::abs(rotForce);
     
     if (!controlLocked)
         body->ApplyForceToCenter(b2Vec2(force.x, force.y));
