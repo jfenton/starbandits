@@ -219,8 +219,7 @@ PlayerShip::PlayerShip(pb::Scene* scene)
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
     
-    physics->GetBody()->SetFixedRotation(true);
-    physics->GetBody()->SetAngularDamping(1.f);
+    physics->GetBody()->SetAngularDamping(0.5f);
     
     _Input = new PlayerJoystickInput(0);
     
