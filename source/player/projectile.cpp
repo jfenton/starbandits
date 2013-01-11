@@ -5,13 +5,14 @@
 #include "pixelboost/logic/component/graphics/rectangle.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/message/update.h"
 
 #include "player/projectile.h"
 
 Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)
-    , _Life(3.f)
+    , _Life(5.f)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetRotation(glm::vec3(0,0,glm::degrees(rotation)));
@@ -28,11 +29,13 @@ Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, flo
     physics->GetBody()->SetBullet(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
     
+    RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
 }
 
 Projectile::~Projectile()
 {
+    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
 }
 
@@ -44,6 +47,16 @@ pb::Uid Projectile::GetType() const
 pb::Uid Projectile::GetStaticType()
 {
     return pb::TypeHash("Projectile");
+}
+
+void Projectile::OnCollision(const pb::Message& message)
+{
+    const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
+    
+    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() == pb::TypeHash("Asteroid"))
+    {
+        collisionMessage.GetOtherComponent()->GetParent()->Destroy();
+    }
 }
 
 void Projectile::OnUpdate(const pb::Message& message)

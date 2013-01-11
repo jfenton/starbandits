@@ -7,16 +7,20 @@
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/system/physics/2d/physics.h"
 #include "pixelboost/logic/message/update.h"
+#include "pixelboost/logic/scene.h"
 
+#include "player/grapple.h"
 #include "player/projectile.h"
 #include "player/ship.h"
 
 PlayerInput::PlayerInput()
-    : _Firing(false)
-    , _BarrelLeft(false)
+    : _BarrelLeft(false)
     , _BarrelRight(false)
     , _Boost(false)
+    , _Firing(false)
+    , _Grapple(false)
 {
     
 }
@@ -130,20 +134,22 @@ bool PlayerJoystickInput::OnAxisChanged(int joystick, int stick, int axis, float
         {
             if (glm::abs(value) > 0.25f)
             {
-                _Grapple.x = value;
+                _GrappleDirection.x = value;
             } else {
-                _Grapple.x = 0.f;
+                _GrappleDirection.x = 0.f;
             }
         } else {
             if (glm::abs(value) > 0.25f)
             {
-                _Grapple.y = value;
+                _GrappleDirection.y = -value;
             } else {
-                _Grapple.y = 0.f;
+                _GrappleDirection.y = 0.f;
             }
         }
     } else if (stick == 2)
     {
+        if (axis == 0)
+            _Grapple = (value > 0);
         if (axis == 1)
             _Firing = (value > 0);
     }
@@ -198,6 +204,9 @@ PlayerShip::PlayerShip(pb::Scene* scene)
     , _BarrelCooldown(0)
     , _BoostPower(1.5)
     , _FiringDelay(0)
+    , _GrappleId(0)
+    , _GrappleJointA(0)
+    , _GrappleJointB(0)
     , _Tilt(0)
 {
     new pb::BasicTransformComponent(this);
@@ -210,6 +219,7 @@ PlayerShip::PlayerShip(pb::Scene* scene)
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
     
+    physics->GetBody()->SetFixedRotation(true);
     physics->GetBody()->SetAngularDamping(1.f);
     
     _Input = new PlayerJoystickInput(0);
@@ -345,8 +355,89 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             _FiringDelay += 0.5f;
             
             new Projectile(GetScene(), position, rotation, glm::length(velocity) + 10.f);
-            new Projectile(GetScene(), position, rotation, glm::length(velocity) + 10.f);
 
+        }
+    }
+    
+    if (glm::length(_Input->_GrappleDirection) > 0.25f)
+    {
+        if (!_GrappleId)
+        {
+            const pb::Scene::EntityMap& entities = GetScene()->GetEntities();
+            
+            float grappleDir = glm::atan(_Input->_GrappleDirection.y, _Input->_GrappleDirection.x) - glm::radians(90.f);
+            
+            float shortestDistance = 10000.f;
+            glm::vec3 nearestEntity;
+            for (pb::Scene::EntityMap::const_iterator it = entities.begin(); it != entities.end(); ++it)
+            {
+                if (it->second == this)
+                    continue;
+                
+                if (it->second->GetType() != pb::TypeHash("Asteroid"))
+                    continue;
+                
+                glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
+                float dot = glm::dot(glm::normalize(glm::vec2(entityPosition.x - position.x, entityPosition.y - position.y)), glm::normalize(_Input->_GrappleDirection));
+                float length = glm::length(position - (entityPosition + (dot*(entityPosition-position))));
+                
+                if (dot > 0 && glm::degrees(glm::acos(dot)) < 45.f && length < shortestDistance)
+                {
+                    nearestEntity = entityPosition;
+                    shortestDistance = length;
+                }
+            }
+            
+//            glm::atan(_Input->_GrappleDirection.y, _Input->_GrappleDirection.x) - glm::radians(90.f)
+            
+            if (shortestDistance < 10000.f)
+            {
+                float direction = glm::atan(position.y - nearestEntity.y, position.x - nearestEntity.x) + glm::radians(90.f);
+                
+                pb::Entity* entity = new Grapple(GetScene(), GetUid(), position, direction, glm::length(velocity) + 20.f);
+
+                _GrappleId = entity->GetUid();
+            }
+        } else {
+            pb::Entity* grappleObject = GetScene()->GetEntityById(_GrappleObject);
+            
+            if (grappleObject)
+            {
+                b2Body* objectBody = grappleObject->GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+                b2Body* playerBody = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+                
+                glm::vec2 direction = glm::vec2(objectBody->GetPosition().x-playerBody->GetPosition().x, objectBody->GetPosition().y-playerBody->GetPosition().y);
+                float distance = glm::length(direction);
+                float objectForceScale = 0.001f;// * (objectBody->GetMass() / 200.f);
+                float playerForceScale = 0.01f;
+
+                objectBody->ApplyLinearImpulse(-b2Vec2(direction.x*objectBody->GetMass()*objectForceScale, direction.y*objectBody->GetMass()*objectForceScale), objectBody->GetPosition());
+                playerBody->ApplyLinearImpulse(b2Vec2(direction.x*playerBody->GetMass()*playerForceScale, direction.y*playerBody->GetMass()*playerForceScale), playerBody->GetPosition());
+            }
+        }
+    } else {
+        if (_GrappleId)
+        {
+            pb::Entity* grapple = GetScene()->GetEntityById(_GrappleId);
+            if (grapple)
+            {
+                grapple->Destroy();
+            }
+            _GrappleId = 0;
+            
+            b2World* world = GetScene()->GetSystemByType<pb::PhysicsSystem2D>()->GetPhysicsWorld();
+            
+            if (_GrappleJointA)
+            {
+                world->DestroyJoint(_GrappleJointA);
+                _GrappleJointA = 0;
+            }
+            
+            if (_GrappleJointB)
+            {
+                world->DestroyJoint(_GrappleJointB);
+                _GrappleJointB = 0;
+            }
         }
     }
 }
@@ -355,4 +446,15 @@ float PlayerShip::GetSpeedPercentage()
 {
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
     return body->GetLinearVelocity().y / 10.f;
+}
+
+void PlayerShip::SetGrappleJoints(b2Joint* jointA, b2Joint* jointB)
+{
+    _GrappleJointA = jointA;
+    _GrappleJointB = jointB;
+}
+
+void PlayerShip::SetGrappleObject(pb::Uid grappleObject)
+{
+    _GrappleObject = grappleObject;
 }

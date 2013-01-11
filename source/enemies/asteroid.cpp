@@ -14,7 +14,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position)
     : pb::Entity(scene, 0)
 {
     _Rotation = ((float)rand()/(float)RAND_MAX)*360.f;
-    _Speed = ((float)rand()/(float)RAND_MAX)*0.3f;
+    _Speed = ((float)rand()/(float)RAND_MAX)*1.f;
     _Size = 1.5f + ((float)rand()/(float)RAND_MAX)*2.f;
     
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);

@@ -32,7 +32,7 @@ void GameScreen::Update(float time)
 {
     _Scene->Update(time);
     
-    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 0.5f;
+    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 2.f;
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
@@ -47,9 +47,13 @@ void GameScreen::Update(float time)
             tile->Destroy();
     }
     
-    if (maxY > _Camera->Position.y - 1024.f/32.f)
+    if (maxY < _Camera->Position.y - 1024.f/32.f)
     {
-        new BackgroundTile(_Scene, glm::vec2(0, maxY + 1024.f/32.f));
+        float newY = maxY + 1024.f/32.f + 32.f;
+        new BackgroundTile(_Scene, glm::vec2(0, newY));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
     }
 }
 

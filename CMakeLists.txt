@@ -14,6 +14,8 @@ set (GAME_SOURCES
 	"source/enemies/asteroid.h"
 	"source/game/game.cpp"
 	"source/game/game.h"
+	"source/player/grapple.cpp"
+	"source/player/grapple.h"
 	"source/player/projectile.cpp"
 	"source/player/projectile.h"
 	"source/player/ship.cpp"

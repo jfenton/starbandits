@@ -14,10 +14,12 @@ public:
     PlayerInput();
     
     glm::vec2 _Thrust;
-    glm::vec2 _Grapple;
+    glm::vec2 _GrappleDirection;
     
     bool _Firing;
     bool _WasFiring;
+    
+    bool _Grapple;
     
     bool _BarrelLeft;
     bool _BarrelRight;
@@ -63,6 +65,9 @@ public:
     
     float GetSpeedPercentage();
     
+    void SetGrappleJoints(b2Joint* jointA, b2Joint* jointB);
+    void SetGrappleObject(pb::Uid grappleObject);
+    
 private:
     PlayerInput* _Input;
     
@@ -70,4 +75,9 @@ private:
     float _BoostPower;
     float _FiringDelay;
     float _Tilt;
+
+    pb::Uid _GrappleId;
+    pb::Uid _GrappleObject;
+    b2Joint* _GrappleJointA;
+    b2Joint* _GrappleJointB;
 };

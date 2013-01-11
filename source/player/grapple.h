@@ -6,11 +6,11 @@ namespace pb
     class Scene;
 }
 
-class Projectile : public pb::Entity
+class Grapple : public pb::Entity
 {
 public:
-    Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed);
-    ~Projectile();
+    Grapple(pb::Scene* scene, pb::Uid playerId, glm::vec3 position, float rotation, float speed);
+    ~Grapple();
     
 public:
     virtual pb::Uid GetType() const;
@@ -20,5 +20,10 @@ public:
     void OnUpdate(const pb::Message& message);
     
 private:
+    pb::Uid _PlayerId;
+    b2Body* _CollisionBody;
+    pb::Uid _CollisionObject;
+    
     float _Life;
+    float _Rotation;
 };
