@@ -12,6 +12,7 @@
 
 #include "background/background.h"
 #include "enemies/asteroid.h"
+#include "enemies/homingMine.h"
 #include "player/player.h"
 #include "screens/game.h"
 
@@ -51,9 +52,19 @@ void GameScreen::Update(float time)
     {
         float newY = maxY + 1024.f/32.f + 32.f;
         new BackgroundTile(_Scene, glm::vec2(0, newY));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
+        
+        if (rand()%2)
+        {
+            for (int i=0; i<3; i++)
+            {
+                new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
+            }
+        } else {
+            for (int i=0; i<10; i++)
+            {
+                new HomingMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, newY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
+            }
+        }
     }
 }
 
@@ -63,6 +74,7 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_01", "/data/models/asteroid01.mdl");
