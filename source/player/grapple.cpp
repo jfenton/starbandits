@@ -66,7 +66,7 @@ void Grapple::OnCollision(const pb::Message& message)
     
     pb::PhysicsComponent2D* otherPhysics = static_cast<pb::PhysicsComponent2D*>(collisionMessage.GetOtherComponent());
 
-    if (otherPhysics->GetParent()->GetType() == pb::TypeHash("Asteroid"))
+    if (otherPhysics->GetParent()->GetType() == pb::TypeHash("Asteroid") || otherPhysics->GetParent()->GetType() == pb::TypeHash("HomingMine") || otherPhysics->GetParent()->GetType() == pb::TypeHash("StaticMine"))
     {
         _CollisionBody = otherPhysics->GetBody(); // TODO *** POTENTIAL CRASH *** : Work out a better way of doing this, this could crash
         _CollisionObject = otherPhysics->GetParent()->GetUid();
