@@ -12,6 +12,7 @@ GrappleComponent::GrappleComponent(pb::Entity* entity, pb::Uid connectedEntity)
     , _ConnectedEntity(connectedEntity)
 {
     _Renderable = new pb::PrimitiveRenderableLine(GetUid());
+    _Renderable->SetLayer(1);
     UpdatePosition();
     
     GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &GrappleComponent::OnUpdate));

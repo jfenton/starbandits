@@ -19,10 +19,11 @@
 
 GameScreen::GameScreen()
     : _Camera(0)
+    , _CurrentY(0)
     , _Scene(0)
     , _Viewport(0)
 {
-    
+
 }
 
 GameScreen::~GameScreen()
@@ -35,39 +36,28 @@ void GameScreen::Update(float time)
     _Scene->Update(time);
     
     _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 2.f;
+    _Background->GetComponentByType<pb::TransformComponent>()->SetPosition(_Camera->Position);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
-    float maxY = -1000000000;
-    for (pb::Scene::EntityMap::iterator it = tiles.begin(); it != tiles.end(); ++it)
+    if (_CurrentY < _Camera->Position.y - 1024.f/32.f)
     {
-        pb::Entity* tile = it->second;
-        float tileY = tile->GetComponentByType<pb::TransformComponent>()->GetPosition().y;
-        maxY = glm::max(maxY, tileY);
-        
-        if (tileY < _Camera->Position.y - 1024.f/32.f)
-            tile->Destroy();
-    }
-    
-    if (maxY < _Camera->Position.y - 1024.f/32.f)
-    {
-        float newY = maxY + 1024.f/32.f + 32.f;
-        new BackgroundTile(_Scene, glm::vec2(0, newY));
+        _CurrentY = _CurrentY + 1024.f/32.f + 32.f;
         
         if (rand()%2)
         {
             for (int i=0; i<3; i++)
             {
-                new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
+                new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, _CurrentY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
             }
         } else {
             for (int i=0; i<10; i++)
             {
                 if (rand()%2)
                 {
-                    new HomingMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, newY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
+                    new HomingMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, _CurrentY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
                 } else {
-                    new StaticMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, newY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
+                    new StaticMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, _CurrentY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
                 }
             }
         }
@@ -80,15 +70,19 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "skybox", "/data/models/skybox.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_01", "/data/models/asteroid01.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_02", "/data/models/asteroid02.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_03", "/data/models/asteroid03.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_04", "/data/models/asteroid04.mdl");
+
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "asteroid", "/data/models/asteroid.png");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "skybox", "/data/models/skybox.png");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
+
         pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
         
         _Camera = new pb::PerspectiveCamera();
@@ -103,7 +97,7 @@ void GameScreen::SetActive(bool active)
         _Scene->AddSystem(new pb::DebugRenderSystem());
         
         _Player = new PlayerShip(_Scene, 0);
-        new BackgroundTile(_Scene, glm::vec2(0,0));
+        _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));

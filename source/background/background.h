@@ -1,9 +1,12 @@
+#include <vector>
+
 #include "pixelboost/logic/entity.h"
 
 namespace pb
 {
     class Message;
     class Scene;
+    class SpriteRenderable;
 }
 
 class BackgroundTile : public pb::Entity
@@ -17,4 +20,5 @@ public:
     static pb::Uid GetStaticType();
     
 private:
+    std::vector<pb::SpriteRenderable*> _Stars;
 };

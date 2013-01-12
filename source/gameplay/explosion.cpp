@@ -19,6 +19,7 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     ellipse->SetSize(glm::vec2(0,0));
     ellipse->SetSolid(true);
     ellipse->SetColor(glm::vec4(205.f/255.f,112.f/255.f,6.f/255.f,1));
+    ellipse->SetLayer(1);
     
     new DamageComponent(this, kHealthTypeNone, 0.f, 5.f);
     

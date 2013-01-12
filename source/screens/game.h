@@ -7,6 +7,7 @@ namespace pb
     class Viewport;
 }
 
+class BackgroundTile;
 class PlayerShip;
 
 class GameScreen : public pb::Screen
@@ -28,5 +29,8 @@ private:
     pb::Scene* _Scene;
     pb::Viewport* _Viewport;
     
+    float _CurrentY;
+    
+    BackgroundTile* _Background;
     PlayerShip* _Player;
 };
