@@ -36,6 +36,8 @@ set (GAME_SOURCES
 	"source/player/projectile.h"
 	"source/screens/game.cpp"
 	"source/screens/game.h"
+	"source/ui/ui.cpp"
+	"source/ui/ui.h"
 	)
 
 pixelboost_setup_post()

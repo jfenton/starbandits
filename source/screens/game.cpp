@@ -17,6 +17,7 @@
 #include "enemies/staticMine.h"
 #include "player/player.h"
 #include "screens/game.h"
+#include "ui/ui.h"
 
 GameScreen::GameScreen()
     : _Camera(0)
@@ -71,6 +72,8 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
+        pb::Engine::Instance()->GetFontRenderer()->LoadFont(pb::kFileLocationBundle, "font", "/data/fonts/font");
+        
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "skybox", "/data/models/skybox.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
@@ -104,6 +107,8 @@ void GameScreen::SetActive(bool active)
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         
         new Planet(_Scene, glm::vec3(-36, 100, -500), 12.5);
+        
+        new GameUi(_Scene);
         
         //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true);
         
