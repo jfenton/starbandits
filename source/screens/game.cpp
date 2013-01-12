@@ -51,9 +51,9 @@ void GameScreen::Update(float time)
     {
         float newY = maxY + 1024.f/32.f + 32.f;
         new BackgroundTile(_Scene, glm::vec2(0, newY));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
-        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*16.f)-8.f, newY + (((float)rand()/(float)RAND_MAX)*16.f)-8.f));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
+        new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, newY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
     }
 }
 
