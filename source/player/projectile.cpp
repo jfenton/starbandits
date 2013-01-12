@@ -9,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 
 #include "player/projectile.h"
+#include "player/ship.h"
 
 Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)
@@ -57,6 +58,9 @@ void Projectile::OnCollision(const pb::Message& message)
     {
         collisionMessage.GetOtherComponent()->GetParent()->Destroy();
     }
+    
+    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() != PlayerShip::GetStaticType())
+        Destroy();
 }
 
 void Projectile::OnUpdate(const pb::Message& message)
