@@ -228,7 +228,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     
     _Input = new PlayerJoystickInput(_PlayerId);
     
-    new HealthComponent(this, _PlayerId, 50.f, 100.f);
+    new HealthComponent(this, kHealthTypePlayer, 50.f, 100.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
@@ -360,7 +360,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         {
             _FiringDelay += 0.5f;
             
-            new Projectile(GetScene(), _PlayerId, position, rotation, glm::length(velocity) + 10.f);
+            new Projectile(GetScene(), kHealthTypePlayer, position, rotation, glm::length(velocity) + 10.f);
 
         }
     }

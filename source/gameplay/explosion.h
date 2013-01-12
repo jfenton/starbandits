@@ -2,19 +2,12 @@
 
 #include "pixelboost/logic/entity.h"
 
-namespace pb
-{
-    class Message;
-    class Scene;
-}
-
-class Projectile : public pb::Entity
+class Explosion : public pb::Entity
 {
 public:
-    Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 position, float rotation, float speed);
-    ~Projectile();
+    Explosion(pb::Scene* scene, glm::vec2 position, float power);
+    ~Explosion();
     
-public:
     virtual pb::Uid GetType() const;
     static pb::Uid GetStaticType();
     
@@ -22,5 +15,6 @@ public:
     void OnUpdate(const pb::Message& message);
     
 private:
-    float _Life;
+    float _Power;
+    float _Size;
 };

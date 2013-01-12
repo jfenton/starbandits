@@ -12,6 +12,7 @@ public:
     static pb::Uid GetStaticType();
     
     void OnUpdate(const pb::Message& message);
+    void OnHealthDepleted(const pb::Message& message);
     
 private:
     float _Rotation;

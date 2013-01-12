@@ -37,7 +37,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     physics->GetBody()->GetFixtureList()[0].SetDensity(10.f);
     physics->GetBody()->ResetMassData();
     
-    new HealthComponent(this, -2, _Scale * 50.f, 0.f);
+    new HealthComponent(this, kHealthTypeNone, _Scale * 50.f, 0.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Asteroid::OnUpdate));
 }

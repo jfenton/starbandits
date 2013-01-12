@@ -13,7 +13,7 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Projectile::Projectile(pb::Scene* scene, int playerId, glm::vec3 position, float rotation, float speed)
+Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)
     , _Life(5.f)
 {
@@ -32,7 +32,7 @@ Projectile::Projectile(pb::Scene* scene, int playerId, glm::vec3 position, float
     physics->GetBody()->SetBullet(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
     
-    new DamageComponent(this, playerId, 0.f, 10.f);
+    new DamageComponent(this, healthType, 0.f, 10.f);
     
     RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));

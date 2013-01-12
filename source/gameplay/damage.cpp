@@ -1,10 +1,10 @@
 #include "gameplay/damage.h"
 
-DamageComponent::DamageComponent(pb::Entity* entity, int playerId, float energyDamage, float kineticDamage)
+DamageComponent::DamageComponent(pb::Entity* entity, HealthType healthType, float energyDamage, float kineticDamage)
 	: pb::Component(entity)
 	, _EnergyDamage(energyDamage)
 	, _KineticDamage(kineticDamage)
-    , _PlayerId(playerId)
+    , _HealthType(healthType)
 {
 
 }
@@ -34,9 +34,9 @@ float DamageComponent::GetKineticDamage() const
 	return _KineticDamage;
 }
 
-int DamageComponent::GetPlayerId() const
+HealthType DamageComponent::GetHealthType() const
 {
-    return _PlayerId;
+    return _HealthType;
 }
 
 DamageMessage::DamageMessage(pb::Entity* entity, pb::Component* component, float damage)

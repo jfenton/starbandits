@@ -16,6 +16,8 @@ set (GAME_SOURCES
 	"source/enemies/homingMine.h"
 	"source/gameplay/damage.cpp"
 	"source/gameplay/damage.h"
+	"source/gameplay/explosion.cpp"
+	"source/gameplay/explosion.h"
 	"source/gameplay/health.cpp"
 	"source/gameplay/health.h"
 	"source/game/game.cpp"

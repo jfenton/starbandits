@@ -3,10 +3,12 @@
 #include "pixelboost/logic/component.h"
 #include "pixelboost/logic/message.h"
 
+#include "gameplay/health.h"
+
 class DamageComponent : public pb::Component
 {
 public:
-	DamageComponent(pb::Entity* entity, int playerId, float energyDamage, float kineticDamage);
+    DamageComponent(pb::Entity* entity, HealthType healthType, float energyDamage, float kineticDamage);
     ~DamageComponent();
     
     virtual pb::Uid GetType();
@@ -15,12 +17,12 @@ public:
     float GetEnergyDamage() const;
     float GetKineticDamage() const;
     
-    int GetPlayerId() const;
+    HealthType GetHealthType() const;
     
 private:
     float _EnergyDamage;
     float _KineticDamage;
-    int _PlayerId;
+    HealthType _HealthType;
 };
 
 class DamageMessage : public pb::Message

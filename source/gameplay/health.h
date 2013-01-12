@@ -2,10 +2,17 @@
 
 #include "pixelboost/logic/component.h"
 
-class HealthComponent : pb::Component
+enum HealthType
+{
+    kHealthTypeNone,
+    kHealthTypeEnemy,
+    kHealthTypePlayer,
+};
+
+class HealthComponent : public pb::Component
 {
 public:
-    HealthComponent(pb::Entity* entity, int playerId, float health, float shields);
+    HealthComponent(pb::Entity* entity, HealthType healthType, float health, float shields);
     ~HealthComponent();
     
     virtual pb::Uid GetType();
@@ -14,14 +21,27 @@ public:
     float GetHealth();
     float GetShields();
     
-    void OnDamage(const pb::Message& message);
     void OnCollision(const pb::Message& message);
+    void OnDamage(const pb::Message& message);
+    void OnUpdate(const pb::Message& message);
     
-private:
     void ModifyHealth(float health);
-    
+
+private:
     float _Health;
     float _Shields;
     
-    int _PlayerId;
+    HealthType _HealthType;
+};
+
+class HealthDepletedMessage : public pb::Message
+{
+public:
+    HealthDepletedMessage(pb::Entity* entity);
+    ~HealthDepletedMessage();
+    
+    pb::Uid GetType() const;
+    static pb::Uid GetStaticType();
+    
+private:
 };
