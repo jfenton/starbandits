@@ -9,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "common/layers.h"
 #include "gameplay/damage.h"
 #include "player/player.h"
 #include "player/projectile.h"
@@ -25,7 +26,7 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 positi
     rectangle->SetSize(glm::vec2(0.1f, 0.5f));
     rectangle->SetColor(glm::vec4(0.9,0.3,0.3,1));
     rectangle->SetSolid(true);
-    rectangle->SetLayer(1);
+    rectangle->SetLayer(kGraphicLayerProjectiles);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.1,0.3));
     physics->SetSensor(true);

@@ -9,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "common/layers.h"
 #include "enemies/staticMine.h"
 #include "gameplay/explosion.h"
 #include "gameplay/health.h"
@@ -31,7 +32,7 @@ StaticMine::StaticMine(pb::Scene* scene, glm::vec2 position)
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("staticMine"),
                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
-    model->SetLayer(1);
+    model->SetLayer(kGraphicLayerEnemies);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(size/2.f, size/2.f));
     

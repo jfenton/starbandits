@@ -10,6 +10,8 @@ include_directories("source")
 set (GAME_SOURCES
 	"source/background/background.cpp"
 	"source/background/background.h"
+	"source/background/planet.cpp"
+	"source/background/planet.h"
 	"source/enemies/asteroid.cpp"
 	"source/enemies/asteroid.h"
 	"source/enemies/homingMine.cpp"

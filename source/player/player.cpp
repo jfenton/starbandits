@@ -11,6 +11,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "common/layers.h"
 #include "gameplay/health.h"
 #include "game/game.h"
 #include "player/grappleComponent.h"
@@ -220,7 +221,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
                            pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
                            pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(0.5, 0.5, 0.5)));
-    model->SetLayer(1);
+    model->SetLayer(kGraphicLayerPlayer);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
     

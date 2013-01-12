@@ -10,6 +10,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "common/layers.h"
 #include "player/grappleComponent.h"
 #include "player/grapple.h"
 #include "player/player.h"
@@ -29,7 +30,7 @@ Grapple::Grapple(pb::Scene* scene, pb::Uid playerId, glm::vec3 position, float r
     rectangle->SetSize(glm::vec2(0.1f, 0.5f));
     rectangle->SetColor(glm::vec4(108.f/255.f, 183.f/255.f, 227.f/255.f,1));
     rectangle->SetSolid(true);
-    rectangle->SetLayer(1);
+    rectangle->SetLayer(kGraphicLayerPlayer);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.3,0.3));
     physics->SetSensor(true);

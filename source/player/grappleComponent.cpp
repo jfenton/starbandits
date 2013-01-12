@@ -5,6 +5,7 @@
 #include "pixelboost/logic/entity.h"
 #include "pixelboost/logic/scene.h"
 
+#include "common/layers.h"
 #include "player/grappleComponent.h"
 
 GrappleComponent::GrappleComponent(pb::Entity* entity, pb::Uid connectedEntity)
@@ -12,7 +13,7 @@ GrappleComponent::GrappleComponent(pb::Entity* entity, pb::Uid connectedEntity)
     , _ConnectedEntity(connectedEntity)
 {
     _Renderable = new pb::PrimitiveRenderableLine(GetUid());
-    _Renderable->SetLayer(1);
+    _Renderable->SetLayer(kGraphicLayerPlayer);
     UpdatePosition();
     
     GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &GrappleComponent::OnUpdate));

@@ -11,6 +11,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "background/background.h"
+#include "background/planet.h"
 #include "enemies/asteroid.h"
 #include "enemies/homingMine.h"
 #include "enemies/staticMine.h"
@@ -89,7 +90,7 @@ void GameScreen::SetActive(bool active)
         _Camera->FieldOfView = 45.f;
         _Camera->Position.z = 50.f;
         _Camera->ZNear = 1.f;
-        _Camera->ZFar = 1000.f;
+        _Camera->ZFar = 4000.f;
         
         _Scene = new pb::Scene();
         _Scene->AddSystem(new pb::BoundsRenderSystem());
@@ -101,6 +102,8 @@ void GameScreen::SetActive(bool active)
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
+        
+        new Planet(_Scene, glm::vec3(-36, 100, -500), 12.5);
         
         //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true);
         

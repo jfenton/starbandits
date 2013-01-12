@@ -13,6 +13,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "background/background.h"
+#include "common/layers.h"
 
 BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
     : pb::Entity(scene, 0)
@@ -28,18 +29,18 @@ BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
     localTransform = glm::scale(localTransform, glm::vec3(800, 800, 800));
     model->SetLocalTransform(localTransform);
-    model->SetLayer(0);
+    model->SetLayer(kGraphicLayerBackground);
     
     pb::RenderSystem* renderSystem = GetScene()->GetSystemByType<pb::RenderSystem>();
     
     for (int i=0; i<1000; i++)
     {
         pb::SpriteRenderable* sprite = new pb::SpriteRenderable(0);
-        sprite->SetLayer(1);
+        sprite->SetLayer(kGraphicLayerStars);
         sprite->SetSprite(pb::Engine::Instance()->GetSpriteRenderer()->GetSprite("star"));
         glm::mat4x4 spriteTransform;
-        spriteTransform = glm::translate(spriteTransform, glm::linearRand(glm::vec3(-400,-400,-200), glm::vec3(400,400,-800)));
-        spriteTransform = glm::scale(spriteTransform, glm::vec3(20,20,20));
+        spriteTransform = glm::translate(spriteTransform, glm::linearRand(glm::vec3(-1000,-1000,-1000), glm::vec3(3000,3000,-3000)));
+        spriteTransform = glm::scale(spriteTransform, glm::vec3(70,70,70));
         sprite->SetTransform(spriteTransform);
         _Stars.push_back(sprite);
         
