@@ -22,7 +22,7 @@ HealthComponent::~HealthComponent()
 {
     GetParent()->UnregisterMessageHandler<DamageMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnDamage));
     GetParent()->UnregisterMessageHandler<pb::PhysicsCollisionMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnCollision));
-    GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnUpdate));
+    GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnUpdate));
 }
 
 pb::Uid HealthComponent::GetType()
