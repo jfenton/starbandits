@@ -97,5 +97,5 @@ void StaticMine::OnHealthDepleted(const pb::Message& message)
     glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
     
     Destroy();
-    new Explosion(GetScene(), glm::vec2(position.x, position.y), 20.f);
+    new Explosion(GetScene(), glm::vec2(position.x, position.y), 10.f);
 }
