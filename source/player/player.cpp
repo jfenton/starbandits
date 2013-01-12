@@ -11,6 +11,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "player/grappleComponent.h"
 #include "player/grapple.h"
 #include "player/player.h"
 #include "player/projectile.h"
@@ -417,6 +418,13 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     } else {
         if (_GrappleId)
         {
+            pb::Entity::ComponentList grappleComponents = GetComponentsByType<GrappleComponent>();
+            
+            for (pb::Entity::ComponentList::iterator it = grappleComponents.begin(); it != grappleComponents.end(); it++)
+            {
+                DestroyComponent(*it);
+            }
+            
             pb::Entity* grapple = GetScene()->GetEntityById(_GrappleId);
             if (grapple)
             {
@@ -457,3 +465,4 @@ void PlayerShip::SetGrappleObject(pb::Uid grappleObject)
 {
     _GrappleObject = grappleObject;
 }
+#include "player/grapple.h"

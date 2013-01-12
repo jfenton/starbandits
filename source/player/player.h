@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pixelboost/input/joystickManager.h"
 #include "pixelboost/input/keyboardManager.h"
 #include "pixelboost/logic/entity.h"

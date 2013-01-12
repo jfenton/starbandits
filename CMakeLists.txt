@@ -16,6 +16,8 @@ set (GAME_SOURCES
 	"source/game/game.h"
 	"source/player/grapple.cpp"
 	"source/player/grapple.h"
+	"source/player/grappleComponent.cpp"
+	"source/player/grappleComponent.h"
     "source/player/player.cpp"
 	"source/player/player.h"
 	"source/player/projectile.cpp"

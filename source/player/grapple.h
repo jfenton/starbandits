@@ -1,3 +1,5 @@
+#pragma once
+
 #include "pixelboost/logic/entity.h"
 
 namespace pb

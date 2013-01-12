@@ -10,6 +10,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "player/grappleComponent.h"
 #include "player/grapple.h"
 #include "player/player.h"
 
@@ -68,6 +69,13 @@ void Grapple::OnCollision(const pb::Message& message)
     {
         _CollisionBody = otherPhysics->GetBody(); // TODO *** POTENTIAL CRASH *** : Work out a better way of doing this, this could crash
         _CollisionObject = otherPhysics->GetParent()->GetUid();
+        
+        PlayerShip* ship = static_cast<PlayerShip*>(GetScene()->GetEntityById(_PlayerId));
+        new GrappleComponent(ship, _CollisionObject);
+        
+        ship->SetGrappleObject(_CollisionObject);
+        
+        Destroy();
     }
 }
 
@@ -80,7 +88,7 @@ void Grapple::OnUpdate(const pb::Message& message)
     if (_Life <= 0.f)
         Destroy();
     
-    if (_CollisionBody)
+    if (false)//_CollisionBody)
     {
         PlayerShip* ship = static_cast<PlayerShip*>(GetScene()->GetEntityById(_PlayerId));
         
