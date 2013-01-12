@@ -11,6 +11,7 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "gameplay/health.h"
 #include "game/game.h"
 #include "player/grappleComponent.h"
 #include "player/grapple.h"
@@ -202,7 +203,7 @@ bool PlayerJoystickInput::OnButtonUp(int joystick, int button)
     return false;
 }
 
-PlayerShip::PlayerShip(pb::Scene* scene)
+PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     : pb::Entity(scene, 0)
     , _BarrelCooldown(0)
     , _BoostPower(1.5)
@@ -210,6 +211,7 @@ PlayerShip::PlayerShip(pb::Scene* scene)
     , _GrappleId(0)
     , _GrappleJointA(0)
     , _GrappleJointB(0)
+    , _PlayerId(playerId)
     , _Tilt(0)
 {
     new pb::BasicTransformComponent(this);
@@ -224,7 +226,9 @@ PlayerShip::PlayerShip(pb::Scene* scene)
     
     physics->GetBody()->SetAngularDamping(0.5f);
     
-    _Input = new PlayerJoystickInput(0);
+    _Input = new PlayerJoystickInput(_PlayerId);
+    
+    new HealthComponent(this, _PlayerId, 50.f, 100.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
@@ -233,7 +237,7 @@ PlayerShip::~PlayerShip()
 {
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
     
-    delete _Input;
+    //delete _Input;
 }
 
 pb::Uid PlayerShip::GetType() const
@@ -356,7 +360,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         {
             _FiringDelay += 0.5f;
             
-            new Projectile(GetScene(), position, rotation, glm::length(velocity) + 10.f);
+            new Projectile(GetScene(), _PlayerId, position, rotation, glm::length(velocity) + 10.f);
 
         }
     }
@@ -505,12 +509,9 @@ void PlayerShip::ProcessGameBounds()
     
     if (position.y < bounds[1]-bounds[3])
     {
-        printf("%f %f %f %f %f\n", position.y, bounds[1], bounds[3], bounds[1]-bounds[3], position.y+(bounds[1]-bounds[3]));
         if (body->GetLinearVelocity().y < (maxForce*4.f))
         {
             body->ApplyForceToCenter(b2Vec2(0, glm::pow(glm::abs(position.y-(bounds[1]-bounds[3])), forceStrength)));
         }
     }
 }
-
-#include "player/grapple.h"

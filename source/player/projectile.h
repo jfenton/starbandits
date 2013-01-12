@@ -11,7 +11,7 @@ namespace pb
 class Projectile : public pb::Entity
 {
 public:
-    Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed);
+    Projectile(pb::Scene* scene, int playerId, glm::vec3 position, float rotation, float speed);
     ~Projectile();
     
 public:

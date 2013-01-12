@@ -56,7 +56,7 @@ private:
 class PlayerShip : public pb::Entity
 {
 public:
-    PlayerShip(pb::Scene* scene);
+    PlayerShip(pb::Scene* scene, int playerId);
     ~PlayerShip();
     
 public:
@@ -78,6 +78,7 @@ private:
     float _BarrelCooldown;
     float _BoostPower;
     float _FiringDelay;
+    int _PlayerId;
     float _Tilt;
 
     pb::Uid _GrappleId;

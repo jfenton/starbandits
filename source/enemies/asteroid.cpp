@@ -9,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 
 #include "enemies/asteroid.h"
+#include "gameplay/health.h"
 
 Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     : pb::Entity(scene, 0)
@@ -36,7 +37,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     physics->GetBody()->GetFixtureList()[0].SetDensity(10.f);
     physics->GetBody()->ResetMassData();
     
-    
+    new HealthComponent(this, -2, _Scale * 50.f, 0.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Asteroid::OnUpdate));
 }
@@ -67,7 +68,7 @@ void Asteroid::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    _Roll += _Speed;
+    _Roll += _Speed * 10.f * updateMessage.GetDelta();
     
     glm::mat4x4 transform;
     transform = glm::rotate(transform, _Roll, glm::normalize(glm::vec3(0.7,0.1,0.3)));

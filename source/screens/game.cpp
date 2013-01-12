@@ -76,14 +76,14 @@ void GameScreen::SetActive(bool active)
         _Camera->FieldOfView = 45.f;
         _Camera->Position.z = 50.f;
         _Camera->ZNear = 1.f;
-        _Camera->ZFar = 10000.f;
+        _Camera->ZFar = 1000.f;
         
         _Scene = new pb::Scene();
         _Scene->AddSystem(new pb::BoundsRenderSystem());
         _Scene->AddSystem(new pb::PhysicsSystem2D(glm::vec2(0,0)));
         _Scene->AddSystem(new pb::DebugRenderSystem());
         
-        _Player = new PlayerShip(_Scene);
+        _Player = new PlayerShip(_Scene, 0);
         new BackgroundTile(_Scene, glm::vec2(0,0));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));

@@ -7,11 +7,13 @@
 #include "pixelboost/logic/component/transform/basic.h"
 #include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/message/update.h"
+#include "pixelboost/logic/scene.h"
 
+#include "gameplay/damage.h"
 #include "player/player.h"
 #include "player/projectile.h"
 
-Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed)
+Projectile::Projectile(pb::Scene* scene, int playerId, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)
     , _Life(5.f)
 {
@@ -29,6 +31,8 @@ Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, flo
     physics->SetSensor(true);
     physics->GetBody()->SetBullet(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
+    
+    new DamageComponent(this, playerId, 0.f, 10.f);
     
     RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
@@ -53,11 +57,6 @@ pb::Uid Projectile::GetStaticType()
 void Projectile::OnCollision(const pb::Message& message)
 {
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
-    
-    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() == pb::TypeHash("Asteroid"))
-    {
-        collisionMessage.GetOtherComponent()->GetParent()->Destroy();
-    }
     
     if (collisionMessage.GetOtherComponent()->GetParent()->GetType() != PlayerShip::GetStaticType())
         Destroy();
