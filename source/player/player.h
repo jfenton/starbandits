@@ -70,6 +70,8 @@ public:
     void SetGrappleJoints(b2Joint* jointA, b2Joint* jointB);
     void SetGrappleObject(pb::Uid grappleObject);
     
+    void ProcessGameBounds();
+    
 private:
     PlayerInput* _Input;
     

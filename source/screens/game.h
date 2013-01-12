@@ -20,6 +20,9 @@ public:
     
     virtual void SetActive(bool active);
     
+    pb::PerspectiveCamera* GetCamera();
+    glm::vec4 GetArenaBounds();
+    
 private:
     pb::PerspectiveCamera* _Camera;
     pb::Scene* _Scene;

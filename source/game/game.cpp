@@ -22,6 +22,11 @@ Game::~Game()
     delete _GameScreen;
 }
 
+Game* Game::Instance()
+{
+    return static_cast<Game*>(pb::Engine::Instance());
+}
+
 void Game::Update(float time)
 {
     _GameScreen->Update(time);
@@ -32,4 +37,9 @@ void Game::Update(float time)
 void Game::Render()
 {
     Engine::Render();
+}
+
+GameScreen* Game::GetGameScreen()
+{
+    return _GameScreen;
 }

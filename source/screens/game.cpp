@@ -104,3 +104,13 @@ void GameScreen::SetActive(bool active)
         delete _Camera;
     }
 }
+
+pb::PerspectiveCamera* GameScreen::GetCamera()
+{
+    return _Camera;
+}
+
+glm::vec4 GameScreen::GetArenaBounds()
+{
+    return glm::vec4(_Camera->Position.x, _Camera->Position.y, 25, 20);
+}

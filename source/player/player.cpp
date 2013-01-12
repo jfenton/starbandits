@@ -11,10 +11,12 @@
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
+#include "game/game.h"
 #include "player/grappleComponent.h"
 #include "player/grapple.h"
 #include "player/player.h"
 #include "player/projectile.h"
+#include "screens/game.h"
 
 PlayerInput::PlayerInput()
     : _BarrelLeft(false)
@@ -447,6 +449,8 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             }
         }
     }
+    
+    ProcessGameBounds();
 }
 
 float PlayerShip::GetSpeedPercentage()
@@ -465,4 +469,48 @@ void PlayerShip::SetGrappleObject(pb::Uid grappleObject)
 {
     _GrappleObject = grappleObject;
 }
+
+void PlayerShip::ProcessGameBounds()
+{
+    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    
+    glm::vec4 bounds = Game::Instance()->GetGameScreen()->GetArenaBounds();//(0, 0, 25, 20);
+    float forceStrength = 2.0f;
+    float maxForce = 1.0f;
+    
+    if (position.x > bounds[0]+bounds[2])
+    {
+        if (body->GetLinearVelocity().x > -maxForce)
+        {
+            body->ApplyForceToCenter(b2Vec2(-glm::pow(position.x-(bounds[0]+bounds[2]), forceStrength), 0));
+        }
+    }
+    
+    if (position.x < bounds[0]-bounds[2])
+    {
+        if (body->GetLinearVelocity().x < maxForce)
+        {
+            body->ApplyForceToCenter(b2Vec2(glm::pow(glm::abs(position.x-(bounds[0]-bounds[2])), forceStrength), 0));
+        }
+    }
+    
+    if (position.y > bounds[1]+bounds[3])
+    {
+        if (body->GetLinearVelocity().y > -maxForce)
+        {
+            body->ApplyForceToCenter(b2Vec2(0, -glm::pow(position.y-(bounds[1]+bounds[3]), forceStrength)));
+        }
+    }
+    
+    if (position.y < bounds[1]-bounds[3])
+    {
+        printf("%f %f %f %f %f\n", position.y, bounds[1], bounds[3], bounds[1]-bounds[3], position.y+(bounds[1]-bounds[3]));
+        if (body->GetLinearVelocity().y < (maxForce*4.f))
+        {
+            body->ApplyForceToCenter(b2Vec2(0, glm::pow(glm::abs(position.y-(bounds[1]-bounds[3])), forceStrength)));
+        }
+    }
+}
+
 #include "player/grapple.h"
