@@ -12,8 +12,8 @@
 #include "pixelboost/logic/scene.h"
 
 #include "player/grapple.h"
+#include "player/player.h"
 #include "player/projectile.h"
-#include "player/ship.h"
 
 PlayerInput::PlayerInput()
     : _BarrelLeft(false)

@@ -12,7 +12,7 @@
 
 #include "background/background.h"
 #include "enemies/asteroid.h"
-#include "player/ship.h"
+#include "player/player.h"
 #include "screens/game.h"
 
 GameScreen::GameScreen()

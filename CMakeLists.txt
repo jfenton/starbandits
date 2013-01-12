@@ -16,10 +16,10 @@ set (GAME_SOURCES
 	"source/game/game.h"
 	"source/player/grapple.cpp"
 	"source/player/grapple.h"
+    "source/player/player.cpp"
+	"source/player/player.h"
 	"source/player/projectile.cpp"
 	"source/player/projectile.h"
-	"source/player/ship.cpp"
-	"source/player/ship.h"
 	"source/screens/game.cpp"
 	"source/screens/game.h"
 	)

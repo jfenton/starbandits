@@ -11,7 +11,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "player/grapple.h"
-#include "player/ship.h"
+#include "player/player.h"
 
 Grapple::Grapple(pb::Scene* scene, pb::Uid playerId, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)

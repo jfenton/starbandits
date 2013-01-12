@@ -8,8 +8,8 @@
 #include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/message/update.h"
 
+#include "player/player.h"
 #include "player/projectile.h"
-#include "player/ship.h"
 
 Projectile::Projectile(pb::Scene* scene, glm::vec3 position, float rotation, float speed)
     : pb::Entity(scene, 0)
