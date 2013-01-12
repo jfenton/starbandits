@@ -10,12 +10,13 @@
 
 #include "enemies/asteroid.h"
 
-Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position)
+Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     : pb::Entity(scene, 0)
 {
     _Rotation = ((float)rand()/(float)RAND_MAX)*360.f;
     _Speed = ((float)rand()/(float)RAND_MAX)*1.f;
-    _Size = 1.5f + ((float)rand()/(float)RAND_MAX)*2.f;
+    _Scale = scale;
+    _Size = (1.5f + ((float)rand()/(float)RAND_MAX)*2.f)*scale;
     
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
@@ -42,6 +43,13 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position)
 
 Asteroid::~Asteroid()
 {
+    if (_Size > 1.f)
+    {
+        glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+        new Asteroid(GetScene(), glm::vec2(position.x, position.y), _Scale*0.5);
+        new Asteroid(GetScene(), glm::vec2(position.x, position.y), _Scale*0.5);
+    }
+    
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Asteroid::OnUpdate));
 }
 

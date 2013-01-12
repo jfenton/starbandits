@@ -9,7 +9,7 @@ namespace pb
 class Asteroid : public pb::Entity
 {
 public:
-    Asteroid(pb::Scene* scene, glm::vec2 position);
+    Asteroid(pb::Scene* scene, glm::vec2 position, float scale=1.f);
     ~Asteroid();
     
 public:
@@ -21,6 +21,7 @@ public:
 private:
     float _Roll;
     float _Rotation;
+    float _Scale;
     float _Speed;
     float _Size;
 };
