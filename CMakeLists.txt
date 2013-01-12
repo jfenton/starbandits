@@ -14,6 +14,8 @@ set (GAME_SOURCES
 	"source/enemies/asteroid.h"
 	"source/enemies/homingMine.cpp"
 	"source/enemies/homingMine.h"
+	"source/enemies/staticMine.cpp"
+	"source/enemies/staticMine.h"
 	"source/gameplay/damage.cpp"
 	"source/gameplay/damage.h"
 	"source/gameplay/explosion.cpp"
