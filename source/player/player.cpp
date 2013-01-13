@@ -40,7 +40,7 @@ PlayerKeyboardInput::~PlayerKeyboardInput()
     pb::Engine::Instance()->GetKeyboardManager()->RemoveHandler(this);
 }
 
-bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, char character)
+bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifier, char character)
 {
     if (key == pb::kKeyboardKeyCharacter)
     {
@@ -70,7 +70,7 @@ bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, char character)
 }
 
 
-bool PlayerKeyboardInput::OnKeyUp(pb::KeyboardKey key, char character)
+bool PlayerKeyboardInput::OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character)
 {
     if (key == pb::kKeyboardKeyCharacter)
     {
@@ -253,13 +253,13 @@ pb::Uid PlayerShip::GetStaticType()
 
 void PlayerShip::OnUpdate(const pb::Message& message)
 {
-    float barrelControlLock = 1.25f;
-    float barrelLength = 1.5f;
-    float barrelCooldown = 4.f;
+    float barrelControlLock = 0.25f;
+    float barrelLength = 0.5f;
+    float barrelCooldown = 1.f;
+    float maxSpeed = 48.f;
+    float enginePower = 1800.f;
     
     bool controlLocked = _BarrelCooldown-(barrelCooldown-barrelControlLock) > 0.f;
-    
-    float enginePower = 200.f;
     
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     float thrustPower = enginePower * updateMessage.GetDelta();
@@ -282,7 +282,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     if (glm::length(_Input->_Thrust) < 0.25f || controlLocked)
         desiredRotation = rotation;
     
-    float rotateSpeed = 0.030f;
+    float rotateSpeed = 0.090f;
     rotation = glm::mix(rotation, desiredRotation, rotateSpeed);
     
     body->SetTransform(body->GetPosition(), rotation);
@@ -300,7 +300,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         if (_BoostPower > 0.f)
         {
             _BoostPower -= updateMessage.GetDelta();
-            force = rotForce * 20.f;
+            force = rotForce * 120.f;
         }
     } else {
         _BoostPower = glm::min(_BoostPower+updateMessage.GetDelta(), 1.5f);
@@ -315,7 +315,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     if (_BarrelCooldown < 0.f)
     {
-        float barrelForceStrength = 7.5f;//4000.f;
+        float barrelForceStrength = 20.f;//4000.f;
         if (_Input->_BarrelLeft)
         {
             _BarrelCooldown = barrelCooldown;
@@ -335,15 +335,15 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         _BarrelCooldown -= updateMessage.GetDelta();
     }
     
-    velocity.x = glm::clamp(velocity.x, -8.f, 8.f) * 0.99f;
-    velocity.y = glm::clamp(velocity.y, -8.f, 8.f) * 0.99f;
+    velocity.x = glm::clamp(velocity.x, -maxSpeed, maxSpeed) * 0.97f;
+    velocity.y = glm::clamp(velocity.y, -maxSpeed, maxSpeed) * 0.97f;
     body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
     
     glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
     
     float maxTilt = 90.f;
     float desiredTilt = glm::clamp(-(desiredRotation - rotation)*60.f, -maxTilt, maxTilt) * glm::clamp(glm::length(velocity)/5.f, 0.f, 1.f);
-    _Tilt = glm::mix(_Tilt, desiredTilt, 0.10f); // 0.03f
+    _Tilt = glm::mix(_Tilt, desiredTilt, 0.30f); // 0.03f
     
     float barrelRot = 360.f * (1.f-glm::clamp(_BarrelCooldown-(barrelCooldown-barrelLength), 0.f, barrelLength)/barrelLength);
     
@@ -359,7 +359,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     {
         if (_FiringDelay <= 0.f)
         {
-            _FiringDelay += 0.5f;
+            _FiringDelay += 0.2f;
             
             new Projectile(GetScene(), kHealthTypePlayer, position, rotation, glm::length(velocity) + 10.f);
 
@@ -394,8 +394,6 @@ void PlayerShip::OnUpdate(const pb::Message& message)
                     shortestDistance = length;
                 }
             }
-            
-//            glm::atan(_Input->_GrappleDirection.y, _Input->_GrappleDirection.x) - glm::radians(90.f)
             
             if (shortestDistance < 10000.f)
             {
@@ -480,9 +478,9 @@ void PlayerShip::ProcessGameBounds()
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
     glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
     
-    glm::vec4 bounds = Game::Instance()->GetGameScreen()->GetArenaBounds();//(0, 0, 25, 20);
-    float forceStrength = 2.0f;
-    float maxForce = 1.0f;
+    glm::vec4 bounds = Game::Instance()->GetGameScreen()->GetArenaBounds();
+    float forceStrength = 3.f;
+    float maxForce = 1.5f;
     
     if (position.x > bounds[0]+bounds[2])
     {

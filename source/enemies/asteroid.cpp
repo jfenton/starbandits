@@ -16,7 +16,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     : pb::Entity(scene, 0)
 {
     _Rotation = ((float)rand()/(float)RAND_MAX)*360.f;
-    _Speed = ((float)rand()/(float)RAND_MAX)*1.f;
+    _Speed = ((float)rand()/(float)RAND_MAX)*3.f;
     _Scale = scale;
     _Size = (1.5f + ((float)rand()/(float)RAND_MAX)*2.f)*scale;
     
@@ -25,6 +25,8 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     
     char modelName[64];
     sprintf(modelName, "asteroid_%02d", (rand()%4)+1);
+    
+    printf("Creating asteroid %s\n", modelName);
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel(modelName),

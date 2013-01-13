@@ -35,8 +35,8 @@ public:
     PlayerKeyboardInput();
     ~PlayerKeyboardInput();
     
-    virtual bool OnKeyDown(pb::KeyboardKey key, char character);
-    virtual bool OnKeyUp(pb::KeyboardKey key, char character);
+    virtual bool OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
+    virtual bool OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
 };
 
 class PlayerJoystickInput : public PlayerInput, public pb::JoystickHandler

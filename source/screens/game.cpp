@@ -37,7 +37,7 @@ void GameScreen::Update(float time)
 {
     _Scene->Update(time);
     
-    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 2.f;
+    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 4.f;
     _Background->GetComponentByType<pb::TransformComponent>()->SetPosition(_Camera->Position);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();

@@ -80,8 +80,8 @@ void HomingMine::OnUpdate(const pb::Message& message)
             
             b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
             
-            float maxSpeed = 3.5f;
-            float force = 35.f;
+            float maxSpeed = 8.f;
+            float force = 120.f;
             glm::vec3 direction = glm::normalize(playerPosition-position)*force;
             body->ApplyForceToCenter(b2Vec2(direction.x, direction.y));
             

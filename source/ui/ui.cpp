@@ -52,7 +52,10 @@ void GameUi::OnUpdate(const pb::Message& message)
     
     HealthComponent* health = ships.begin()->second->GetComponentByType<HealthComponent>();
 
-    char text[128];
-    snprintf(text, 128, "Health: %.0f\nShields: %.0f", health->GetHealth(), health->GetShields());
-    GetComponentByType<pb::FontComponent>()->SetText(text);
+    if (health)
+    {
+        char text[128];
+        snprintf(text, 128, "Health: %.0f\nShields: %.0f", health->GetHealth(), health->GetShields());
+        GetComponentByType<pb::FontComponent>()->SetText(text);
+    }
 }

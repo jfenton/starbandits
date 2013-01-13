@@ -18,7 +18,7 @@
 StaticMine::StaticMine(pb::Scene* scene, glm::vec2 position)
 	: pb::Entity(scene, 0)
     , _Active(false)
-    , _Countdown(3.f)
+    , _Countdown(1.f)
 {
     float size = 1.f;
     
