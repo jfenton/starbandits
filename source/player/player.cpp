@@ -12,8 +12,8 @@
 #include "pixelboost/logic/scene.h"
 
 #include "common/layers.h"
+#include "core/game.h"
 #include "gameplay/health.h"
-#include "game/game.h"
 #include "player/grappleComponent.h"
 #include "player/grapple.h"
 #include "player/player.h"
@@ -361,7 +361,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         {
             _FiringDelay += 0.2f;
             
-            new Projectile(GetScene(), kHealthTypePlayer, position, rotation, glm::length(velocity) + 10.f);
+            new Projectile(GetScene(), kHealthTypePlayer, position, rotation, glm::length(velocity) + 20.f);
 
         }
     }

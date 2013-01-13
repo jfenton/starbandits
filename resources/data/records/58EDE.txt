@@ -1,0 +1,233 @@
+{
+	"Type" : "LevelSegment",
+	"Name" : "Segment_01_01",
+	"Uid" : 364254,
+	"Properties" : {
+		"Length" : {
+			"_atom" : "50"
+		}
+	},
+	"Entities" : [
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 1608572,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 21.776613235473632812,
+				"ty" : 4.21575164794921875,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 7134182,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -6.2361111640930175781,
+				"ty" : 1.4934060573577880859,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 7497528,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -20.1638336181640625,
+				"ty" : 3.5482409000396728516,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 8141975,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -12.332909584045410156,
+				"ty" : -2.5819759368896484375,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 9324892,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 13.250368118286132812,
+				"ty" : -12.967417716979980469,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 9417971,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -19.006780624389648438,
+				"ty" : 21.247356414794921875,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 10749124,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -16.751781463623046875,
+				"ty" : -8.2225322723388671875,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 11771433,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -11.079306602478027344,
+				"ty" : 9.9361972808837890625,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 12623200,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 0.49174261093139648438,
+				"ty" : 13.830003738403320312,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 13449098,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 1.3282194137573242188,
+				"ty" : 4.2854938507080078125,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 15010388,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -18.987659454345703125,
+				"ty" : -15.187062263488769531,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 15215464,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 11.478895187377929688,
+				"ty" : -2.7906270027160644531,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 16531729,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 20.715341567993164062,
+				"ty" : -17.615901947021484375,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		}
+	]
+}

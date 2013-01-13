@@ -1,4 +1,8 @@
-#include "game/game.h"
+#include "pixelboost/db/database.h"
+
+#include "core/game.h"
+#include "database/entities/register.h"
+#include "database/records/register.h"
 #include "screens/game.h"
 
 namespace pb
@@ -12,6 +16,12 @@ namespace pb
 Game::Game(void* viewController)
     : pb::Engine(viewController)
 {
+    RegisterEntityCreation();
+    RegisterRecordCreation();
+    
+    pb::Database::Instance()->SetLocation("/data/gamedata/");
+    pb::Database::Instance()->OpenDatabase();
+
     _GameScreen = new GameScreen();
     
     _GameScreen->SetActive(true);

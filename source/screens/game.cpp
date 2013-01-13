@@ -15,6 +15,7 @@
 #include "enemies/asteroid.h"
 #include "enemies/homingMine.h"
 #include "enemies/staticMine.h"
+#include "level/levelSegment.h"
 #include "player/player.h"
 #include "screens/game.h"
 #include "ui/ui.h"
@@ -46,6 +47,9 @@ void GameScreen::Update(float time)
     {
         _CurrentY = _CurrentY + 1024.f/32.f + 32.f;
         
+        LevelSegment* levelSegment = new LevelSegment(_Scene, _CurrentY);
+        levelSegment->Create();
+        /*
         if (rand()%2)
         {
             for (int i=0; i<3; i++)
@@ -63,6 +67,7 @@ void GameScreen::Update(float time)
                 }
             }
         }
+        */
     }
 }
 
@@ -102,10 +107,11 @@ void GameScreen::SetActive(bool active)
         
         _Player = new PlayerShip(_Scene, 0);
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
+        /*
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
         new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
-        
+        */
         new Planet(_Scene, glm::vec3(-36, 100, -500), 12.5);
         
         new GameUi(_Scene);

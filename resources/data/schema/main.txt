@@ -1,5 +1,5 @@
 [HasLevel(width:"50", height:"/Length/")]
-record LevelRecord
+record LevelSegment
 {
 	float Length;
 }
