@@ -220,7 +220,6 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     pb::ModelComponent* model = new pb::ModelComponent(this,
                            pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
                            pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
-    model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(0.5, 0.5, 0.5)));
     model->SetLayer(kGraphicLayerPlayer);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
@@ -351,7 +350,6 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     transform = glm::rotate(transform, 90.f, glm::vec3(1,0,0));
     transform = glm::rotate(transform, 180.f, glm::vec3(0,1,0));
     transform = glm::rotate(transform, glm::cos(pb::Engine::Instance()->GetGameTime() / 2.f) * 6.f + _Tilt + barrelRot, glm::vec3(0,0,1));
-    transform = glm::scale(transform, glm::vec3(0.65, 0.65, 0.65));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
     
     _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
