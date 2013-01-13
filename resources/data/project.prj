@@ -1,6 +1,6 @@
 {
 	"model_roots" : [
-		"../models/"
+		"../../data/models/"
 	],
 	"image_roots" : [
 		"../spritesheets/images/",

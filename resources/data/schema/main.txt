@@ -1,23 +1,23 @@
-struct ExampleStruct
-{
-	string Example;
-}
-
-entity Example
-{
-	int Integer;
-	string String;
-	float Float;
-	ExampleStruct Struct;
-}
-
-record DataRecord
-{
-	string RecordData;
-}
-
-[HasLevel(width:"10", height:"10")]
+[HasLevel(width:"50", height:"/Length/")]
 record LevelRecord
 {
+	float Length;
+}
+
+[Visualisation(type:"model", model:"homingMine", texture:"ship")]
+entity HomingMine
+{
 	
+}
+
+[Visualisation(type:"model", model:"staticMine", texture:"ship")]
+entity StaticMine
+{
+	
+}
+
+[Visualisation(type:"model", model:"asteroid01", texture:"asteroid")]
+entity Asteroid
+{
+	float Speed;
 }
