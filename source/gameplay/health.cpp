@@ -69,7 +69,7 @@ void HealthComponent::OnDamage(const pb::Message& message)
 
 void HealthComponent::OnUpdate(const pb::Message& message)
 {
-    if (_Health < 0.f)
+    if (_Health <= 0.f)
     {
         HealthDepletedMessage healthDepleted(GetParent());
         GetScene()->SendMessage(GetParentUid(), healthDepleted);
