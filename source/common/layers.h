@@ -9,5 +9,6 @@ enum GraphicLayers
 	kGraphicLayerProjectiles=3,
 	kGraphicLayerPlayer=3,
 	kGraphicLayerExplosions=3,
-    kGraphicLayerUi=4,
+    kGraphicLayerPhysicsDebug=4,
+    kGraphicLayerUi=5,
 };

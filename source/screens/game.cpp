@@ -12,6 +12,7 @@
 
 #include "background/background.h"
 #include "background/planet.h"
+#include "common/layers.h"
 #include "enemies/asteroid.h"
 #include "enemies/homingMine.h"
 #include "enemies/staticMine.h"
@@ -49,25 +50,6 @@ void GameScreen::Update(float time)
         
         LevelSegment* levelSegment = new LevelSegment(_Scene, _CurrentY);
         levelSegment->Create();
-        /*
-        if (rand()%2)
-        {
-            for (int i=0; i<3; i++)
-            {
-                new Asteroid(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*32.f)-16.f, _CurrentY + (((float)rand()/(float)RAND_MAX)*32.f)-16.f));
-            }
-        } else {
-            for (int i=0; i<10; i++)
-            {
-                if (rand()%2)
-                {
-                    new HomingMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, _CurrentY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
-                } else {
-                    new StaticMine(_Scene, glm::vec2((((float)rand()/(float)RAND_MAX)*45.f)-22.5f, _CurrentY + (((float)rand()/(float)RAND_MAX)*45.f)-22.5f));
-                }
-            }
-        }
-        */
     }
 }
 
@@ -107,16 +89,12 @@ void GameScreen::SetActive(bool active)
         
         _Player = new PlayerShip(_Scene, 0);
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
-        /*
-        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
-        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
-        new Asteroid(_Scene, glm::vec2(((float)rand()/(float)RAND_MAX)*20.f, ((float)rand()/(float)RAND_MAX)*20.f));
-        */
-        new Planet(_Scene, glm::vec3(-36, 100, -500), 12.5);
+        
+        new Planet(_Scene, glm::vec3(-36, 350, -500), 12.5);
         
         new GameUi(_Scene);
         
-        //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true);
+        //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true, kGraphicLayerPhysicsDebug);
         
         pb::GraphicsDevice::Instance()->SetClearColor(glm::vec4(0.2,0.2,0.2,1));
         
