@@ -19,7 +19,7 @@ GameUi::GameUi(pb::Scene* scene)
     : pb::Entity(scene, 0)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(glm::vec3(-512.f/32.f, 384.f/32.f - 1.f, 0));
+    transform->SetPosition(glm::vec3(-640.f/32.f, 360.f/32.f - 1.f, 0));
     
     pb::FontComponent* text = new pb::FontComponent(this, "font", "");
     text->SetAlignment(pb::kFontAlignLeft);
