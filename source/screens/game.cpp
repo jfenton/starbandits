@@ -64,6 +64,8 @@ void GameScreen::SetActive(bool active)
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "skybox", "/data/models/skybox.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "stealthBomber", "/data/models/stealthBomber.mdl");
+        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "turret", "/data/models/turret.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_01", "/data/models/asteroid01.mdl");
         pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_02", "/data/models/asteroid02.mdl");

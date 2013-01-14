@@ -18,6 +18,8 @@ public:
     virtual pb::Uid GetType();
     static pb::Uid GetStaticType();
     
+    HealthType GetHealthType();
+    
     float GetHealth();
     float GetShields();
     

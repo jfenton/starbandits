@@ -11,6 +11,7 @@
 
 #include "common/layers.h"
 #include "gameplay/damage.h"
+#include "gameplay/health.h"
 #include "player/player.h"
 #include "player/projectile.h"
 
@@ -59,7 +60,9 @@ void Projectile::OnCollision(const pb::Message& message)
 {
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
     
-    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() != PlayerShip::GetStaticType())
+    HealthComponent* health = collisionMessage.GetOtherComponent()->GetParent()->GetComponentByType<HealthComponent>();
+    
+    if (!health || GetComponentByType<DamageComponent>()->GetHealthType() != health->GetHealthType())
         Destroy();
 }
 

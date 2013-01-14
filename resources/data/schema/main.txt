@@ -1,4 +1,4 @@
-[HasLevel(width:"50", height:"/Length/")]
+[HasLevel(width:"62.5", height:"/Length/")]
 record LevelSegment
 {
 	float Length;
@@ -12,6 +12,18 @@ entity HomingMine
 
 [Visualisation(type:"model", model:"staticMine", texture:"ship")]
 entity StaticMine
+{
+	
+}
+
+[Visualisation(type:"model", model:"stealthBomber", texture:"ship")]
+entity StealthBomber
+{
+	
+}
+
+[Visualisation(type:"model", model:"turret", texture:"ship")]
+entity Turret
 {
 	
 }

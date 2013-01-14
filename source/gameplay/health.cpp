@@ -35,6 +35,11 @@ pb::Uid HealthComponent::GetStaticType()
     return pb::TypeHash("HealthComponent");
 }
 
+HealthType HealthComponent::GetHealthType()
+{
+    return _HealthType;
+}
+
 float HealthComponent::GetHealth()
 {
     return _Health;

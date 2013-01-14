@@ -28,6 +28,10 @@ set (DATABASE_SOURCES
 	"source/database/entities/register.h"
 	"source/database/entities/staticMine.cpp"
 	"source/database/entities/staticMine.h"
+	"source/database/entities/stealthBomber.cpp"
+	"source/database/entities/stealthBomber.h"
+	"source/database/entities/turret.cpp"
+	"source/database/entities/turret.h"
 	"source/database/records/levelSegment.cpp"
 	"source/database/records/levelSegment.h"
 	"source/database/records/register.cpp"
@@ -41,6 +45,10 @@ set (ENEMY_SOURCES
 	"source/enemies/homingMine.h"
 	"source/enemies/staticMine.cpp"
 	"source/enemies/staticMine.h"
+	"source/enemies/stealthBomber.cpp"
+	"source/enemies/stealthBomber.h"
+	"source/enemies/turret.cpp"
+	"source/enemies/turret.h"
 	)
 
 set (GAMEPLAY_SOURCES

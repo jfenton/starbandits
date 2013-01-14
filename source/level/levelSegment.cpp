@@ -9,6 +9,8 @@
 #include "enemies/asteroid.h"
 #include "enemies/homingMine.h"
 #include "enemies/staticMine.h"
+#include "enemies/stealthBomber.h"
+#include "enemies/turret.h"
 #include "level/levelSegment.h"
 
 LevelSegment::LevelSegment(pb::Scene* scene, float offset)
@@ -57,6 +59,16 @@ void LevelSegment::Create()
         if (it->second->GetType() == pb::TypeHash("StaticMine"))
         {
             new StaticMine(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
+        }
+
+        if (it->second->GetType() == pb::TypeHash("StealthBomber"))
+        {
+            new StealthBomber(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
+        }
+        
+        if (it->second->GetType() == pb::TypeHash("Turret"))
+        {
+            new Turret(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
         }
     }
 }
