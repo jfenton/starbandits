@@ -9,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 
 #include "common/layers.h"
+#include "core/game.h"
 #include "enemies/asteroid.h"
 #include "gameplay/health.h"
 
@@ -33,6 +34,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("asteroid"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(_Size, _Size, _Size)));
     model->SetLayer(kGraphicLayerEnemies);
+    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Size, _Size));
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(_Rotation+glm::radians(90.f))*_Speed, sin(_Rotation+glm::radians(90.f))*_Speed));

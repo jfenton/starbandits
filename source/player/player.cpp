@@ -3,7 +3,11 @@
 #include "glm/gtx/noise.hpp"
 
 #include "pixelboost/framework/engine.h"
+#include "pixelboost/graphics/camera/camera.h"
+#include "pixelboost/graphics/renderer/common/renderer.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
+#include "pixelboost/graphics/shader/manager.h"
+#include "pixelboost/graphics/shader/shader.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
@@ -221,6 +225,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
                            pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
                            pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
     model->SetLayer(kGraphicLayerPlayer);
+    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
     
@@ -452,6 +457,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     }
     
     ProcessGameBounds();
+    ProcessLighting();
 }
 
 float PlayerShip::GetSpeedPercentage()
@@ -511,4 +517,36 @@ void PlayerShip::ProcessGameBounds()
             body->ApplyForceToCenter(b2Vec2(0, glm::pow(glm::abs(position.y-(bounds[1]-bounds[3])), forceStrength)));
         }
     }
+}
+
+void PlayerShip::ProcessLighting()
+{
+    glm::mat4x4 lightATransform;
+    lightATransform = glm::rotate(lightATransform, -69.f, glm::vec3(1,0,0));
+    lightATransform = glm::rotate(lightATransform, 0.f, glm::vec3(0,1,0));
+    lightATransform = glm::rotate(lightATransform, -20.f, glm::vec3(0,0,1));
+    
+    glm::mat4x4 lightBTransform;
+    lightBTransform = glm::rotate(lightBTransform, -113.f, glm::vec3(1,0,0));
+    lightBTransform = glm::rotate(lightBTransform, 0.f, glm::vec3(0,1,0));
+    lightBTransform = glm::rotate(lightBTransform, -136.f, glm::vec3(0,0,1));
+    
+    glm::mat4x4 lightCTransform;
+    lightCTransform = glm::rotate(lightCTransform, -109.f, glm::vec3(1,0,0));
+    lightCTransform = glm::rotate(lightCTransform, 0.f, glm::vec3(0,1,0));
+    lightCTransform = glm::rotate(lightCTransform, 66.f, glm::vec3(0,0,1));
+    
+    glm::vec4 lightADirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightATransform * glm::vec4(0,0,1,0));
+    glm::vec4 lightBDirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightBTransform * glm::vec4(0,0,1,0));
+    glm::vec4 lightCDirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightCTransform * glm::vec4(0,0,-1,0));
+
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->Bind();
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[0]", glm::vec3(lightADirection.x, lightADirection.y, lightADirection.z));
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[1]", glm::vec3(lightBDirection.x, lightBDirection.y, lightBDirection.z));
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[2]", glm::vec3(lightCDirection.x, lightCDirection.y, lightCDirection.z));
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[0]", glm::vec3(1.f,1.f,0.9f)*1.4f);
+    
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[1]", glm::vec3(0.39f,0.89f,0.9f)*1.f);
+    
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[2]", glm::vec3(0.25f,0.81f,0.81f)*0.6f);
 }

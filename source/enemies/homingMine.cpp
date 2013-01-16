@@ -10,6 +10,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "common/layers.h"
+#include "core/game.h"
 #include "enemies/homingMine.h"
 #include "gameplay/explosion.h"
 #include "gameplay/health.h"
@@ -31,6 +32,7 @@ HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
+    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(size/2.f, size/2.f));
     

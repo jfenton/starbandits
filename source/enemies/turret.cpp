@@ -10,6 +10,7 @@
 #include "pixelboost/logic/scene.h"
 
 #include "common/layers.h"
+#include "core/game.h"
 #include "enemies/turret.h"
 #include "gameplay/explosion.h"
 #include "gameplay/health.h"
@@ -32,6 +33,7 @@ Turret::Turret(pb::Scene* scene, glm::vec2 position)
     localTransform = glm::rotate(localTransform, 180.f, glm::vec3(0,1,0));
     model->SetLocalTransform(localTransform);
     model->SetLayer(kGraphicLayerEnemies);
+    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
     

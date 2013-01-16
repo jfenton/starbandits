@@ -2,8 +2,10 @@
 #include "pixelboost/graphics/camera/camera.h"
 #include "pixelboost/graphics/camera/viewport.h"
 #include "pixelboost/graphics/device/device.h"
+#include "pixelboost/graphics/renderer/common/renderer.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
+#include "pixelboost/graphics/shader/manager.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/system/debug/render.h"
 #include "pixelboost/logic/system/graphics/render/bounds.h"
@@ -77,6 +79,8 @@ void GameScreen::SetActive(bool active)
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship", "/data/models/ship.png");
 
         pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
+        
+        pb::Renderer::Instance()->GetShaderManager()->LoadShader("/data/shaders/texturedLit.shc");
         
         _Camera = new pb::PerspectiveCamera();
         _Camera->FieldOfView = 45.f;

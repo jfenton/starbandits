@@ -2,6 +2,11 @@
 
 #include "pixelboost/framework/engine.h"
 
+namespace pb
+{
+    class Shader;
+}
+
 class GameScreen;
 
 class Game : public pb::Engine
@@ -16,6 +21,8 @@ public:
     virtual void Render();
     
     GameScreen* GetGameScreen();
+    
+    pb::Shader* GetLitShader();
     
 private:
     GameScreen* _GameScreen;

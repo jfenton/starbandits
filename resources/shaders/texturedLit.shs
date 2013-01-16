@@ -1,0 +1,51 @@
+<shader name="texturedLit">
+  <attributes>
+    <attribute name="_DiffuseColor" type="color" description="Diffuse Color" default="1,1,1,1"/>
+    <attribute name="_DiffuseTexture" type="texture2D" description="Diffuse Texture"/>
+  </attributes>
+  
+  <subshader class="default">
+    <pass>
+      <program language="glsl"><![CDATA[
+        varying lowp vec2 textureVarying;
+        varying lowp vec3 normal;
+
+        #ifdef VERTEX
+          attribute vec3 PB_Attr_Normal;
+          attribute vec3 PB_Attr_Position;
+          attribute vec2 PB_Attr_Texture0;
+
+          uniform mat4 PB_ModelViewMatrix;
+          uniform mat4 PB_ProjectionMatrix;
+
+          void main()
+          {
+              textureVarying = PB_Attr_Texture0;
+
+              normal = (PB_ModelViewMatrix * vec4(PB_Attr_Normal, 0.0)).xyz;
+
+              gl_Position = PB_ProjectionMatrix * PB_ModelViewMatrix * vec4(PB_Attr_Position, 1.0);
+          }
+        #endif
+        #ifdef FRAGMENT
+          uniform lowp vec4 _DiffuseColor;
+          uniform sampler2D _DiffuseTexture;
+          
+          uniform lowp vec3 _LightDirection[3];
+          uniform lowp vec3 _LightColor[3];
+
+          void main()
+          {
+              vec3 normalisedNormal = normalize(normal);
+              vec3 light;
+              for (int i=0; i<3; i++)
+              {
+                light = light + _LightColor[i] * max(dot(_LightDirection[i], normalisedNormal), 0.0);
+              }
+              gl_FragColor = texture2D(_DiffuseTexture, textureVarying) * _DiffuseColor * vec4(light,1);
+          }
+        #endif
+      ]]></program>
+    </pass>
+  </subshader>
+</shader>

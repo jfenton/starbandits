@@ -71,6 +71,7 @@ public:
     void SetGrappleObject(pb::Uid grappleObject);
     
     void ProcessGameBounds();
+    void ProcessLighting();
     
 private:
     PlayerInput* _Input;

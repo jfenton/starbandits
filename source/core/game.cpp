@@ -1,4 +1,6 @@
 #include "pixelboost/db/database.h"
+#include "pixelboost/graphics/renderer/common/renderer.h"
+#include "pixelboost/graphics/shader/manager.h"
 
 #include "core/game.h"
 #include "database/entities/register.h"
@@ -52,4 +54,9 @@ void Game::Render()
 GameScreen* Game::GetGameScreen()
 {
     return _GameScreen;
+}
+
+pb::Shader* Game::GetLitShader()
+{
+    return pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc");
 }
