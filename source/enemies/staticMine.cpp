@@ -31,7 +31,7 @@ StaticMine::StaticMine(pb::Scene* scene, glm::vec2 position)
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("staticMine"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
+                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("grey"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());

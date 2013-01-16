@@ -2,6 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtx/noise.hpp"
 
+#include "pixelboost/debug/debugVariable.h"
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/camera/camera.h"
 #include "pixelboost/graphics/renderer/common/renderer.h"
@@ -23,6 +24,28 @@
 #include "player/player.h"
 #include "player/projectile.h"
 #include "screens/game.h"
+
+DEFINE_DEBUG_FLOAT(g_LightA_X, "LightA.X", 0.f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_Y, "LightA.Y", 0.f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_Z, "LightA.Z", 1.f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_R, "LightA.R", 1.f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_G, "LightA.G", 1.f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_B, "LightA.B", 0.9f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightA_I, "LightA.I", 1.265f, 0.f, 4.f);
+DEFINE_DEBUG_FLOAT(g_LightB_X, "LightB.X", -0.474f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_Y, "LightB.Y", -0.123f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_Z, "LightB.Z", -0.884f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_R, "LightB.R", 0.39f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_G, "LightB.G", 0.89f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_B, "LightB.B", 0.9f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightB_I, "LightB.I", 1.967f, 0.f, 4.f);
+DEFINE_DEBUG_FLOAT(g_LightC_X, "LightC.X", 0.47f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_Y, "LightC.Y", -0.242f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_Z, "LightC.Z", 0.513f, -1.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_R, "LightC.R", 0.62f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_G, "LightC.G", 0.53f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_B, "LightC.B", 0.67f, 0.f, 1.f);
+DEFINE_DEBUG_FLOAT(g_LightC_I, "LightC.I", 0.47f, 0.f, 4.f);
 
 PlayerInput::PlayerInput()
     : _BarrelLeft(false)
@@ -521,32 +544,13 @@ void PlayerShip::ProcessGameBounds()
 
 void PlayerShip::ProcessLighting()
 {
-    glm::mat4x4 lightATransform;
-    lightATransform = glm::rotate(lightATransform, -69.f, glm::vec3(1,0,0));
-    lightATransform = glm::rotate(lightATransform, 0.f, glm::vec3(0,1,0));
-    lightATransform = glm::rotate(lightATransform, -20.f, glm::vec3(0,0,1));
-    
-    glm::mat4x4 lightBTransform;
-    lightBTransform = glm::rotate(lightBTransform, -113.f, glm::vec3(1,0,0));
-    lightBTransform = glm::rotate(lightBTransform, 0.f, glm::vec3(0,1,0));
-    lightBTransform = glm::rotate(lightBTransform, -136.f, glm::vec3(0,0,1));
-    
-    glm::mat4x4 lightCTransform;
-    lightCTransform = glm::rotate(lightCTransform, -109.f, glm::vec3(1,0,0));
-    lightCTransform = glm::rotate(lightCTransform, 0.f, glm::vec3(0,1,0));
-    lightCTransform = glm::rotate(lightCTransform, 66.f, glm::vec3(0,0,1));
-    
-    glm::vec4 lightADirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightATransform * glm::vec4(0,0,1,0));
-    glm::vec4 lightBDirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightBTransform * glm::vec4(0,0,1,0));
-    glm::vec4 lightCDirection = Game::Instance()->GetGameScreen()->GetCamera()->ViewMatrix * glm::normalize(lightCTransform * glm::vec4(0,0,-1,0));
-
     pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->Bind();
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[0]", glm::vec3(lightADirection.x, lightADirection.y, lightADirection.z));
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[1]", glm::vec3(lightBDirection.x, lightBDirection.y, lightBDirection.z));
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[2]", glm::vec3(lightCDirection.x, lightCDirection.y, lightCDirection.z));
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[0]", glm::vec3(1.f,1.f,0.9f)*1.4f);
     
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[1]", glm::vec3(0.39f,0.89f,0.9f)*1.f);
-    
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[2]", glm::vec3(0.25f,0.81f,0.81f)*0.6f);
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[0]", glm::normalize(glm::vec3(g_LightA_X, g_LightA_Y, g_LightA_Z)));
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[1]", glm::normalize(glm::vec3(g_LightB_X, g_LightB_Y, g_LightB_Z)));
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[2]", glm::normalize(glm::vec3(g_LightC_X, g_LightC_Y, g_LightC_Z)));
+
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[0]", glm::vec3(g_LightA_R, g_LightA_G, g_LightA_B)*(float)g_LightA_I);
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[1]", glm::vec3(g_LightB_R, g_LightB_G, g_LightB_B)*(float)g_LightB_I);
+    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[2]", glm::vec3(g_LightC_R, g_LightC_G, g_LightC_B)*(float)g_LightC_I);
 }

@@ -26,7 +26,7 @@ Turret::Turret(pb::Scene* scene, glm::vec2 position)
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("turret"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
+                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("grey"));
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
