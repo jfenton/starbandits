@@ -6,6 +6,7 @@
 
 #include "gameplay/damage.h"
 #include "gameplay/health.h"
+#include "player/player.h"
 
 HealthComponent::HealthComponent(pb::Entity* entity, HealthType healthType, float health, float shields)
     : pb::Component(entity)
@@ -77,7 +78,26 @@ void HealthComponent::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    _Shields += updateMessage.GetDelta();
+    float rechargeAmount = 0.f;
+    if (_Shields < _MaxShields)
+    {
+        rechargeAmount = glm::min(_MaxShields-_Shields, glm::max(((_MaxShields-_Shields)/(_MaxShields/4.f)),1.f)*updateMessage.GetDelta());
+    }
+
+    if (GetParent()->GetType() == PlayerShip::GetStaticType())
+    {
+        float rechargeCost = rechargeAmount * 2.f;
+        
+        PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+
+        if (ship->GetEnergy() > rechargeCost)
+        {
+            _Shields += rechargeAmount;
+            ship->RemoveEnergy(rechargeCost);
+        }
+    } else {
+        _Shields += rechargeAmount;
+    }
     
     _Shields = glm::min(_Shields, _MaxShields);
     

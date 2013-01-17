@@ -2,6 +2,8 @@
 
 #include "pixelboost/logic/entity.h"
 
+#include "gameplay/health.h"
+
 namespace pb
 {
     class Message;

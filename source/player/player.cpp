@@ -19,7 +19,8 @@
 #include "common/layers.h"
 #include "core/game.h"
 #include "gameplay/health.h"
-#include "player/grappleComponent.h"
+#include "player/weapon/laser.h"
+#include "player/weapon/missile.h"
 #include "player/grapple.h"
 #include "player/player.h"
 #include "player/projectile.h"
@@ -234,9 +235,7 @@ bool PlayerJoystickInput::OnButtonUp(int joystick, int button)
 PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     : pb::Entity(scene, 0)
     , _BarrelCooldown(0)
-    , _BoostPower(1.5)
     , _Energy(100)
-    , _FiringDelay(0)
     , _GrappleActive(false)
     , _PlayerId(playerId)
     , _Tilt(0)
@@ -255,7 +254,16 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     
     _Input = new PlayerJoystickInput(_PlayerId);
     
+    _LeftMount.Offset = glm::vec3(-0.61, 0, -0.16);
+    _LeftMount.Rotation = glm::vec3(0, 0, -15.f);
+    
+    _RightMount.Offset = glm::vec3(0.61, 0, -0.16);
+    _RightMount.Rotation = glm::vec3(0, 0, 15.f);
+    
     new HealthComponent(this, kHealthTypePlayer, 50.f, 100.f);
+    new LaserComponent(this, _Input, _LeftMount);
+    new LaserComponent(this, _Input, _RightMount);
+//    new MissileComponent(this, _Input, 10.f, 0.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
@@ -323,14 +331,13 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     if (_Input->_Boost)
     {
-        if (_BoostPower > 0.f)
+        const float boostCost = 1.f/5.f;
+        if (_Energy > boostCost)
         {
-            _BoostPower -= updateMessage.GetDelta();
+            _Energy -= boostCost;
             force = rotForce * 120.f;
         }
     } else {
-        _BoostPower = glm::min(_BoostPower+updateMessage.GetDelta(), 1.5f);
-        
         force = glm::vec2(_Input->_Thrust*power);
     }    
     
@@ -369,37 +376,20 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     float maxTilt = 90.f;
     float desiredTilt = glm::clamp(-(desiredRotation - rotation)*60.f, -maxTilt, maxTilt) * glm::clamp(glm::length(velocity)/5.f, 0.f, 1.f);
-    _Tilt = glm::mix(_Tilt, desiredTilt, 0.30f); // 0.03f
+    _Tilt = glm::mix(_Tilt, desiredTilt, 0.30f);
     
     float barrelRot = 360.f * (1.f-glm::clamp(_BarrelCooldown-(barrelCooldown-barrelLength), 0.f, barrelLength)/barrelLength);
     
     glm::mat4x4 transform;
     transform = glm::rotate(transform, 90.f, glm::vec3(1,0,0));
     transform = glm::rotate(transform, 180.f, glm::vec3(0,1,0));
-    transform = glm::rotate(transform, glm::cos(pb::Engine::Instance()->GetGameTime() / 2.f) * 6.f + _Tilt + barrelRot, glm::vec3(0,0,1));
+    transform = glm::rotate(transform, _Tilt + barrelRot, glm::vec3(0,0,1));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
     
-    _Energy += updateMessage.GetDelta();
+    _Energy += glm::max(((100.f-_Energy)/25.f),1.f)*updateMessage.GetDelta();
+    _Energy = glm::min(_Energy, 100.f);
     
-    _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
-    if (_Input->_Firing)
-    {
-        if (_FiringDelay <= 0.f)
-        {
-            _FiringDelay += 0.08f;
-            
-            const float energyCost = 0.1f;
-            if (_Energy > energyCost)
-            {
-                float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, position, rotation + randOffset, glm::length(velocity) + 20.f, 5.f);
-                _Energy -= energyCost;
-            }
-
-        }
-    }
-    
-    if (glm::length(_Input->_GrappleDirection) > 0.25f && !_GrappleActive)
+    if (glm::length(_Input->_GrappleDirection) > 0.35f && !_GrappleActive)
     {
         _GrappleActive = true;
         
@@ -411,7 +401,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             if (it->second == this)
                 continue;
             
-            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine"))
+            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret"))
                 continue;
             
             glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
@@ -421,7 +411,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             {
                 if (glm::distance(position, entityPosition) < 15.f)
                 {
-                    new Grapple(GetScene(), GetUid(), it->second->GetUid());
+                    new Grapple(GetScene(), GetUid(), _Input, it->second->GetUid());
                 }
             }
         }
@@ -438,10 +428,20 @@ float PlayerShip::GetEnergy()
     return _Energy;
 }
 
+void PlayerShip::RemoveEnergy(float energy)
+{
+    _Energy -= energy;
+}
+
 float PlayerShip::GetSpeedPercentage()
 {
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
     return body->GetLinearVelocity().y / 10.f;
+}
+
+float PlayerShip::GetTilt()
+{
+    return _Tilt;
 }
 
 void PlayerShip::ProcessGameBounds()

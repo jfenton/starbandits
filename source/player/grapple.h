@@ -9,10 +9,12 @@ namespace pb
     class Scene;
 }
 
+class PlayerInput;
+
 class Grapple : public pb::Entity
 {
 public:
-    Grapple(pb::Scene* scene, pb::Uid playerId, pb::Uid collisionId);
+    Grapple(pb::Scene* scene, pb::Uid playerId, PlayerInput* input, pb::Uid collisionId);
     ~Grapple();
     
 public:
@@ -23,6 +25,9 @@ public:
     void OnUpdate(const pb::Message& message);
     
 private:
+    void UpdateData();
+    float GetDistance();
+    
     enum GrappleState
     {
         kStateFiring,
@@ -31,6 +36,12 @@ private:
     
     pb::Uid _PlayerId;
     pb::Uid _CollisionId;
+    
+    PlayerInput* _Input;
+    
+    glm::vec3 _ObjectPosition;
+    glm::vec3 _PlayerPosition;
+    float _StartDistance;
     
     pb::PrimitiveRenderableLine* _Renderable;
 };

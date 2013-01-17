@@ -23,6 +23,7 @@ HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
     
     _DetectDistance = 15.f;
     _Rotation = 0.f;
+    _Fuse = 2.f;
     
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
@@ -63,28 +64,45 @@ pb::Uid HomingMine::GetStaticType()
 
 void HomingMine::OnUpdate(const pb::Message& message)
 {
+    const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
+    _Fuse -= updateMessage.GetDelta();
+    
+    if (_Fuse > 0.f)
+        return;
+    
     glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
     
-    pb::Scene::EntityMap entityMap = GetScene()->GetEntitiesByType<PlayerShip>();
+    pb::Scene::EntityMap entityMap = GetScene()->GetEntities();
     
     for (pb::Scene::EntityMap::iterator it = entityMap.begin(); it != entityMap.end(); ++it)
     {
-        glm::vec3 playerPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
+        if (it->second->GetType() == GetStaticType())
+            continue;
         
-        if (glm::distance(position, playerPosition) < _DetectDistance)
+        pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+        
+        if (!transform)
+            continue;
+        
+        glm::vec3 entityPosition = transform->GetPosition();
+        
+        if (glm::distance(position, entityPosition) < 3.f)
         {
-            if (glm::distance(position, playerPosition) < 3.f)
-            {
-                GetComponentByType<HealthComponent>()->Damage(1.f);
-            }
-            
+            GetComponentByType<HealthComponent>()->Damage(10.f);
+        }
+        
+        if (it->second->GetType() != PlayerShip::GetStaticType())
+            continue;
+        
+        if (glm::distance(position, entityPosition) < _DetectDistance)
+        {
             _DetectDistance = 45.f;
             
             b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
             
             float maxSpeed = 8.f;
             float force = 150.f;
-            glm::vec3 direction = glm::normalize(playerPosition-position)*force;
+            glm::vec3 direction = glm::normalize(entityPosition-position)*force;
             body->ApplyForceToCenter(b2Vec2(direction.x, direction.y));
             
             glm::vec2 velocity(body->GetLinearVelocity().x, body->GetLinearVelocity().y);

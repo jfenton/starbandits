@@ -15,6 +15,7 @@ public:
     void OnHealthDepleted(const pb::Message& message);
     
 private:
+    float _Fuse;
     float _Rotation;
     float _DetectDistance;
 };

@@ -40,7 +40,7 @@ Turret::Turret(pb::Scene* scene, glm::vec2 position)
     physics->GetBody()->GetFixtureList()[0].SetDensity(20.f);
     physics->GetBody()->ResetMassData();
     
-    new HealthComponent(this, kHealthTypeEnemy, 35.f, 0.f);
+    new HealthComponent(this, kHealthTypeEnemy, 100.f, 0.f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Turret::OnUpdate));
     RegisterMessageHandler<HealthDepletedMessage>(MessageHandler(this, &Turret::OnHealthDepleted));

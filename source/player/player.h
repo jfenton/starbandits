@@ -4,6 +4,8 @@
 #include "pixelboost/input/keyboardManager.h"
 #include "pixelboost/logic/entity.h"
 
+#include "player/weapon/mount.h"
+
 namespace pb
 {
     class Message;
@@ -66,7 +68,9 @@ public:
     void OnUpdate(const pb::Message& message);
 
     float GetEnergy();
+    void RemoveEnergy(float energy);
     float GetSpeedPercentage();
+    float GetTilt();
     
     void ProcessGameBounds();
     void ProcessLighting();
@@ -75,10 +79,11 @@ private:
     PlayerInput* _Input;
     
     float _BarrelCooldown;
-    float _BoostPower;
     float _Energy;
-    float _FiringDelay;
     bool _GrappleActive;
     int _PlayerId;
     float _Tilt;
+    
+    MountInfo _LeftMount;
+    MountInfo _RightMount;
 };
