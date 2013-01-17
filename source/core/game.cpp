@@ -41,9 +41,9 @@ Game* Game::Instance()
 
 void Game::Update(float time)
 {
-    _GameScreen->Update(time);
-    
     Engine::Update(time);
+    
+    _GameScreen->Update(time);
 }
 
 void Game::Render()

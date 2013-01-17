@@ -8,6 +8,7 @@ namespace pb
 }
 
 class BackgroundTile;
+class LevelSegment;
 class PlayerShip;
 
 class GameScreen : public pb::Screen
@@ -33,4 +34,6 @@ private:
     
     BackgroundTile* _Background;
     PlayerShip* _Player;
+    
+    std::vector<LevelSegment*> _Segments;
 };

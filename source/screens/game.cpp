@@ -25,7 +25,7 @@
 
 GameScreen::GameScreen()
     : _Camera(0)
-    , _CurrentY(0)
+    , _CurrentY(0.f)
     , _Scene(0)
     , _Viewport(0)
 {
@@ -41,17 +41,38 @@ void GameScreen::Update(float time)
 {
     _Scene->Update(time);
     
-    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 4.f;
+    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 2.f;
     _Background->GetComponentByType<pb::TransformComponent>()->SetPosition(_Camera->Position);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
-    if (_CurrentY < _Camera->Position.y - 1024.f/32.f)
+    float currentSegmentLength = 0.f;
+    
+    if (_Segments.size())
     {
-        _CurrentY = _CurrentY + 1024.f/32.f + 32.f;
-        
+        currentSegmentLength = _Segments[_Segments.size()-1]->GetLength();
+    }
+    
+    if (_Camera->Position.y > _CurrentY - (720.f/32.f)*2.f)
+    {
         LevelSegment* levelSegment = new LevelSegment(_Scene, _CurrentY);
         levelSegment->Create();
+        _Segments.push_back(levelSegment);
+        
+        _CurrentY = _CurrentY + levelSegment->GetLength();
+        
+        printf("Creating segment cam %f, current y %f, segment %f\n", _Camera->Position.y, _CurrentY, levelSegment->GetLength());
+    }
+    
+    for (std::vector<LevelSegment*>::iterator it = _Segments.begin(); it != _Segments.end();)
+    {
+        if (!(*it)->Cleanup(_Camera->Position.y - 1024.f/32.f, GetArenaBounds()))
+        {
+            delete *it;
+            it = _Segments.erase(it);
+        } else {
+            ++it;
+        }
     }
 }
 

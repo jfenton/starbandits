@@ -75,7 +75,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
         {
             if (glm::distance(position, playerPosition) < 3.f)
             {
-                GetComponentByType<HealthComponent>()->ModifyHealth(-1.f);
+                GetComponentByType<HealthComponent>()->Damage(1.f);
             }
             
             _DetectDistance = 45.f;

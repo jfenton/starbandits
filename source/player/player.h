@@ -67,9 +67,6 @@ public:
     
     float GetSpeedPercentage();
     
-    void SetGrappleJoints(b2Joint* jointA, b2Joint* jointB);
-    void SetGrappleObject(pb::Uid grappleObject);
-    
     void ProcessGameBounds();
     void ProcessLighting();
     
@@ -81,9 +78,5 @@ private:
     float _FiringDelay;
     int _PlayerId;
     float _Tilt;
-
-    pb::Uid _GrappleId;
-    pb::Uid _GrappleObject;
-    b2Joint* _GrappleJointA;
-    b2Joint* _GrappleJointB;
+    bool _GrappleActive;
 };

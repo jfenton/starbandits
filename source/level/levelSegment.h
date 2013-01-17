@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include "pixelboost/db/definitions.h"
 
 namespace pb
@@ -18,8 +20,12 @@ public:
     
     float GetLength();
     
+    bool Cleanup(float scroll, glm::vec4 bounds);
+    
 private:
     const pb::DbRecord* _Record;
     pb::Scene* _Scene;
     float _Offset;
+    
+    std::vector<pb::Uid> _Ids;
 };

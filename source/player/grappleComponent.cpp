@@ -8,9 +8,10 @@
 #include "common/layers.h"
 #include "player/grappleComponent.h"
 
-GrappleComponent::GrappleComponent(pb::Entity* entity, pb::Uid connectedEntity)
+GrappleComponent::GrappleComponent(pb::Entity* entity, pb::Uid shipEntity, pb::Uid connectedEntity)
     : pb::Component(entity)
     , _ConnectedEntity(connectedEntity)
+    , _ShipEntity(shipEntity)
 {
     _Renderable = new pb::PrimitiveRenderableLine(GetUid());
     _Renderable->SetLayer(kGraphicLayerPlayer);
@@ -24,6 +25,8 @@ GrappleComponent::~GrappleComponent()
 {
     GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &GrappleComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
+    
+    delete _Renderable;
 }
     
 pb::Uid GrappleComponent::GetType()
@@ -43,15 +46,16 @@ void GrappleComponent::OnUpdate(const pb::Message& message)
 
 void GrappleComponent::UpdatePosition()
 {
+    pb::Entity* shipEntity = GetScene()->GetEntityById(_ShipEntity);
     pb::Entity* otherEntity = GetScene()->GetEntityById(_ConnectedEntity);
     
-    if (!otherEntity)
+    if (!shipEntity || !otherEntity)
     {
         GetParent()->DestroyComponent(this);
         return;
     }
     
-    pb::TransformComponent* shipTransform = GetParent()->GetComponentByType<pb::TransformComponent>();
+    pb::TransformComponent* shipTransform = shipEntity->GetComponentByType<pb::TransformComponent>();
     pb::TransformComponent* connectedTransform = otherEntity->GetComponentByType<pb::TransformComponent>();
 
     _Renderable->SetStart(shipTransform->GetPosition());

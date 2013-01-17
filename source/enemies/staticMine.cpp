@@ -74,7 +74,7 @@ void StaticMine::OnUpdate(const pb::Message& message)
 
         if (_Countdown <= 0.f)
         {
-            GetComponentByType<HealthComponent>()->ModifyHealth(-20.f);
+            GetComponentByType<HealthComponent>()->Damage(20.f);
         }
         
         GetComponentByType<pb::ModelComponent>()->SetLocalTransform(glm::rotate(glm::mat4x4(), _Rotation, glm::normalize(glm::vec3(0.2, 0.4, 0.1))));

@@ -27,8 +27,6 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     char modelName[64];
     sprintf(modelName, "asteroid_%02d", (rand()%4)+1);
     
-    printf("Creating asteroid %s\n", modelName);
-    
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel(modelName),
                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("asteroid"));

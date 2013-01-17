@@ -27,10 +27,11 @@ public:
     void OnDamage(const pb::Message& message);
     void OnUpdate(const pb::Message& message);
     
-    void ModifyHealth(float health);
+    void Damage(float damage);
 
 private:
     float _Health;
+    float _MaxShields;
     float _Shields;
     
     HealthType _HealthType;

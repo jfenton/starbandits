@@ -12,7 +12,7 @@ namespace pb
 class GrappleComponent : public pb::Component
 {
 public:
-    GrappleComponent(pb::Entity* entity, pb::Uid connectedEntity);
+    GrappleComponent(pb::Entity* entity, pb::Uid shipEntity, pb::Uid connectedEntity);
     ~GrappleComponent();
     
 public:
@@ -25,5 +25,6 @@ public:
     
 private:
     pb::Uid _ConnectedEntity;
+    pb::Uid _ShipEntity;
     pb::PrimitiveRenderableLine* _Renderable;
 };

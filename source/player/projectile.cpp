@@ -24,17 +24,17 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 positi
     transform->SetPosition(position);
     
     pb::RectangleComponent* rectangle = new pb::RectangleComponent(this);
-    rectangle->SetSize(glm::vec2(0.1f, 0.5f));
+    rectangle->SetSize(glm::vec2(0.1f, 0.7f));
     rectangle->SetColor(glm::vec4(0.9,0.3,0.3,1));
     rectangle->SetSolid(true);
     rectangle->SetLayer(kGraphicLayerProjectiles);
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.1,0.3));
+    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.1,0.7));
     physics->SetSensor(true);
     physics->GetBody()->SetBullet(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
     
-    new DamageComponent(this, healthType, 0.f, 10.f);
+    new DamageComponent(this, healthType, 10.f);
     
     RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));

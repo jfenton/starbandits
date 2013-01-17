@@ -1,9 +1,8 @@
 #include "gameplay/damage.h"
 
-DamageComponent::DamageComponent(pb::Entity* entity, HealthType healthType, float energyDamage, float kineticDamage)
+DamageComponent::DamageComponent(pb::Entity* entity, HealthType healthType, float damage)
 	: pb::Component(entity)
-	, _EnergyDamage(energyDamage)
-	, _KineticDamage(kineticDamage)
+	, _Damage(damage)
     , _HealthType(healthType)
 {
 
@@ -24,14 +23,9 @@ pb::Uid DamageComponent::GetStaticType()
 	return pb::TypeHash("DamageComponent");
 }
 
-float DamageComponent::GetEnergyDamage() const
+float DamageComponent::GetDamage() const
 {
-	return _EnergyDamage;
-}
-
-float DamageComponent::GetKineticDamage() const
-{
-	return _KineticDamage;
+	return _Damage;
 }
 
 HealthType DamageComponent::GetHealthType() const

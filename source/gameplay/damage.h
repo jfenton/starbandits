@@ -8,20 +8,18 @@
 class DamageComponent : public pb::Component
 {
 public:
-    DamageComponent(pb::Entity* entity, HealthType healthType, float energyDamage, float kineticDamage);
+    DamageComponent(pb::Entity* entity, HealthType healthType, float damage);
     ~DamageComponent();
     
     virtual pb::Uid GetType();
     static pb::Uid GetStaticType();
     
-    float GetEnergyDamage() const;
-    float GetKineticDamage() const;
+    float GetDamage() const;
     
     HealthType GetHealthType() const;
     
 private:
-    float _EnergyDamage;
-    float _KineticDamage;
+    float _Damage;
     HealthType _HealthType;
 };
 

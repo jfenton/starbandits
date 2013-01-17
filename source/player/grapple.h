@@ -5,13 +5,14 @@
 namespace pb
 {
     class Message;
+    class PrimitiveRenderableLine;
     class Scene;
 }
 
 class Grapple : public pb::Entity
 {
 public:
-    Grapple(pb::Scene* scene, pb::Uid playerId, glm::vec3 position, float rotation, float speed);
+    Grapple(pb::Scene* scene, pb::Uid playerId, pb::Uid collisionId);
     ~Grapple();
     
 public:
@@ -22,10 +23,14 @@ public:
     void OnUpdate(const pb::Message& message);
     
 private:
-    pb::Uid _PlayerId;
-    b2Body* _CollisionBody;
-    pb::Uid _CollisionObject;
+    enum GrappleState
+    {
+        kStateFiring,
+        kStateAttached,
+    };
     
-    float _Life;
-    float _Rotation;
+    pb::Uid _PlayerId;
+    pb::Uid _CollisionId;
+    
+    pb::PrimitiveRenderableLine* _Renderable;
 };

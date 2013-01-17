@@ -22,7 +22,7 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     ellipse->SetColor(glm::vec4(205.f/255.f,112.f/255.f,6.f/255.f,1));
     ellipse->SetLayer(kGraphicLayerExplosions);
     
-    new DamageComponent(this, kHealthTypeNone, 0.f, 5.f);
+    new DamageComponent(this, kHealthTypeNone, 5.f);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Power/2.f, _Power/2.f));
 

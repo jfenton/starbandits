@@ -11,6 +11,7 @@ HealthComponent::HealthComponent(pb::Entity* entity, HealthType healthType, floa
     : pb::Component(entity)
     , _Health(health)
     , _HealthType(healthType)
+    , _MaxShields(shields)
     , _Shields(shields)
 {
     GetParent()->RegisterMessageHandler<DamageMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnDamage));
@@ -59,7 +60,7 @@ void HealthComponent::OnCollision(const pb::Message& message)
     if (damage)
     {
         if (damage->GetHealthType() != _HealthType)
-            ModifyHealth(-damage->GetKineticDamage());
+            Damage(damage->GetDamage());
     } else {
         //ModifyHealth(-5.f);
     }
@@ -69,11 +70,17 @@ void HealthComponent::OnDamage(const pb::Message& message)
 {
     const DamageMessage& damageMessage = static_cast<const DamageMessage&>(message);
     
-    ModifyHealth(-damageMessage.GetDamage());
+    Damage(damageMessage.GetDamage());
 }
 
 void HealthComponent::OnUpdate(const pb::Message& message)
 {
+    const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
+    
+    _Shields += updateMessage.GetDelta();
+    
+    _Shields = glm::min(_Shields, _MaxShields);
+    
     if (_Health <= 0.f)
     {
         HealthDepletedMessage healthDepleted(GetParent());
@@ -82,9 +89,20 @@ void HealthComponent::OnUpdate(const pb::Message& message)
     }
 }
 
-void HealthComponent::ModifyHealth(float health)
+void HealthComponent::Damage(float damage)
 {
-    _Health += health;
+    if (_Shields > 0)
+    {
+        _Shields -= damage;
+    } else {
+        _Health -= damage;
+    }
+    
+    if (_Shields < 0.f)
+    {
+        _Health += _Shields;
+        _Shields = 0.f;
+    }
 }
 
 HealthDepletedMessage::HealthDepletedMessage(pb::Entity* entity)
