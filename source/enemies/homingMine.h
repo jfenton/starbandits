@@ -18,4 +18,5 @@ private:
     float _Fuse;
     float _Rotation;
     float _DetectDistance;
+    pb::Uid _PlayerId;
 };

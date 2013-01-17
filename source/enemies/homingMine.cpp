@@ -18,6 +18,7 @@
 
 HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
 	: pb::Entity(scene, 0)
+    , _PlayerId(0)
 {
     float size = 1.f;
     
@@ -72,46 +73,89 @@ void HomingMine::OnUpdate(const pb::Message& message)
     
     glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
     
-    pb::Scene::EntityMap entityMap = GetScene()->GetEntities();
-    
-    for (pb::Scene::EntityMap::iterator it = entityMap.begin(); it != entityMap.end(); ++it)
+    if (_PlayerId == 0)
     {
-        if (it->second->GetType() == GetStaticType())
-            continue;
+        pb::Scene::EntityMap entityMap = GetScene()->GetEntities();
         
-        pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+        float maxDistance = 100.f;
+        for (pb::Scene::EntityMap::iterator it = entityMap.begin(); it != entityMap.end(); ++it)
+        {
+            if (it->second->GetType() == GetStaticType())
+                continue;
+            
+            pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+            
+            if (!transform)
+                continue;
+            
+            glm::vec3 entityPosition = transform->GetPosition();
+            
+            if (glm::distance(position, entityPosition) < 3.f)
+            {
+                GetComponentByType<HealthComponent>()->Damage(10.f);
+            }
+            
+            if (it->second->GetType() != PlayerShip::GetStaticType())
+                continue;
+            
+            float distance = glm::distance(position, entityPosition);
+            if (distance < _DetectDistance && distance < maxDistance)
+            {
+                _DetectDistance = 45.f;
+                
+                maxDistance = distance;
+                _PlayerId = it->second->GetUid();
+            }
+        }
+    }
+    
+    if (_PlayerId)
+    {
+        _Rotation += 10.f;
+        
+        pb::Entity* entity = GetScene()->GetEntityById(_PlayerId);
+        
+        if (!entity)
+        {
+            _PlayerId = 0;
+            return;
+        }
+        
+        pb::TransformComponent* transform = entity->GetComponentByType<pb::TransformComponent>();
         
         if (!transform)
-            continue;
+        {
+            _PlayerId = 0;
+            return;
+        }
         
         glm::vec3 entityPosition = transform->GetPosition();
         
-        if (glm::distance(position, entityPosition) < 3.f)
-        {
-            GetComponentByType<HealthComponent>()->Damage(10.f);
-        }
+        b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
         
-        if (it->second->GetType() != PlayerShip::GetStaticType())
-            continue;
+        float maxSpeed = 8.f;
+        float force = 150.f;
+        glm::vec3 direction = glm::normalize(entityPosition-position)*force;
+        body->ApplyForceToCenter(b2Vec2(direction.x, direction.y));
+        
+        glm::vec2 velocity(body->GetLinearVelocity().x, body->GetLinearVelocity().y);
+        if (glm::length(velocity) > maxSpeed)
+            velocity = glm::normalize(velocity) * maxSpeed;
+        
+        body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
         
         if (glm::distance(position, entityPosition) < _DetectDistance)
         {
             _DetectDistance = 45.f;
             
-            b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
-            
-            float maxSpeed = 8.f;
-            float force = 150.f;
-            glm::vec3 direction = glm::normalize(entityPosition-position)*force;
-            body->ApplyForceToCenter(b2Vec2(direction.x, direction.y));
-            
-            glm::vec2 velocity(body->GetLinearVelocity().x, body->GetLinearVelocity().y);
-            if (glm::length(velocity) > maxSpeed)
-                velocity = glm::normalize(velocity) * maxSpeed;
-
-            body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
+            _PlayerId = 0;
         }
     }
+    
+    glm::mat4x4 transform;
+    transform = glm::rotate(transform, _Rotation, glm::normalize(glm::vec3(0.4, 0.1, 0.7)));
+    
+    GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
 }
 
 void HomingMine::OnHealthDepleted(const pb::Message& message)

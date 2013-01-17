@@ -70,7 +70,7 @@ void StaticMine::OnUpdate(const pb::Message& message)
     if (_Active)
     {
         _Countdown -= updateMessage.GetDelta();
-        _Rotation += updateMessage.GetDelta() * 180.f;
+        _Rotation += updateMessage.GetDelta() * 180.f * (1.f-_Countdown)*7.f;
 
         if (_Countdown <= 0.f)
         {
