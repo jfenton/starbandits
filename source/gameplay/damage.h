@@ -15,6 +15,7 @@ public:
     static pb::Uid GetStaticType();
     
     float GetDamage() const;
+    void SetDamage(float damage);
     
     HealthType GetHealthType() const;
     

@@ -260,7 +260,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     _RightMount.Offset = glm::vec3(0.61, 0, -0.16);
     _RightMount.Rotation = glm::vec3(0, 0, 15.f);
     
-    new HealthComponent(this, kHealthTypePlayer, 50.f, 100.f);
+    new HealthComponent(this, kHealthTypePlayer, 50.f, 10.f);
     new LaserComponent(this, _Input, _LeftMount);
     new LaserComponent(this, _Input, _RightMount);
 //    new MissileComponent(this, _Input, 10.f, 0.f);

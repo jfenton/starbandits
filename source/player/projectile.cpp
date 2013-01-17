@@ -17,7 +17,7 @@
 
 Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 position, float rotation, float speed, float damage)
     : pb::Entity(scene, 0)
-    , _Life(5.f)
+    , _Life(2.f)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetRotation(glm::vec3(0,0,glm::degrees(rotation)));

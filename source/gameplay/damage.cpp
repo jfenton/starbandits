@@ -28,6 +28,11 @@ float DamageComponent::GetDamage() const
 	return _Damage;
 }
 
+void DamageComponent::SetDamage(float damage)
+{
+    _Damage = damage;
+}
+
 HealthType DamageComponent::GetHealthType() const
 {
     return _HealthType;
