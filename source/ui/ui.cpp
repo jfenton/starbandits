@@ -50,12 +50,15 @@ void GameUi::OnUpdate(const pb::Message& message)
     
     pb::Scene::EntityMap ships = GetScene()->GetEntitiesByType<PlayerShip>();
     
+    PlayerShip* ship = static_cast<PlayerShip*>(ships.begin()->second);
+    
+    float energy = ship->GetEnergy();
     HealthComponent* health = ships.begin()->second->GetComponentByType<HealthComponent>();
 
-    if (health)
+    if (energy && health)
     {
         char text[128];
-        snprintf(text, 128, "Health: %.0f\nShields: %.0f", health->GetHealth(), health->GetShields());
+        snprintf(text, 128, "Health: %.0f\nShields: %.0f\nEnergy: %.0f", health->GetHealth(), health->GetShields(), energy);
         GetComponentByType<pb::FontComponent>()->SetText(text);
     }
 }

@@ -235,6 +235,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     : pb::Entity(scene, 0)
     , _BarrelCooldown(0)
     , _BoostPower(1.5)
+    , _Energy(100)
     , _FiringDelay(0)
     , _GrappleActive(false)
     , _PlayerId(playerId)
@@ -244,7 +245,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                            pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
-                           pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship"));
+                           pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship_DIFF"));
     model->SetLayer(kGraphicLayerPlayer);
     model->SetShader(Game::Instance()->GetLitShader());
     
@@ -378,14 +379,22 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     transform = glm::rotate(transform, glm::cos(pb::Engine::Instance()->GetGameTime() / 2.f) * 6.f + _Tilt + barrelRot, glm::vec3(0,0,1));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
     
+    _Energy += updateMessage.GetDelta();
+    
     _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
     if (_Input->_Firing)
     {
         if (_FiringDelay <= 0.f)
         {
-            _FiringDelay += 0.2f;
+            _FiringDelay += 0.08f;
             
-            new Projectile(GetScene(), kHealthTypePlayer, position, rotation, glm::length(velocity) + 20.f);
+            const float energyCost = 0.1f;
+            if (_Energy > energyCost)
+            {
+                float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
+                new Projectile(GetScene(), kHealthTypePlayer, position, rotation + randOffset, glm::length(velocity) + 20.f, 5.f);
+                _Energy -= energyCost;
+            }
 
         }
     }
@@ -422,6 +431,11 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     ProcessGameBounds();
     ProcessLighting();
+}
+
+float PlayerShip::GetEnergy()
+{
+    return _Energy;
 }
 
 float PlayerShip::GetSpeedPercentage()

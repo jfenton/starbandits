@@ -64,7 +64,8 @@ public:
     static pb::Uid GetStaticType();
     
     void OnUpdate(const pb::Message& message);
-    
+
+    float GetEnergy();
     float GetSpeedPercentage();
     
     void ProcessGameBounds();
@@ -75,8 +76,9 @@ private:
     
     float _BarrelCooldown;
     float _BoostPower;
+    float _Energy;
     float _FiringDelay;
+    bool _GrappleActive;
     int _PlayerId;
     float _Tilt;
-    bool _GrappleActive;
 };

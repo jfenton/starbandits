@@ -15,7 +15,7 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 position, float rotation, float speed)
+Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 position, float rotation, float speed, float damage)
     : pb::Entity(scene, 0)
     , _Life(5.f)
 {
@@ -24,17 +24,22 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 positi
     transform->SetPosition(position);
     
     pb::RectangleComponent* rectangle = new pb::RectangleComponent(this);
-    rectangle->SetSize(glm::vec2(0.1f, 0.7f));
-    rectangle->SetColor(glm::vec4(0.9,0.3,0.3,1));
+    rectangle->SetSize(glm::vec2(0.08f, 0.4f));
+    if (healthType == kHealthTypeEnemy)
+    {
+        rectangle->SetColor(glm::vec4(0.9,0.3,0.3,1));
+    } else {
+        rectangle->SetColor(glm::vec4(1.0,0.95,0.26,1));
+    }
     rectangle->SetSolid(true);
     rectangle->SetLayer(kGraphicLayerProjectiles);
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.1,0.7));
+    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.08,0.4));
     physics->SetSensor(true);
     physics->GetBody()->SetBullet(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
     
-    new DamageComponent(this, healthType, 10.f);
+    new DamageComponent(this, healthType, 5.f);
     
     RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
@@ -61,6 +66,10 @@ void Projectile::OnCollision(const pb::Message& message)
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
     
     HealthComponent* health = collisionMessage.GetOtherComponent()->GetParent()->GetComponentByType<HealthComponent>();
+    
+    pb::Uid type = collisionMessage.GetOtherComponent()->GetParent()->GetType();
+    if (type == GetStaticType() || type == pb::TypeHash("Explosion"))
+        return;
     
     if (!health || GetComponentByType<DamageComponent>()->GetHealthType() != health->GetHealthType())
         Destroy();
