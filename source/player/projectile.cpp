@@ -1,8 +1,9 @@
+
 #include "Box2D/Box2D.h"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "pixelboost/framework/engine.h"
-#include "pixelboost/logic/component/graphics/rectangle.h"
+#include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
 #include "pixelboost/logic/message/physics/collision.h"
@@ -23,16 +24,24 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 positi
     transform->SetRotation(glm::vec3(0,0,glm::degrees(rotation)));
     transform->SetPosition(position);
     
-    pb::RectangleComponent* rectangle = new pb::RectangleComponent(this);
-    rectangle->SetSize(glm::vec2(0.08f, 0.4f));
+    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "");
     if (healthType == kHealthTypeEnemy)
     {
-        rectangle->SetColor(glm::vec4(0.9,0.3,0.3,1));
+        sprite->SetSprite("laser_red");
     } else {
-        rectangle->SetColor(glm::vec4(1.0,0.95,0.26,1));
+        sprite->SetSprite("laser_orange");
     }
-    rectangle->SetSolid(true);
-    rectangle->SetLayer(kGraphicLayerProjectiles);
+    glm::mat4x4 spriteTransform;
+    spriteTransform = glm::translate(spriteTransform, glm::vec3(0,1,0));
+    spriteTransform = glm::rotate(spriteTransform, -90.f, glm::vec3(0,0,1));
+    
+    if (healthType == kHealthTypeEnemy)
+    {
+        spriteTransform = glm::scale(spriteTransform, glm::vec3(1.5,1.5,1));
+    }
+    
+    sprite->SetLocalTransform(spriteTransform);
+    sprite->SetLayer(kGraphicLayerProjectiles);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.08,0.4));
     physics->SetSensor(true);
