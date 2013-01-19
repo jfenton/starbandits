@@ -29,7 +29,7 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, glm::vec3 positi
     {
         sprite->SetSprite("laser_red");
     } else {
-        sprite->SetSprite("laser_orange");
+        sprite->SetSprite("laser_green");
     }
     glm::mat4x4 spriteTransform;
     spriteTransform = glm::translate(spriteTransform, glm::vec3(0,1,0));
