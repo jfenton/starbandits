@@ -39,8 +39,8 @@ BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
         sprite->SetLayer(kGraphicLayerStars);
         sprite->SetSprite(pb::Engine::Instance()->GetSpriteRenderer()->GetSprite("star"));
         glm::mat4x4 spriteTransform;
-        spriteTransform = glm::translate(spriteTransform, glm::linearRand(glm::vec3(-1000,-1000,-1000), glm::vec3(3000,3000,-3000)));
-        spriteTransform = glm::scale(spriteTransform, glm::vec3(70,70,70));
+        spriteTransform = glm::translate(spriteTransform, glm::linearRand(glm::vec3(-1100,-500,-1000), glm::vec3(1100,3000,-2000)));
+        spriteTransform = glm::scale(spriteTransform, glm::vec3(60,60,60));
         sprite->SetTransform(spriteTransform);
         _Stars.push_back(sprite);
         

@@ -61,7 +61,7 @@ void GameScreen::Update(float time)
         
         _CurrentY = _CurrentY + levelSegment->GetLength();
         
-        printf("Creating segment cam %f, current y %f, segment %f\n", _Camera->Position.y, _CurrentY, levelSegment->GetLength());
+        printf("Creating segment cam %f, current y %f, segment %f (%lu segments)\n", _Camera->Position.y, _CurrentY, levelSegment->GetLength(), _Segments.size());
     }
     
     for (std::vector<LevelSegment*>::iterator it = _Segments.begin(); it != _Segments.end();)
@@ -109,8 +109,8 @@ void GameScreen::SetActive(bool active)
         _Camera = new pb::PerspectiveCamera();
         _Camera->FieldOfView = 45.f;
         _Camera->Position.z = 50.f;
-        _Camera->ZNear = 1.f;
-        _Camera->ZFar = 4000.f;
+        _Camera->ZNear = 40.f;
+        _Camera->ZFar = 2000.f;
         
         _Scene = new pb::Scene();
         _Scene->AddSystem(new pb::BoundsRenderSystem());
