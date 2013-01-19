@@ -9,6 +9,7 @@
 namespace pb
 {
     class Message;
+    class ParticleComponent;
     class Scene;
 }
 
@@ -76,7 +77,13 @@ public:
     void ProcessLighting();
     
 private:
+    void SetupEngineParticle(pb::ParticleComponent* particleComponent, glm::vec3 position, float scale);
+    
     PlayerInput* _Input;
+    
+    pb::ParticleComponent* _EngineMain;
+    pb::ParticleComponent* _EngineLeft;
+    pb::ParticleComponent* _EngineRight;
     
     float _BarrelCooldown;
     float _Energy;

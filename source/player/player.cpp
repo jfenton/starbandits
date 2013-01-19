@@ -5,6 +5,7 @@
 #include "pixelboost/debug/debugVariable.h"
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/camera/camera.h"
+#include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/graphics/renderer/common/renderer.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/graphics/shader/manager.h"
@@ -15,6 +16,7 @@
 #include "pixelboost/logic/system/physics/2d/physics.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
+#include "pixelboost/maths/matrixHelpers.h"
 
 #include "common/layers.h"
 #include "core/game.h"
@@ -253,6 +255,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     physics->GetBody()->SetAngularDamping(0.9f);
     
     _Input = new PlayerJoystickInput(_PlayerId);
+//    _Input = new PlayerKeyboardInput();
     
     _LeftMount.Offset = glm::vec3(-0.61, 0, -0.16);
     _LeftMount.Rotation = glm::vec3(0, 0, -15.f);
@@ -263,7 +266,15 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     new HealthComponent(this, kHealthTypePlayer, 50.f, 10.f);
     new LaserComponent(this, _Input, _LeftMount);
     new LaserComponent(this, _Input, _RightMount);
-//    new MissileComponent(this, _Input, 10.f, 0.f);
+//    new MissileComponent(this, _Input, _RightMount);
+    
+    _EngineMain = new pb::ParticleComponent(this);
+    _EngineLeft = new pb::ParticleComponent(this);
+    _EngineRight = new pb::ParticleComponent(this);
+    
+    SetupEngineParticle(_EngineLeft, glm::vec3(-1.f, -1.f, 0.f), 0.5f);
+    SetupEngineParticle(_EngineMain, glm::vec3(0.f, -1.f, 0.f), 1.f);
+    SetupEngineParticle(_EngineRight, glm::vec3(1.f, -1.f, 0.f), 0.5f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
@@ -317,6 +328,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         desiredRotation = rotation;
     
     float rotateSpeed = 0.090f;
+    float prevRotation = rotation;
     rotation = glm::mix(rotation, desiredRotation, rotateSpeed);
     
     body->SetTransform(body->GetPosition(), rotation);
@@ -421,6 +433,30 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     ProcessGameBounds();
     ProcessLighting();
+    
+    pb::ParticleSystem* engineLeft = _EngineLeft->GetSystem();
+    pb::ParticleSystem* engineMain = _EngineMain->GetSystem();
+    pb::ParticleSystem* engineRight = _EngineRight->GetSystem();
+    
+    float particleSpeed = glm::length(force);
+    engineMain->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
+    engineMain->Definition->StartSpeed.Set(-0.3f * particleSpeed, -0.4f * particleSpeed);
+    engineMain->Definition->Emitter->EmitSpeed = _Input->_Boost ? 1200.f : glm::length(_Input->_Thrust) * 600.f;    
+    
+    engineLeft->Definition->Emitter->EmitSpeed = 0.f;
+    engineRight->Definition->Emitter->EmitSpeed = 0.f;
+    
+    float rotateThruster = glm::clamp(prevRotation - rotation, -5.f, 5.f) * 5.f;
+    if (rotateThruster > 0.f)
+    {
+        engineLeft->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
+        engineLeft->Definition->StartSpeed.Set(-50.f * rotateThruster, -50.f * rotateThruster);
+        engineLeft->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
+    } else {
+        engineRight->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
+        engineRight->Definition->StartSpeed.Set(50.f * rotateThruster, 50.f * rotateThruster);
+        engineRight->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
+    }
 }
 
 float PlayerShip::GetEnergy()
@@ -497,4 +533,23 @@ void PlayerShip::ProcessLighting()
     pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[0]", glm::vec3(g_LightA_R, g_LightA_G, g_LightA_B)*(float)g_LightA_I);
     pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[1]", glm::vec3(g_LightB_R, g_LightB_G, g_LightB_B)*(float)g_LightB_I);
     pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[2]", glm::vec3(g_LightC_R, g_LightC_G, g_LightC_B)*(float)g_LightC_I);
+}
+
+void PlayerShip::SetupEngineParticle(pb::ParticleComponent* particleComponent, glm::vec3 position, float scale)
+{
+    particleComponent->SetLayer(kGraphicLayerParticles);
+    particleComponent->SetLocalTransform(glm::translate(glm::mat4x4(), position));
+    
+    pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
+    pb::ParticleDefinitionEmitterCone* emitter = new pb::ParticleDefinitionEmitterCone();
+    emitter->EmitSpeed = 0.f;
+    emitter->Range = 2.f;
+    engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("engine");
+    engineDefinition->StartLife.Set(0.07f, 0.1f);
+    pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,scale), glm::vec2(0.5,0)));
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.f), glm::vec2(0.1,0)));
+    engineDefinition->ModifierScale = scaleValue;
+    engineDefinition->Emitter = emitter;
+
 }

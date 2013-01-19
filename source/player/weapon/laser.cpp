@@ -7,6 +7,7 @@
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/entity.h"
 #include "pixelboost/logic/scene.h"
+#include "pixelboost/maths/matrixHelpers.h"
 
 #include "common/layers.h"
 #include "core/game.h"
@@ -91,11 +92,7 @@ void LaserComponent::UpdateTransform()
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, ship->GetTilt(), glm::vec3(0,1,0));
-    localTransform = glm::translate(localTransform, glm::vec3(_MountInfo.Offset));
-    localTransform = glm::rotate(localTransform, _MountInfo.Rotation.x + 90.f, glm::vec3(1,0,0));
-    localTransform = glm::rotate(localTransform, _MountInfo.Rotation.y + 180.f, glm::vec3(0,1,0));
-    localTransform = glm::rotate(localTransform, _MountInfo.Rotation.z, glm::vec3(0,0,1));
-    localTransform = glm::scale(localTransform, glm::vec3(1.5,1.5,1.5));
+    localTransform = localTransform * pb::CreateTransformMatrix(pb::kRotationOrder_XYZ, glm::vec3(_MountInfo.Offset), _MountInfo.Rotation + glm::vec3(90.f, 180.f, 0.f), glm::vec3(1.5, 1.5, 1.5));
     
     _Renderable->SetTransform(transform->GetMatrix() * localTransform);
 }

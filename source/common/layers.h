@@ -5,6 +5,7 @@ enum GraphicLayers
 	kGraphicLayerBackground=0,
 	kGraphicLayerStars=1,
 	kGraphicLayerPlanets=2,
+    kGraphicLayerParticles=9,
 	kGraphicLayerEnemies=4,
 	kGraphicLayerPlayer=4,
     kGraphicLayerProjectiles=5,
