@@ -106,7 +106,8 @@ void GameScreen::SetActive(bool active)
         
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
         
-        new Planet(_Scene, glm::vec3(-36, 350, -500), 12.5);
+        new Planet(_Scene, "planet", glm::vec3(-36, 350, -500), 12.5);
+        new Planet(_Scene, "moon", glm::vec3(-90, 150, -501), 12.5);
         
         new GameUi(_Scene);
         

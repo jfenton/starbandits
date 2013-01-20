@@ -3,7 +3,7 @@
 class Planet : public pb::Entity
 {
 public:
-    Planet(pb::Scene* scene, glm::vec3 position, float size);
+    Planet(pb::Scene* scene, const std::string& name, glm::vec3 position, float size);
     ~Planet();
     
 public:

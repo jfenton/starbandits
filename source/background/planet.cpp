@@ -13,14 +13,14 @@
 #include "background/planet.h"
 #include "common/layers.h"
 
-Planet::Planet(pb::Scene* scene, glm::vec3 position, float size)
+Planet::Planet(pb::Scene* scene, const std::string& name, glm::vec3 position, float size)
     : pb::Entity(scene, 0)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(position);
     transform->SetScale(glm::vec3(size, size, size));
     
-    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "planet");
+    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, name);
     sprite->SetLayer(kGraphicLayerPlanets);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Planet::OnUpdate));
