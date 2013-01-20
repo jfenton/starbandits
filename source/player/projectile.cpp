@@ -38,18 +38,17 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
         pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
         pb::ParticleDefinitionEmitterCone* emitter = new pb::ParticleDefinitionEmitterCone();
         emitter->EmitCount = -1.f;
-        emitter->EmitSpeed = 90.f;
+        emitter->EmitSpeed = 150.f;
         emitter->Range = 180.f;
         if (healthType == kHealthTypeEnemy) {
             engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("missile_04");
         } else {
             engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("missile_03");
         }
-        engineDefinition->StartLife.Set(0.1f, 0.2f);
-        engineDefinition->StartSpeed.Set(speed*0.5f, speed*1.f);
+        engineDefinition->StartLife.Set(0.05f, 0.1f);
         pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
-        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,1.f), glm::vec2(0.5,0)));
-        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.7f), glm::vec2(0.1,0)));
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,1.5f), glm::vec2(0.5,0)));
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.4f), glm::vec2(0.1,0)));
         engineDefinition->ModifierScale = scaleValue;
         engineDefinition->Emitter = emitter;
     } else {
@@ -85,7 +84,7 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
     
     if (_Type == kProjectileTypeHoming)
     {
-        _Life = 15.f;
+        _Life = 10.f;
         SetTarget();
     }
     

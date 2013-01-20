@@ -101,8 +101,8 @@ void Turret::OnUpdate(const pb::Message& message)
     
     if (_ShootTimer <= 0.f)
     {
-        new Projectile(GetScene(), kHealthTypeEnemy, _Type, position, body->GetAngle(), _Type == kProjectileTypeHoming ? 1.f : 10.f, 20.f);
-        _ShootTimer = _Type == kProjectileTypeHoming ? 1.5f : 0.5f;
+        new Projectile(GetScene(), kHealthTypeEnemy, _Type, position, body->GetAngle(), _Type == kProjectileTypeHoming ? 2.5f : 10.f, 20.f);
+        _ShootTimer = _Type == kProjectileTypeHoming ? 2.5f : 1.f;
     }
 }
 
