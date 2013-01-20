@@ -123,6 +123,8 @@ void HealthComponent::Damage(float damage)
         _Health += _Shields;
         _Shields = 0.f;
     }
+    
+    _Health = glm::max(_Health, 0.f);
 }
 
 HealthDepletedMessage::HealthDepletedMessage(pb::Entity* entity)
