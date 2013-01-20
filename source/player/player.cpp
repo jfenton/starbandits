@@ -60,6 +60,11 @@ PlayerInput::PlayerInput()
     
 }
 
+PlayerInput::~PlayerInput()
+{
+    
+}
+
 PlayerKeyboardInput::PlayerKeyboardInput()
     : _KeyLeft(false)
     , _KeyRight(false)

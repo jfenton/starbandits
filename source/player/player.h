@@ -17,6 +17,7 @@ class PlayerInput
 {
 public:
     PlayerInput();
+    virtual ~PlayerInput();
     
     glm::vec2 _Thrust;
     glm::vec2 _GrappleDirection;
