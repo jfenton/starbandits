@@ -99,7 +99,11 @@ void GameScreen::SetActive(bool active)
         _Scene->AddSystem(new pb::PhysicsSystem2D(glm::vec2(0,0)));
         _Scene->AddSystem(new pb::DebugRenderSystem());
         
-        new PlayerShip(_Scene, 0);
+        for (int i=0; i<_NumPlayers; i++)
+        {
+            new PlayerShip(_Scene, i);
+        }
+        
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
         
         new Planet(_Scene, glm::vec3(-36, 350, -500), 12.5);
@@ -127,6 +131,16 @@ void GameScreen::SetActive(bool active)
         delete _Camera;
         delete _Scene;
     }
+}
+
+void GameScreen::SetNumPlayers(int numPlayers)
+{
+    _NumPlayers = numPlayers;
+}
+
+int GameScreen::GetNumPlayers()
+{
+    return _NumPlayers;
 }
 
 pb::PerspectiveCamera* GameScreen::GetCamera()

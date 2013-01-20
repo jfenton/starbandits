@@ -22,6 +22,9 @@ public:
     
     virtual void SetActive(bool active);
     
+    void SetNumPlayers(int numPlayers);
+    int GetNumPlayers();
+    
     pb::PerspectiveCamera* GetCamera();
     glm::vec4 GetArenaBounds();
     
@@ -31,6 +34,7 @@ private:
     pb::Viewport* _Viewport;
     
     float _CurrentY;
+    int _NumPlayers;
     
     BackgroundTile* _Background;
     

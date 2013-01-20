@@ -15,6 +15,7 @@
 #include "gameplay/health.h"
 #include "menu/menuItem.h"
 #include "player/player.h"
+#include "screens/game.h"
 
 MenuItem::MenuItem(pb::Scene* scene)
     : pb::Entity(scene, 0)
@@ -57,8 +58,10 @@ void MenuItem::OnUpdate(const pb::Message& message)
 bool MenuItem::OnButtonDown(int joystick, int button)
 {
     if (button == 0) {
+        Game::Instance()->GetGameScreen()->SetNumPlayers(1);
         Game::Instance()->SetMode(kGameModeGame);
     } else if (button == 1) {
+        Game::Instance()->GetGameScreen()->SetNumPlayers(2);
         Game::Instance()->SetMode(kGameModeGame);
     }
     
