@@ -114,14 +114,23 @@ void HealthComponent::Damage(float damage)
     if (_Shields > 0)
     {
         _Shields -= damage;
+        
+        ShieldsHitMessage shieldsHit(GetParent());
+        GetScene()->SendMessage(GetParentUid(), shieldsHit);
     } else {
         _Health -= damage;
+        
+        HullHitMessage hullHit(GetParent());
+        GetScene()->SendMessage(GetParentUid(), hullHit);
     }
     
     if (_Shields < 0.f)
     {
         _Health += _Shields;
         _Shields = 0.f;
+        
+        HullHitMessage hullHit(GetParent());
+        GetScene()->SendMessage(GetParentUid(), hullHit);
     }
     
     _Health = glm::max(_Health, 0.f);
@@ -146,4 +155,47 @@ pb::Uid HealthDepletedMessage::GetType() const
 pb::Uid HealthDepletedMessage::GetStaticType()
 {
     return pb::TypeHash("HealthDepletedMessage");
+}
+
+HullHitMessage::HullHitMessage(pb::Entity* entity)
+    : pb::Message(entity, 0)
+{
+    
+}
+
+HullHitMessage::~HullHitMessage()
+{
+    
+}
+
+pb::Uid HullHitMessage::GetType() const
+{
+    return GetStaticType();
+}
+
+pb::Uid HullHitMessage::GetStaticType()
+{
+    return pb::TypeHash("HullHitMessage");
+}
+
+
+ShieldsHitMessage::ShieldsHitMessage(pb::Entity* entity)
+    : pb::Message(entity, 0)
+{
+    
+}
+
+ShieldsHitMessage::~ShieldsHitMessage()
+{
+    
+}
+
+pb::Uid ShieldsHitMessage::GetType() const
+{
+    return GetStaticType();
+}
+
+pb::Uid ShieldsHitMessage::GetStaticType()
+{
+    return pb::TypeHash("ShieldsHitMessage");
 }

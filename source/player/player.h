@@ -9,6 +9,7 @@
 namespace pb
 {
     class Message;
+    class ModelComponent;
     class ParticleComponent;
     class Scene;
 }
@@ -73,6 +74,8 @@ public:
     virtual pb::Uid GetType() const;
     static pb::Uid GetStaticType();
     
+    void OnHullHit(const pb::Message& message);
+    void OnShieldsHit(const pb::Message& message);
     void OnUpdate(const pb::Message& message);
 
     float GetEnergy();
@@ -88,6 +91,9 @@ private:
     
     PlayerInput* _Input;
     
+    pb::ModelComponent* _Ship;
+    pb::ModelComponent* _Shield;
+    
     pb::ParticleComponent* _EngineMain;
     pb::ParticleComponent* _EngineLeft;
     pb::ParticleComponent* _EngineRight;
@@ -97,6 +103,9 @@ private:
     bool _GrappleActive;
     int _PlayerId;
     float _Tilt;
+    
+    float _HullTime;
+    float _ShieldTime;
     
     MountInfo _LeftMount;
     MountInfo _MissileMount;

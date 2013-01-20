@@ -11,5 +11,6 @@ enum GraphicLayers
     kGraphicLayerProjectiles=5,
 	kGraphicLayerExplosions=6,
     kGraphicLayerPhysicsDebug=7,
-    kGraphicLayerUi=8,
+    kGraphicLayerShield=8,
+    kGraphicLayerUi=9,
 };

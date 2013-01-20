@@ -38,6 +38,30 @@ private:
     HealthType _HealthType;
 };
 
+class HullHitMessage : public pb::Message
+{
+public:
+    HullHitMessage(pb::Entity* entity);
+    ~HullHitMessage();
+    
+    pb::Uid GetType() const;
+    static pb::Uid GetStaticType();
+    
+private:
+};
+
+class ShieldsHitMessage : public pb::Message
+{
+public:
+    ShieldsHitMessage(pb::Entity* entity);
+    ~ShieldsHitMessage();
+    
+    pb::Uid GetType() const;
+    static pb::Uid GetStaticType();
+    
+private:
+};
+
 class HealthDepletedMessage : public pb::Message
 {
 public:

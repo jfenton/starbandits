@@ -264,18 +264,27 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     , _GrappleActive(false)
     , _PlayerId(playerId)
     , _Tilt(0)
+    , _ShieldTime(0)
+    , _HullTime(0)
 {
     new pb::BasicTransformComponent(this);
     
-    pb::ModelComponent* model = new pb::ModelComponent(this,
+    _Ship = new pb::ModelComponent(this,
                            pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
                            pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship_DIFF"));
-    model->SetLayer(kGraphicLayerPlayer);
-    model->SetShader(Game::Instance()->GetLitShader());
+    _Ship->SetLayer(kGraphicLayerPlayer);
+    _Ship->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
     
     physics->GetBody()->SetAngularDamping(0.9f);
+    
+    _Shield = new pb::ModelComponent(this,
+                                     pb::Engine::Instance()->GetModelRenderer()->GetModel("shield"),
+                                     pb::Engine::Instance()->GetModelRenderer()->GetTexture("shield_DIFF"));
+    _Shield->SetLayer(kGraphicLayerShield);
+    _Shield->SetAlphaBlend(true);
+    _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(0.6,0,0)), glm::vec3(1.2,1.2,1.2)));
     
     _Input = new PlayerJoystickInput(_PlayerId);
 //    _Input = new PlayerKeyboardInput();
@@ -305,11 +314,15 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     SetupEngineParticle(_EngineMain, glm::vec3(0.f, -1.f, 0.f), 1.f);
     SetupEngineParticle(_EngineRight, glm::vec3(1.f, -1.f, 0.f), 0.5f);
     
+    RegisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
+    RegisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
 
 PlayerShip::~PlayerShip()
 {
+    UnregisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
+    UnregisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
     
     delete _Input;
@@ -323,6 +336,16 @@ pb::Uid PlayerShip::GetType() const
 pb::Uid PlayerShip::GetStaticType()
 {
     return pb::TypeHash("PlayerShip");
+}
+
+void PlayerShip::OnHullHit(const pb::Message& message)
+{
+    _HullTime = 1.f;
+}
+
+void PlayerShip::OnShieldsHit(const pb::Message& message)
+{
+    _ShieldTime = 1.f;
 }
 
 void PlayerShip::OnUpdate(const pb::Message& message)
@@ -486,6 +509,12 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         engineRight->Definition->StartSpeed.Set(30.f * rotateThruster, 30.f * rotateThruster);
         engineRight->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
     }
+    
+    _ShieldTime = glm::max(_ShieldTime-updateMessage.GetDelta(), 0.f);
+    _Shield->SetTint(glm::vec4(1,1,1,glm::clamp(_ShieldTime*3.f, 0.f, 1.f)));
+    
+    _HullTime = glm::max(_HullTime-updateMessage.GetDelta(), 0.f);
+    _Ship->SetTint(glm::vec4(1, 0.5 + glm::clamp((1.f-_HullTime), 0.f, 0.5f), glm::clamp((1.f-_HullTime), 0.f, 1.f), 1.f));
 }
 
 float PlayerShip::GetEnergy()
@@ -580,5 +609,4 @@ void PlayerShip::SetupEngineParticle(pb::ParticleComponent* particleComponent, g
     scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.f), glm::vec2(0.1,0)));
     engineDefinition->ModifierScale = scaleValue;
     engineDefinition->Emitter = emitter;
-
 }
