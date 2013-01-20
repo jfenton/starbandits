@@ -36,6 +36,7 @@ LaserComponent::LaserComponent(pb::Entity* entity, PlayerInput* input, const Mou
 
 LaserComponent::~LaserComponent()
 {
+    GetParent()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnTransformChanged));
     GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
 }
@@ -62,7 +63,7 @@ void LaserComponent::OnUpdate(const pb::Message& message)
     PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
     
     _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
-    if (_Input->_Firing)
+    if (_MountInfo.IsLeft ? _Input->_FiringLeft : _Input->_FiringRight)
     {
         if (_FiringDelay <= 0.f)
         {
@@ -76,7 +77,7 @@ void LaserComponent::OnUpdate(const pb::Message& message)
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
+                new Projectile(GetScene(), kHealthTypePlayer, Projectile::kBehaviourTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
                 ship->RemoveEnergy(energyCost);
             }
             

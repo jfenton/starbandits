@@ -76,7 +76,7 @@ void Turret::OnUpdate(const pb::Message& message)
     
     if (_ShootTimer <= 0.f)
     {
-        new Projectile(GetScene(), kHealthTypeEnemy, position, body->GetTransform().q.GetAngle(), 10.f, 20.f);
+        new Projectile(GetScene(), kHealthTypeEnemy, Projectile::kBehaviourTypeLaser, position, body->GetTransform().q.GetAngle(), 10.f, 20.f);
         _ShootTimer = 0.5f;
     }
 }

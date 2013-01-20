@@ -21,11 +21,9 @@ public:
     glm::vec2 _Thrust;
     glm::vec2 _GrappleDirection;
     
-    bool _Firing;
-    bool _WasFiring;
-    
-    bool _Grapple;
-    
+    bool _FiringLeft;
+    bool _FiringRight;
+
     bool _BarrelLeft;
     bool _BarrelRight;
     
@@ -40,6 +38,14 @@ public:
     
     virtual bool OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
     virtual bool OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
+    
+private:
+    void UpdateThrust();
+    
+    bool _KeyLeft;
+    bool _KeyRight;
+    bool _KeyUp;
+    bool _KeyDown;
 };
 
 class PlayerJoystickInput : public PlayerInput, public pb::JoystickHandler
@@ -92,5 +98,6 @@ private:
     float _Tilt;
     
     MountInfo _LeftMount;
+    MountInfo _MissileMount;
     MountInfo _RightMount;
 };

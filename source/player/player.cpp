@@ -54,13 +54,17 @@ PlayerInput::PlayerInput()
     : _BarrelLeft(false)
     , _BarrelRight(false)
     , _Boost(false)
-    , _Firing(false)
-    , _Grapple(false)
+    , _FiringLeft(false)
+    , _FiringRight(false)
 {
     
 }
 
 PlayerKeyboardInput::PlayerKeyboardInput()
+    : _KeyLeft(false)
+    , _KeyRight(false)
+    , _KeyUp(false)
+    , _KeyDown(false)
 {
     pb::Engine::Instance()->GetKeyboardManager()->AddHandler(this);
 }
@@ -77,24 +81,27 @@ bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifi
         switch (character)
         {
             case 'w':
-                _Thrust.y = 1.f;
+                _KeyUp = true;
                 break;
             case 'a':
-                _Thrust.x = -1.f;
+                _KeyLeft = true;
                 break;
             case 'd':
-                _Thrust.x = 1.f;
+                _KeyRight = true;
                 break;
             case 's':
-                _Thrust.y = -1.f;
+                _KeyDown = true;
+                break;
+            case 'o':
+                _FiringLeft = true;
+                break;
+            case 'p':
+                _FiringRight = true;
                 break;
         }
     }
     
-    if (key == pb::kKeyboardKeySpace)
-    {
-        _Firing = true;
-    }
+    UpdateThrust();
     
     return false;
 }
@@ -107,26 +114,38 @@ bool PlayerKeyboardInput::OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier
         switch (character)
         {
             case 'w':
-                _Thrust.y = 0.f;
+                _KeyUp = false;
                 break;
             case 'a':
-                _Thrust.x = 0.f;
+                _KeyLeft = false;
                 break;
             case 'd':
-                _Thrust.x = 0.f;
+                _KeyRight = false;
                 break;
             case 's':
-                _Thrust.y = 0.f;
+                _KeyDown = false;
+                break;
+            case 'o':
+                _FiringLeft = false;
+                break;
+            case 'p':
+                _FiringRight = false;
                 break;
         }
     }
     
-    if (key == pb::kKeyboardKeySpace)
-    {
-        _Firing = false;
-    }
+    UpdateThrust();
     
     return false;
+}
+
+void PlayerKeyboardInput::UpdateThrust()
+{
+    _Thrust.x = (_KeyLeft ? -1.f : 0.f) + (_KeyRight ? 1.f : 0.f);
+    _Thrust.y = (_KeyUp ? 1.f : 0.f) + (_KeyDown ? -1.f : 0.f);
+    
+    if (glm::length(_Thrust) > 0.f)
+        _Thrust = glm::normalize(_Thrust);
 }
 
 PlayerJoystickInput::PlayerJoystickInput(int playerId)
@@ -184,9 +203,9 @@ bool PlayerJoystickInput::OnAxisChanged(int joystick, int stick, int axis, float
     } else if (stick == 2)
     {
         if (axis == 0)
-            _Grapple = (value > 0);
+            _FiringLeft = (value > 0);
         if (axis == 1)
-            _Firing = (value > 0);
+            _FiringRight = (value > 0);
     }
     
     return false;
@@ -257,16 +276,22 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     _Input = new PlayerJoystickInput(_PlayerId);
 //    _Input = new PlayerKeyboardInput();
     
+    _LeftMount.IsLeft = false;
     _LeftMount.Offset = glm::vec3(-0.61, 0, -0.16);
     _LeftMount.Rotation = glm::vec3(0, 0, -15.f);
     
+    _RightMount.IsLeft = false;
     _RightMount.Offset = glm::vec3(0.7, 0, -0.16);
     _RightMount.Rotation = glm::vec3(0, 0, 15.f);
+    
+    _MissileMount.IsLeft = true;
+    _MissileMount.Offset = glm::vec3(0.7, 0, -0.16);
+    _MissileMount.Rotation = glm::vec3(0,0,15.f);
     
     new HealthComponent(this, kHealthTypePlayer, 50.f, 10.f);
     new LaserComponent(this, _Input, _LeftMount);
     new LaserComponent(this, _Input, _RightMount);
-//    new MissileComponent(this, _Input, _RightMount);
+    new MissileComponent(this, _Input, _MissileMount);
     
     _EngineMain = new pb::ParticleComponent(this);
     _EngineLeft = new pb::ParticleComponent(this);
