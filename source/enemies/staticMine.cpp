@@ -1,5 +1,6 @@
 #include "Box2D/Box2D.h"
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/random.hpp"
 
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
@@ -24,7 +25,7 @@ StaticMine::StaticMine(pb::Scene* scene, glm::vec2 position)
     float size = 1.f;
     
     _DetectDistance = 10.f;
-    _Rotation = 0.f;
+    _Rotation = glm::linearRand(0.f, 360.f);
     
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
@@ -79,6 +80,10 @@ void StaticMine::OnUpdate(const pb::Message& message)
         
         GetComponentByType<pb::ModelComponent>()->SetLocalTransform(glm::rotate(glm::mat4x4(), _Rotation, glm::normalize(glm::vec3(0.2, 0.4, 0.1))));
     } else {
+        _Rotation += updateMessage.GetDelta() * 30.f;
+        
+        GetComponentByType<pb::ModelComponent>()->SetLocalTransform(glm::rotate(glm::mat4x4(), _Rotation, glm::normalize(glm::vec3(0.2, 0.4, 0.1))));
+        
         glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
         
         pb::Scene::EntityMap entityMap = GetScene()->GetEntitiesByType<PlayerShip>();
