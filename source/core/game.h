@@ -8,6 +8,13 @@ namespace pb
 }
 
 class GameScreen;
+class MenuScreen;
+
+enum GameMode
+{
+	kGameModeGame,
+	kGameModeMenu,
+};
 
 class Game : public pb::Engine
 {
@@ -20,10 +27,16 @@ public:
     virtual void Update(float time);
     virtual void Render();
     
+    void SetMode(GameMode mode);
+    
     GameScreen* GetGameScreen();
+    MenuScreen* GetMenuScreen();
     
     pb::Shader* GetLitShader();
     
 private:
     GameScreen* _GameScreen;
+    MenuScreen* _MenuScreen;
+    
+    GameMode _Mode;
 };

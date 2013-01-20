@@ -2,9 +2,6 @@
 #include "pixelboost/graphics/camera/camera.h"
 #include "pixelboost/graphics/camera/viewport.h"
 #include "pixelboost/graphics/device/device.h"
-#include "pixelboost/graphics/renderer/common/renderer.h"
-#include "pixelboost/graphics/renderer/model/modelRenderer.h"
-#include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
 #include "pixelboost/graphics/shader/manager.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/system/debug/render.h"
@@ -15,6 +12,7 @@
 #include "background/background.h"
 #include "background/planet.h"
 #include "common/layers.h"
+#include "core/game.h"
 #include "enemies/asteroid.h"
 #include "enemies/homingMine.h"
 #include "enemies/staticMine.h"
@@ -41,7 +39,7 @@ void GameScreen::Update(float time)
 {
     _Scene->Update(time);
     
-    _Camera->Position.y = pb::Engine::Instance()->GetGameTime() * 4.f;
+    _Camera->Position.y += time * 4.f;
     _Background->GetComponentByType<pb::TransformComponent>()->SetPosition(_Camera->Position);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
@@ -74,6 +72,13 @@ void GameScreen::Update(float time)
             ++it;
         }
     }
+    
+    pb::Scene::EntityMap players = _Scene->GetEntitiesByType<PlayerShip>();
+    
+    if (players.size() == 0)
+    {
+        Game::Instance()->SetMode(kGameModeMenu);
+    }
 }
 
 void GameScreen::SetActive(bool active)
@@ -82,32 +87,7 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
-        pb::Engine::Instance()->GetFontRenderer()->LoadFont(pb::kFileLocationBundle, "font", "/data/fonts/font");
-        
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "skybox", "/data/models/skybox.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "stealthBomber", "/data/models/stealthBomber.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "turret", "/data/models/turret.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship", "/data/models/ship.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_01", "/data/models/asteroid01.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_02", "/data/models/asteroid02.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_03", "/data/models/asteroid03.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "asteroid_04", "/data/models/asteroid04.mdl");
-        pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "weapon_laser", "/data/models/weapon_laser.mdl");
-
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "asteroid", "/data/models/asteroid.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "skybox", "/data/models/skybox.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship_DIFF", "/data/models/ship_DIFF.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_DIFF", "/data/models/staticMine_DIFF.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_armed_DIFF", "/data/models/staticMine_armed_DIFF.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "stealthBomber_DIFF", "/data/models/stealthBomber_DIFF.png");
-        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "grey", "/data/models/grey.png");
-        
-        pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
-        
-        pb::Renderer::Instance()->GetShaderManager()->LoadShader("/data/shaders/texturedLit.shc");
-        
+        _CurrentY = 0.f;
         _Camera = new pb::PerspectiveCamera();
         _Camera->FieldOfView = 45.f;
         _Camera->Position.z = 50.f;
@@ -119,7 +99,7 @@ void GameScreen::SetActive(bool active)
         _Scene->AddSystem(new pb::PhysicsSystem2D(glm::vec2(0,0)));
         _Scene->AddSystem(new pb::DebugRenderSystem());
         
-        _Player = new PlayerShip(_Scene, 0);
+        new PlayerShip(_Scene, 0);
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
         
         new Planet(_Scene, glm::vec3(-36, 350, -500), 12.5);
@@ -138,7 +118,14 @@ void GameScreen::SetActive(bool active)
         DestroyViewport(_Viewport);
         _Viewport = 0;
         
+        for (std::vector<LevelSegment*>::iterator it = _Segments.begin(); it != _Segments.end(); ++it)
+        {
+            delete *it;
+        }
+        _Segments.clear();
+
         delete _Camera;
+        delete _Scene;
     }
 }
 

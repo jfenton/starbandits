@@ -65,6 +65,11 @@ set (LEVEL_SOURCES
 	"source/level/levelSegment.h"
 	)
 
+set (MENU_SOURCES
+	"source/menu/menuItem.cpp"
+	"source/menu/menuItem.h"
+	)
+
 set (PLAYER_WEAPON_SOURCES
 	"source/player/weapon/laser.cpp"
 	"source/player/weapon/laser.h"
@@ -84,6 +89,8 @@ set (PLAYER_SOURCES
 set (SCREENS_SOURCES
 	"source/screens/game.cpp"
 	"source/screens/game.h"
+	"source/screens/menu.cpp"
+	"source/screens/menu.h"
 	)
 
 set (UI_SOURCES
@@ -98,6 +105,7 @@ set (GAME_SOURCES
 	${ENEMY_SOURCES}
 	${GAMEPLAY_SOURCES}
 	${LEVEL_SOURCES}
+	${MENU_SOURCES}
 	${PLAYER_WEAPON_SOURCES}
 	${PLAYER_SOURCES}
 	${SCREENS_SOURCES}
@@ -110,6 +118,7 @@ source_group (database FILES ${DATABASE_SOURCES})
 source_group (enemies FILES ${ENEMY_SOURCES})
 source_group (gameplay FILES ${GAMEPLAY_SOURCES})
 source_group (level FILES ${LEVEL_SOURCES})
+source_group (menu FILES ${MENU_SOURCES})
 source_group (player\\weapon FILES ${PLAYER_WEAPON_SOURCES})
 source_group (player FILES ${PLAYER_SOURCES})
 source_group (screens FILES ${SCREENS_SOURCES})

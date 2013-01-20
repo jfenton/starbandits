@@ -33,7 +33,6 @@ private:
     float _CurrentY;
     
     BackgroundTile* _Background;
-    PlayerShip* _Player;
     
     std::vector<LevelSegment*> _Segments;
 };
