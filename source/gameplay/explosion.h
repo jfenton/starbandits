@@ -17,4 +17,5 @@ public:
 private:
     float _Power;
     float _Size;
+    float _Time;
 };

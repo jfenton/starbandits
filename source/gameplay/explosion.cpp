@@ -1,3 +1,6 @@
+#include "glm/gtc/matrix_transform.hpp"
+
+#include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/logic/component/graphics/ellipse.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
@@ -12,21 +15,33 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     : pb::Entity(scene, 0)
     , _Power(power)
     , _Size(0)
+    , _Time(0)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
-    
-    pb::EllipseComponent* ellipse = new pb::EllipseComponent(this);
-    ellipse->SetSize(glm::vec2(0,0));
-    ellipse->SetSolid(true);
-    ellipse->SetColor(glm::vec4(205.f/255.f,112.f/255.f,6.f/255.f,1));
-    ellipse->SetLayer(kGraphicLayerExplosions);
     
     new DamageComponent(this, kHealthTypeNone, 5.f);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Power/2.f, _Power/2.f));
 
     physics->SetSensor(true);
+    
+    pb::ParticleComponent* particleComponent = new pb::ParticleComponent(this);
+    particleComponent->SetLayer(kGraphicLayerExplosions);
+    
+    pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
+    pb::ParticleDefinitionEmitterCone* emitter = new pb::ParticleDefinitionEmitterCone();
+    emitter->EmitCount = 5.f;
+    emitter->EmitSpeed = 30.f;
+    emitter->Range = 180.f;
+    engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("engine");
+    engineDefinition->StartLife.Set(0.25f, 0.5f);
+    engineDefinition->StartSpeed.Set(0.5f, 1.f);
+    pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,7.5f), glm::vec2(0.5,0)));
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.3f), glm::vec2(0.1,0)));
+    engineDefinition->ModifierScale = scaleValue;
+    engineDefinition->Emitter = emitter;
     
     RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Explosion::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Explosion::OnUpdate));
@@ -58,9 +73,16 @@ void Explosion::OnUpdate(const pb::Message& message)
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
     _Size += (updateMessage.GetDelta()*15.f);
-    
-    GetComponentByType<pb::EllipseComponent>()->SetSize(glm::vec2(_Size, _Size));
+    _Time += updateMessage.GetDelta();
     
     if (_Size > _Power)
+    {
+        _Size = _Power;
+        DestroyComponent(GetComponentByType<pb::PhysicsBody2DComponent>());
+    }
+    
+    if (_Time > 3.f)
+    {
         Destroy();
+    }
 }

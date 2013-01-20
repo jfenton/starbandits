@@ -106,7 +106,6 @@ bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifi
     return false;
 }
 
-
 bool PlayerKeyboardInput::OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character)
 {
     if (key == pb::kKeyboardKeyCharacter)
@@ -471,15 +470,15 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     engineLeft->Definition->Emitter->EmitSpeed = 0.f;
     engineRight->Definition->Emitter->EmitSpeed = 0.f;
     
-    float rotateThruster = glm::clamp(prevRotation - rotation, -5.f, 5.f) * 5.f;
+    float rotateThruster = glm::clamp(prevRotation - rotation, -2.f, 2.f) * 5.f;
     if (rotateThruster > 0.f)
     {
         engineLeft->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
-        engineLeft->Definition->StartSpeed.Set(-50.f * rotateThruster, -50.f * rotateThruster);
+        engineLeft->Definition->StartSpeed.Set(-30.f * rotateThruster, -30.f * rotateThruster);
         engineLeft->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
     } else {
         engineRight->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
-        engineRight->Definition->StartSpeed.Set(50.f * rotateThruster, 50.f * rotateThruster);
+        engineRight->Definition->StartSpeed.Set(30.f * rotateThruster, 30.f * rotateThruster);
         engineRight->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
     }
 }

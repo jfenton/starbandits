@@ -3,6 +3,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "pixelboost/framework/engine.h"
+#include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
@@ -29,34 +30,49 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
     transform->SetRotation(glm::vec3(0,0,glm::degrees(rotation)));
     transform->SetPosition(position);
     
-    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "");
-    if (healthType == kHealthTypeEnemy)
+    if (_Type == kProjectileTypeHoming)
     {
-        if (_Type == kProjectileTypeHoming)
-        {
-            sprite->SetSprite("missile_04");
+        pb::ParticleComponent* particleComponent = new pb::ParticleComponent(this);
+        particleComponent->SetLayer(kGraphicLayerProjectiles);
+        
+        pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
+        pb::ParticleDefinitionEmitterCone* emitter = new pb::ParticleDefinitionEmitterCone();
+        emitter->EmitCount = -1.f;
+        emitter->EmitSpeed = 90.f;
+        emitter->Range = 180.f;
+        if (healthType == kHealthTypeEnemy) {
+            engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("missile_04");
         } else {
-            sprite->SetSprite("laser_red");
+            engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("missile_03");
         }
+        engineDefinition->StartLife.Set(0.1f, 0.2f);
+        engineDefinition->StartSpeed.Set(speed*0.5f, speed*1.f);
+        pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,1.f), glm::vec2(0.5,0)));
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.7f), glm::vec2(0.1,0)));
+        engineDefinition->ModifierScale = scaleValue;
+        engineDefinition->Emitter = emitter;
     } else {
-        if (_Type == kProjectileTypeHoming)
+        pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "");
+        if (healthType == kHealthTypeEnemy)
         {
-            sprite->SetSprite("missile_01");
+            sprite->SetSprite("laser_red");
         } else {
             sprite->SetSprite("laser_green");
         }
+        
+        glm::mat4x4 spriteTransform;
+        spriteTransform = glm::translate(spriteTransform, glm::vec3(0,1,0));
+        spriteTransform = glm::rotate(spriteTransform, -90.f, glm::vec3(0,0,1));
+
+        if (healthType == kHealthTypeEnemy)
+        {
+            spriteTransform = glm::scale(spriteTransform, glm::vec3(1.5,1.5,1));
+        }
+        
+        sprite->SetLocalTransform(spriteTransform);
+        sprite->SetLayer(kGraphicLayerProjectiles);
     }
-    glm::mat4x4 spriteTransform;
-    spriteTransform = glm::translate(spriteTransform, glm::vec3(0,1,0));
-    spriteTransform = glm::rotate(spriteTransform, -90.f, glm::vec3(0,0,1));
-    
-    if (healthType == kHealthTypeEnemy)
-    {
-        spriteTransform = glm::scale(spriteTransform, glm::vec3(1.5,1.5,1));
-    }
-    
-    sprite->SetLocalTransform(spriteTransform);
-    sprite->SetLayer(kGraphicLayerProjectiles);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.08,0.4));
     physics->SetSensor(true);
