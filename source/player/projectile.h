@@ -10,17 +10,17 @@ namespace pb
     class Scene;
 }
 
+enum ProjectileType
+{
+    kProjectileTypeLaser,
+    kProjectileTypeBeam,
+    kProjectileTypeHoming,
+};
+
 class Projectile : public pb::Entity
 {
 public:
-	enum BehaviourType
-	{
-		kBehaviourTypeLaser,
-        kBehaviourTypeBeam,
-		kBehaviourTypeHoming,
-	};
-
-    Projectile(pb::Scene* scene, HealthType healthType, BehaviourType behaviour, glm::vec3 position, float rotation, float speed, float damage);
+	Projectile(pb::Scene* scene, HealthType healthType, ProjectileType behaviour, glm::vec3 position, float rotation, float speed, float damage);
     ~Projectile();
     
 public:
@@ -31,11 +31,11 @@ private:
     void OnCollision(const pb::Message& message);
     void OnUpdate(const pb::Message& message);
     
-    void UpdateBehaviour();
+    void UpdateProjectile();
     void SetTarget();
     
 private:
-    BehaviourType _Behaviour;
+    ProjectileType _Type;
     float _Life;
     float _Speed;
     pb::Uid _Target;

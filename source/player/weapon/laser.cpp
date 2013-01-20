@@ -77,7 +77,7 @@ void LaserComponent::OnUpdate(const pb::Message& message)
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, Projectile::kBehaviourTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
+                new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
                 ship->RemoveEnergy(energyCost);
             }
             

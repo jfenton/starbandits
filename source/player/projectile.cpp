@@ -16,11 +16,12 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Projectile::Projectile(pb::Scene* scene, HealthType healthType, BehaviourType behaviour, glm::vec3 position, float rotation, float speed, float damage)
+Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType type, glm::vec3 position, float rotation, float speed, float damage)
     : pb::Entity(scene, 0)
-    , _Behaviour(behaviour)
     , _Life(2.f)
     , _Speed(speed)
+    , _Target(0)
+    , _Type(type)
 {
     new DamageComponent(this, healthType, damage);
     
@@ -31,9 +32,14 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, BehaviourType be
     pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "");
     if (healthType == kHealthTypeEnemy)
     {
-        sprite->SetSprite("laser_red");
+        if (_Type == kProjectileTypeHoming)
+        {
+            sprite->SetSprite("missile_04");
+        } else {
+            sprite->SetSprite("laser_red");
+        }
     } else {
-        if (behaviour == kBehaviourTypeHoming)
+        if (_Type == kProjectileTypeHoming)
         {
             sprite->SetSprite("missile_01");
         } else {
@@ -56,12 +62,12 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, BehaviourType be
     physics->SetSensor(true);
     physics->GetBody()->SetBullet(true);
     
-    if (_Behaviour == kBehaviourTypeLaser)
+    if (_Type == kProjectileTypeLaser)
     {
         physics->GetBody()->SetLinearVelocity(b2Vec2(cos(rotation+glm::radians(90.f))*speed, sin(rotation+glm::radians(90.f))*speed));
     }
     
-    if (_Behaviour == kBehaviourTypeHoming)
+    if (_Type == kProjectileTypeHoming)
     {
         _Life = 15.f;
         SetTarget();
@@ -94,8 +100,26 @@ void Projectile::OnCollision(const pb::Message& message)
     HealthComponent* health = collisionMessage.GetOtherComponent()->GetParent()->GetComponentByType<HealthComponent>();
     
     pb::Uid type = collisionMessage.GetOtherComponent()->GetParent()->GetType();
-    if (type == GetStaticType() || type == pb::TypeHash("Explosion"))
-        return;
+    
+    switch (_Type)
+    {
+        case kProjectileTypeLaser:
+        {
+            if (type == GetStaticType() || type == pb::TypeHash("Explosion"))
+                return;
+            break;
+        }
+        case kProjectileTypeHoming:
+        {
+            if (type == GetStaticType() && static_cast<Projectile*>(collisionMessage.GetOtherComponent()->GetParent())->_Type == kProjectileTypeHoming)
+                return;
+            break;
+        }
+        case kProjectileTypeBeam:
+        {
+            break;
+        }
+    }
     
     if (!health || GetComponentByType<DamageComponent>()->GetHealthType() != health->GetHealthType())
         Destroy();
@@ -110,20 +134,20 @@ void Projectile::OnUpdate(const pb::Message& message)
     if (_Life <= 0.f)
         Destroy();
     
-    UpdateBehaviour();
+    UpdateProjectile();
 }
 
-void Projectile::UpdateBehaviour()
+void Projectile::UpdateProjectile()
 {
-    switch (_Behaviour)
+    switch (_Type)
     {
-        case kBehaviourTypeLaser:
+        case kProjectileTypeLaser:
             break;
             
-        case kBehaviourTypeBeam:
+        case kProjectileTypeBeam:
             break;
             
-        case kBehaviourTypeHoming:
+        case kProjectileTypeHoming:
         {
             b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
             
@@ -146,7 +170,7 @@ void Projectile::UpdateBehaviour()
             if (glm::length(desiredDirection) > 0.f)
             {
                 float desiredRotation = glm::atan(desiredDirection.y, desiredDirection.x) - glm::radians(90.f);
-                float rotation = body->GetTransform().q.GetAngle();
+                float rotation = body->GetAngle();
                 
                 if (glm::distance(desiredRotation, rotation) > 3.14f)
                 {
@@ -189,9 +213,6 @@ void Projectile::SetTarget()
         if (!transform || !health)
             continue;
         
-        if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret"))
-            continue;
-        
         if (health->GetHealthType() == GetComponentByType<DamageComponent>()->GetHealthType())
             continue;
         
@@ -202,7 +223,7 @@ void Projectile::SetTarget()
         
         float distance = glm::distance(position, entityPosition);
                 
-        if (dot > 0 && glm::degrees(glm::acos(dot)) < 45.f && distance < closestTarget)
+        if (dot > 0 && glm::degrees(glm::acos(dot)) < 30.f && distance < closestTarget)
         {
             closestTarget = distance;
             _Target = it->first;

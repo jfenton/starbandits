@@ -99,6 +99,8 @@ void GameScreen::SetActive(bool active)
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "asteroid", "/data/models/asteroid.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "skybox", "/data/models/skybox.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship_DIFF", "/data/models/ship_DIFF.png");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_DIFF", "/data/models/staticMine_DIFF.png");
+        pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_armed_DIFF", "/data/models/staticMine_armed_DIFF.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "stealthBomber_DIFF", "/data/models/stealthBomber_DIFF.png");
         pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "grey", "/data/models/grey.png");
         

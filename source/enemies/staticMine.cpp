@@ -31,7 +31,7 @@ StaticMine::StaticMine(pb::Scene* scene, glm::vec2 position)
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("staticMine"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("grey"));
+                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("staticMine_DIFF"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
@@ -90,6 +90,8 @@ void StaticMine::OnUpdate(const pb::Message& message)
             if (glm::distance(position, playerPosition) < _DetectDistance)
             {
                 _Active = true;
+                
+                GetComponentByType<pb::ModelComponent>()->SetTexture(pb::Engine::Instance()->GetModelRenderer()->GetTexture("staticMine_armed_DIFF"));
             }
         }
     }

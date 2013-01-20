@@ -72,7 +72,7 @@ void LevelSegment::Create()
         
         if (it->second->GetType() == pb::TypeHash("Turret"))
         {
-            entity = new Turret(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
+            entity = new Turret(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset), rand()%2 ? kProjectileTypeHoming : kProjectileTypeLaser);
         }
         
         if (entity)

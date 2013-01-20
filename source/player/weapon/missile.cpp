@@ -74,7 +74,7 @@ void MissileComponent::OnUpdate(const pb::Message& message)
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, Projectile::kBehaviourTypeHoming, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 5.f, 75.f);
+                new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeHoming, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 5.f, 75.f);
                 ship->RemoveEnergy(energyCost);
             }
         }

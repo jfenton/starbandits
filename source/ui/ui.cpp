@@ -52,6 +52,9 @@ void GameUi::OnUpdate(const pb::Message& message)
     
     PlayerShip* ship = static_cast<PlayerShip*>(ships.begin()->second);
     
+    if (!ship)
+        return;
+    
     float energy = ship->GetEnergy();
     HealthComponent* health = ships.begin()->second->GetComponentByType<HealthComponent>();
 

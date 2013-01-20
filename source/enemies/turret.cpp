@@ -17,9 +17,10 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Turret::Turret(pb::Scene* scene, glm::vec2 position)
+Turret::Turret(pb::Scene* scene, glm::vec2 position, ProjectileType type)
     : pb::Entity(scene, 0)
     , _ShootTimer(0)
+    , _Type(type)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
@@ -70,14 +71,38 @@ void Turret::OnUpdate(const pb::Message& message)
     glm::vec3 position = transform->GetPosition();
     
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
-    body->SetTransform(body->GetPosition(), body->GetTransform().q.GetAngle() + updateMessage.GetDelta());
     
     _ShootTimer -= updateMessage.GetDelta();
     
+    glm::vec3 direction = GetNearestPlayer() - position;
+    
+    direction = glm::normalize(direction);
+    
+    if (glm::length(direction) > 0.f)
+    {
+        float desiredRotation = glm::atan(direction.y, direction.x) - glm::radians(90.f);
+        float rotation = body->GetAngle();
+        
+        if (glm::distance(desiredRotation, rotation) > 3.14f)
+        {
+            if (desiredRotation > rotation)
+            {
+                rotation += 3.14f*2.f;
+            } else {
+                desiredRotation += 3.14f*2.f;
+            }
+        }
+        
+        float rotateSpeed = 0.090f;
+        rotation = glm::mix(rotation, desiredRotation, rotateSpeed);
+        
+        body->SetTransform(body->GetPosition(), rotation);
+    }
+    
     if (_ShootTimer <= 0.f)
     {
-        new Projectile(GetScene(), kHealthTypeEnemy, Projectile::kBehaviourTypeLaser, position, body->GetTransform().q.GetAngle(), 10.f, 20.f);
-        _ShootTimer = 0.5f;
+        new Projectile(GetScene(), kHealthTypeEnemy, _Type, position, body->GetAngle(), _Type == kProjectileTypeHoming ? 1.f : 10.f, 20.f);
+        _ShootTimer = _Type == kProjectileTypeHoming ? 1.5f : 0.5f;
     }
 }
 
@@ -87,4 +112,19 @@ void Turret::OnHealthDepleted(const pb::Message& message)
     
     Destroy();
     new Explosion(GetScene(), glm::vec2(position.x, position.y), 3.f);
+}
+
+glm::vec3 Turret::GetNearestPlayer()
+{
+    for (pb::Scene::EntityMap::const_iterator it = GetScene()->GetEntities().begin(); it != GetScene()->GetEntities().end(); ++it)
+    {
+        if (it->second->GetType() != pb::TypeHash("PlayerShip"))
+            continue;
+        
+        pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+        
+        return transform->GetPosition();
+    }
+    
+    return glm::vec3(0,0,0);
 }

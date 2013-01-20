@@ -308,7 +308,7 @@ PlayerShip::~PlayerShip()
 {
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
     
-    //delete _Input;
+    delete _Input;
 }
 
 pb::Uid PlayerShip::GetType() const
@@ -337,7 +337,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
     
     float desiredRotation = glm::atan(_Input->_Thrust.y, _Input->_Thrust.x) - glm::radians(90.f);
-    float rotation = body->GetTransform().q.GetAngle();
+    float rotation = body->GetAngle();
     
     if (glm::distance(desiredRotation, rotation) > 3.14f)
     {

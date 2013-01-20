@@ -72,7 +72,7 @@ void StealthBomber::OnUpdate(const pb::Message& message)
     
     b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
     
-    float rotation = body->GetTransform().q.GetAngle() + updateMessage.GetDelta()*0.001f;
+    float rotation = body->GetAngle() + updateMessage.GetDelta()*0.001f;
     
     body->SetTransform(body->GetPosition(), rotation);
     

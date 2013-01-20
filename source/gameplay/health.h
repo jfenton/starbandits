@@ -1,6 +1,7 @@
 #pragma once
 
 #include "pixelboost/logic/component.h"
+#include "pixelboost/logic/message.h"
 
 enum HealthType
 {
