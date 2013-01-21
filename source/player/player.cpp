@@ -589,15 +589,19 @@ void PlayerShip::ProcessGameBounds()
 
 void PlayerShip::ProcessLighting()
 {
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->Bind();
+    pb::Shader* shader = pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc");
+    pb::ShaderPass* pass = shader->GetTechnique(pb::TypeHash("default"))->GetPass(0);
+    pass->Bind();
     
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[0]", glm::normalize(glm::vec3(g_LightA_X, g_LightA_Y, g_LightA_Z)));
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[1]", glm::normalize(glm::vec3(g_LightB_X, g_LightB_Y, g_LightB_Z)));
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightDirection[2]", glm::normalize(glm::vec3(g_LightC_X, g_LightC_Y, g_LightC_Z)));
+    pb::ShaderProgram* program = pass->GetShaderProgram();
+    
+    program->SetUniform("_LightDirection[0]", glm::normalize(glm::vec3(g_LightA_X, g_LightA_Y, g_LightA_Z)));
+    program->SetUniform("_LightDirection[1]", glm::normalize(glm::vec3(g_LightB_X, g_LightB_Y, g_LightB_Z)));
+    program->SetUniform("_LightDirection[2]", glm::normalize(glm::vec3(g_LightC_X, g_LightC_Y, g_LightC_Z)));
 
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[0]", glm::vec3(g_LightA_R, g_LightA_G, g_LightA_B)*(float)g_LightA_I);
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[1]", glm::vec3(g_LightB_R, g_LightB_G, g_LightB_B)*(float)g_LightB_I);
-    pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc")->GetTechnique(pb::TypeHash("default"))->GetPass(0)->GetShaderProgram()->SetUniform("_LightColor[2]", glm::vec3(g_LightC_R, g_LightC_G, g_LightC_B)*(float)g_LightC_I);
+    program->SetUniform("_LightColor[0]", glm::vec3(g_LightA_R, g_LightA_G, g_LightA_B)*(float)g_LightA_I);
+    program->SetUniform("_LightColor[1]", glm::vec3(g_LightB_R, g_LightB_G, g_LightB_B)*(float)g_LightB_I);
+    program->SetUniform("_LightColor[2]", glm::vec3(g_LightC_R, g_LightC_G, g_LightC_B)*(float)g_LightC_I);
 }
 
 void PlayerShip::SetupEngineParticle(pb::ParticleComponent* particleComponent, glm::vec3 position, float scale)

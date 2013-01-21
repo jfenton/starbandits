@@ -22,7 +22,7 @@
           {
               textureVarying = PB_Attr_Texture0;
 
-              normal = (PB_ModelViewMatrix * vec4(PB_Attr_Normal, 0.0)).xyz;
+              normal = normalize((PB_ModelViewMatrix * vec4(PB_Attr_Normal, 0.0)).xyz);
 
               gl_Position = PB_ProjectionMatrix * PB_ModelViewMatrix * vec4(PB_Attr_Position, 1.0);
           }
@@ -36,8 +36,8 @@
 
           void main()
           {
-              vec3 normalisedNormal = normalize(normal);
-              vec3 light;
+              highp vec3 normalisedNormal = normalize(normal);
+              highp vec3 light = vec3(0.0,0.0,0.0);
               for (int i=0; i<3; i++)
               {
                 light = light + _LightColor[i] * max(dot(_LightDirection[i], normalisedNormal), 0.0);
