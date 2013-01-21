@@ -39,6 +39,8 @@ Game::Game(void* viewController)
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "stealthBomber", "/data/models/stealthBomber.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "turret", "/data/models/turret.mdl");
+    pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "turret_homing", "/data/models/turret_homing.mdl");
+    pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "turret_laser", "/data/models/turret_laser.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship_01", "/data/models/ship_01.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "ship_02", "/data/models/ship_02.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "shield", "/data/models/shield.mdl");
@@ -58,6 +60,9 @@ Game::Game(void* viewController)
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_armed_DIFF", "/data/models/staticMine_armed_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "stealthBomber_DIFF", "/data/models/stealthBomber_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "grey", "/data/models/grey.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_weapons", "/data/models/turret_weapons.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_homing", "/data/models/turret_homing.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_laser", "/data/models/turret_laser.png");
     
     pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet(pb::kFileLocationBundle, "game", "jpa");
     
