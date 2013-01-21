@@ -6,14 +6,13 @@ namespace pb
 {
     class Message;
     class Scene;
-    class SpriteRenderable;
 }
 
-class BackgroundTile : public pb::Entity
+class BackgroundStars : public pb::Entity
 {
 public:
-    BackgroundTile(pb::Scene* scene, glm::vec2 position);
-    ~BackgroundTile();
+    BackgroundStars(pb::Scene* scene);
+    ~BackgroundStars();
     
 public:
     virtual pb::Uid GetType() const;

@@ -11,6 +11,7 @@
 #include "pixelboost/graphics/shader/manager.h"
 #include "pixelboost/graphics/shader/shader.h"
 #include "pixelboost/logic/component/graphics/model.h"
+#include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
 #include "pixelboost/logic/system/physics/2d/physics.h"
@@ -270,8 +271,8 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     new pb::BasicTransformComponent(this);
     
     _Ship = new pb::ModelComponent(this,
-                           pb::Engine::Instance()->GetModelRenderer()->GetModel("ship"),
-                           pb::Engine::Instance()->GetModelRenderer()->GetTexture("ship_DIFF"));
+                                   pb::Engine::Instance()->GetModelRenderer()->GetModel(playerId == 0 ? "ship_01" : "ship_02"),
+                                   pb::Engine::Instance()->GetModelRenderer()->GetTexture(playerId == 0 ? "ship_01_DIFF" : "ship_02_DIFF"));
     _Ship->SetLayer(kGraphicLayerPlayer);
     _Ship->SetShader(Game::Instance()->GetLitShader());
     
@@ -284,7 +285,11 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
                                      pb::Engine::Instance()->GetModelRenderer()->GetTexture("shield_DIFF"));
     _Shield->SetLayer(kGraphicLayerShield);
     _Shield->SetAlphaBlend(true);
-    _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(0.6,0,0)), glm::vec3(1.2,1.2,1.2)));
+    _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.6 : -0.6,0,0)), glm::vec3(1.2,1.2,1.2)));
+    
+    _SpriteShield = new pb::SpriteComponent(this, "shield");
+    _SpriteShield->SetLayer(kGraphicLayerSpriteShield);
+    _SpriteShield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.2 : -0.2,0,0)), glm::vec3(1.25,1.25,1.25)));
     
     _Input = new PlayerJoystickInput(_PlayerId);
 //    _Input = new PlayerKeyboardInput();
@@ -509,6 +514,8 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         engineRight->Definition->StartSpeed.Set(30.f * rotateThruster, 30.f * rotateThruster);
         engineRight->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
     }
+    
+    _SpriteShield->SetTint(glm::vec4(1.f,1.f,1.f,GetComponentByType<HealthComponent>()->GetShields()/10.f));
     
     _ShieldTime = glm::max(_ShieldTime-updateMessage.GetDelta(), 0.f);
     _Shield->SetTint(glm::vec4(1,1,1,glm::clamp(_ShieldTime*3.f, 0.f, 1.f)));

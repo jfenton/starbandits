@@ -11,6 +11,7 @@
 
 #include "background/background.h"
 #include "background/planet.h"
+#include "background/stars.h"
 #include "common/layers.h"
 #include "core/game.h"
 #include "enemies/asteroid.h"
@@ -105,6 +106,7 @@ void GameScreen::SetActive(bool active)
         }
         
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
+        new BackgroundStars(_Scene);
         
         new Planet(_Scene, "planet", glm::vec3(-36, 350, -500), 12.5);
         new Planet(_Scene, "moon", glm::vec3(-90, 150, -501), 12.5);

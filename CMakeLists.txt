@@ -12,6 +12,8 @@ set (BACKGROUND_SOURCES
 	"source/background/background.h"
 	"source/background/planet.cpp"
 	"source/background/planet.h"
+	"source/background/stars.cpp"
+	"source/background/stars.h"
 )
 
 set (CORE_SOURCES

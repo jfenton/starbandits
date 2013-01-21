@@ -12,6 +12,7 @@ namespace pb
     class ModelComponent;
     class ParticleComponent;
     class Scene;
+    class SpriteComponent;
 }
 
 class PlayerInput
@@ -93,6 +94,7 @@ private:
     
     pb::ModelComponent* _Ship;
     pb::ModelComponent* _Shield;
+    pb::SpriteComponent* _SpriteShield;
     
     pb::ParticleComponent* _EngineMain;
     pb::ParticleComponent* _EngineLeft;
