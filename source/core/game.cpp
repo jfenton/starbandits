@@ -1,3 +1,4 @@
+#include "pixelboost/audio/soundManager.h"
 #include "pixelboost/db/database.h"
 #include "pixelboost/graphics/renderer/common/renderer.h"
 #include "pixelboost/graphics/renderer/font/fontRenderer.h"
@@ -65,6 +66,7 @@ Game::Game(void* viewController)
     _Mode = kGameModeMenu;
     _MenuScreen->SetActive(true);
 
+    pb::SoundManager::Instance()->PlayBgm("music.m4a", true);
 }
 
 Game::~Game()
