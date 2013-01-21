@@ -50,6 +50,9 @@ void GameUi::OnUpdate(const pb::Message& message)
     
     pb::Scene::EntityMap ships = GetScene()->GetEntitiesByType<PlayerShip>();
     
+    if (!ships.size())
+        return;
+    
     PlayerShip* ship = static_cast<PlayerShip*>(ships.begin()->second);
     
     if (!ship)
