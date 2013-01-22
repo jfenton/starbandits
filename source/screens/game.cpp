@@ -45,32 +45,48 @@ void GameScreen::Update(float time)
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
-    float currentSegmentLength = 0.f;
-    
-    if (_Segments.size())
-    {
-        currentSegmentLength = _Segments[_Segments.size()-1]->GetLength();
-    }
-    
     if (_Camera->Position.y > _CurrentY - (720.f/32.f)*2.f)
     {
-        LevelSegment* levelSegment = new LevelSegment(_Scene, _CurrentY);
-        levelSegment->Create();
-        _Segments.push_back(levelSegment);
+        if (_LevelSegment)
+        {
+            delete _LevelSegment;
+        }
         
-        _CurrentY = _CurrentY + levelSegment->GetLength();
+        _LevelSegment = new LevelSegment(_Scene, _CurrentY);
         
-        printf("Creating segment cam %f, current y %f, segment %f (%lu segments)\n", _Camera->Position.y, _CurrentY, levelSegment->GetLength(), _Segments.size());
+        _CurrentY = _CurrentY + _LevelSegment->GetLength();
     }
     
-    for (std::vector<LevelSegment*>::iterator it = _Segments.begin(); it != _Segments.end();)
+    if (_LevelSegment)
     {
-        if (!(*it)->Cleanup(_Camera->Position.y - 1024.f/32.f, GetArenaBounds()))
+        pb::Uid entityId = _LevelSegment->Create();
+        
+        if (!entityId)
         {
-            delete *it;
-            it = _Segments.erase(it);
-        } else {
-            ++it;
+            delete _LevelSegment;
+            _LevelSegment = 0;
+        }
+    }
+    
+    for (pb::Scene::EntityMap::const_iterator it = _Scene->GetEntities().begin(); it != _Scene->GetEntities().end(); ++it)
+    {
+        pb::Entity* entity = it->second;
+        
+        pb::Uid type = it->second->GetType();
+        
+        if (type == PlayerShip::GetStaticType() || type == Planet::GetStaticType() || type == BackgroundStars::GetStaticType() || type == GameUi::GetStaticType())
+            continue;
+        
+        pb::TransformComponent* transform = entity->GetComponentByType<pb::TransformComponent>();
+        
+        if (!transform)
+            continue;
+        
+        glm::vec3 position = transform->GetPosition();
+        
+        if (position.y < _Camera->Position.y - 1024.f/32.f || position.x < -GetArenaBounds()[2]-5.f || position.x > GetArenaBounds()[2]+5.f)
+        {
+            entity->Destroy();
         }
     }
     
@@ -88,7 +104,8 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
-        _CurrentY = 0.f;
+        _LevelSegment = 0;
+        _CurrentY = 50.f;
         _Camera = new pb::PerspectiveCamera();
         _Camera->FieldOfView = 45.f;
         _Camera->Position.z = 50.f;
@@ -125,12 +142,12 @@ void GameScreen::SetActive(bool active)
         DestroyViewport(_Viewport);
         _Viewport = 0;
         
-        for (std::vector<LevelSegment*>::iterator it = _Segments.begin(); it != _Segments.end(); ++it)
+        if (_LevelSegment)
         {
-            delete *it;
+            delete _LevelSegment;
+            _LevelSegment = 0;
         }
-        _Segments.clear();
-
+        
         delete _Camera;
         delete _Scene;
     }

@@ -35,6 +35,8 @@ LevelSegment::LevelSegment(pb::Scene* scene, float offset)
     _Record = pb::Database::Instance()->OpenRecord(recordId);
     
     _Record->GetData<LevelSegmentDefinition>();
+    
+    _EntityIt = _Record->GetEntities().begin();
 }
 
 LevelSegment::~LevelSegment()
@@ -42,69 +44,43 @@ LevelSegment::~LevelSegment()
     
 }
 
-void LevelSegment::Create()
+pb::Uid LevelSegment::Create()
 {
     const pb::DbRecord::EntityMap& entities = _Record->GetEntities();
     
-    for (pb::DbRecord::EntityMap::const_iterator it = entities.begin(); it != entities.end(); ++it)
+    if (_EntityIt == _Record->GetEntities().end())
+        return 0;
+    
+    pb::Entity* entity = 0;
+    
+    glm::vec2 position(_EntityIt->second->GetPosition().x, _EntityIt->second->GetPosition().y + _Offset);
+    
+    if (_EntityIt->second->GetType() == pb::TypeHash("Asteroid"))
     {
-        pb::Entity* entity = 0;
-        
-        if (it->second->GetType() == pb::TypeHash("Asteroid"))
-        {
-            entity = new Asteroid(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
-        }
-        
-        if (it->second->GetType() == pb::TypeHash("HomingMine"))
-        {
-            entity = new HomingMine(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
-        }
-        
-        if (it->second->GetType() == pb::TypeHash("StaticMine"))
-        {
-            entity = new StaticMine(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
-        }
-
-        if (it->second->GetType() == pb::TypeHash("StealthBomber"))
-        {
-            entity = new StealthBomber(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset));
-        }
-        
-        if (it->second->GetType() == pb::TypeHash("Turret"))
-        {
-            entity = new Turret(_Scene, glm::vec2(it->second->GetPosition().x, it->second->GetPosition().y + _Offset), rand()%2 ? kProjectileTypeHoming : kProjectileTypeLaser);
-        }
-        
-        if (entity)
-            _Ids.push_back(entity->GetUid());
+        entity = new Asteroid(_Scene, position);
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("HomingMine"))
+    {
+        entity = new HomingMine(_Scene, position);
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("StaticMine"))
+    {
+        entity = new StaticMine(_Scene, position);
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("StealthBomber"))
+    {
+        entity = new StealthBomber(_Scene, position);
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("Turret"))
+    {
+        entity = new Turret(_Scene, position, rand()%2 ? kProjectileTypeHoming : kProjectileTypeLaser);
     }
+    
+    _EntityIt++;
+        
+    if (entity)
+        return entity->GetUid();
+    
+    return 0;
 }
 
 float LevelSegment::GetLength()
 {
     return _Record->GetData<LevelSegmentDefinition>()->Length;
-}
-
-bool LevelSegment::Cleanup(float scroll, glm::vec4 bounds)
-{
-    int itemCount = 0;
-    
-    for (std::vector<pb::Uid>::iterator it = _Ids.begin(); it != _Ids.end(); ++it)
-    {
-        pb::Entity* entity = _Scene->GetEntityById(*it);
-        
-        if (!entity)
-            continue;
-        
-        itemCount++;
-        
-        glm::vec3 position = entity->GetComponentByType<pb::TransformComponent>()->GetPosition();
-        
-        if (position.y < scroll || position.x < -bounds[2]-5.f || position.x > bounds[2]+5.f)
-        {
-            entity->Destroy();
-        }
-    }
-    
-    return itemCount > 0;
 }

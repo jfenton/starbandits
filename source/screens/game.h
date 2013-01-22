@@ -33,10 +33,10 @@ private:
     pb::Scene* _Scene;
     pb::Viewport* _Viewport;
     
+    LevelSegment* _LevelSegment;
+    
     float _CurrentY;
     int _NumPlayers;
     
     BackgroundTile* _Background;
-    
-    std::vector<LevelSegment*> _Segments;
 };

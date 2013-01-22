@@ -3,6 +3,7 @@
 #include <vector>
 
 #include "pixelboost/db/definitions.h"
+#include "pixelboost/db/record.h"
 
 namespace pb
 {
@@ -16,16 +17,14 @@ public:
     LevelSegment(pb::Scene* scene, float offset);
     ~LevelSegment();
     
-    void Create();
+    pb::Uid Create();
     
     float GetLength();
     
-    bool Cleanup(float scroll, glm::vec4 bounds);
-    
 private:
+    pb::DbRecord::EntityMap::const_iterator _EntityIt;
+    
     const pb::DbRecord* _Record;
     pb::Scene* _Scene;
     float _Offset;
-    
-    std::vector<pb::Uid> _Ids;
 };

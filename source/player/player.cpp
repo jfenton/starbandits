@@ -371,13 +371,13 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     float desiredRotation = glm::atan(_Input->_Thrust.y, _Input->_Thrust.x) - glm::radians(90.f);
     float rotation = body->GetAngle();
     
-    if (glm::distance(desiredRotation, rotation) > 3.14f)
+    while (glm::distance(desiredRotation, rotation) >= M_PI)
     {
         if (desiredRotation > rotation)
         {
-            rotation += 3.14f*2.f;
+            rotation += M_PI*2.f;
         } else {
-            desiredRotation += 3.14f*2.f;
+            desiredRotation += M_PI*2.f;
         }
     }
     
@@ -388,7 +388,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     float prevRotation = rotation;
     rotation = glm::mix(rotation, desiredRotation, rotateSpeed);
     
-    body->SetTransform(body->GetPosition(), rotation);
+    body->SetTransform(body->GetPosition(), glm::mod((float)rotation, (float)M_PI*2.f) - M_PI*2.f);
     
     glm::vec2 force;
     glm::vec2 rotForce(glm::cos(rotation + glm::radians(90.f)), glm::sin(rotation + glm::radians(90.f)));
@@ -498,7 +498,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     float particleSpeed = glm::length(force);
     engineMain->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
     engineMain->Definition->StartSpeed.Set(-0.3f * particleSpeed, -0.4f * particleSpeed);
-    engineMain->Definition->Emitter->EmitSpeed = _Input->_Boost ? 1200.f : glm::length(_Input->_Thrust) * 600.f;    
+    engineMain->Definition->Emitter->EmitSpeed = glm::clamp(_Input->_Boost ? 1200.f : glm::length(_Input->_Thrust) * 600.f, 1200.f, 1200.f);
     
     engineLeft->Definition->Emitter->EmitSpeed = 0.f;
     engineRight->Definition->Emitter->EmitSpeed = 0.f;
@@ -508,11 +508,11 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     {
         engineLeft->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
         engineLeft->Definition->StartSpeed.Set(-30.f * rotateThruster, -30.f * rotateThruster);
-        engineLeft->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
+        engineLeft->Definition->Emitter->EmitSpeed = glm::clamp(glm::abs(rotateThruster) * 1200.f, 1200.f, 1200.f);
     } else {
         engineRight->Definition->StartRotation.Set(glm::vec3(0,0,glm::degrees(rotation)));
         engineRight->Definition->StartSpeed.Set(30.f * rotateThruster, 30.f * rotateThruster);
-        engineRight->Definition->Emitter->EmitSpeed = glm::abs(rotateThruster) * 1200.f;
+        engineRight->Definition->Emitter->EmitSpeed = glm::clamp(glm::abs(rotateThruster) * 1200.f, 1200.f, 1200.f);
     }
     
     _SpriteShield->SetTint(glm::vec4(1.f,1.f,1.f,GetComponentByType<HealthComponent>()->GetShields()/10.f));

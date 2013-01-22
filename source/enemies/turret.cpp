@@ -90,13 +90,13 @@ void Turret::OnUpdate(const pb::Message& message)
         float desiredRotation = glm::atan(direction.y, direction.x) - glm::radians(90.f);
         float rotation = body->GetAngle();
         
-        if (glm::distance(desiredRotation, rotation) > 3.14f)
+        while (glm::distance(desiredRotation, rotation) >= M_PI)
         {
             if (desiredRotation > rotation)
             {
-                rotation += 3.14f*2.f;
+                rotation += M_PI*2.f;
             } else {
-                desiredRotation += 3.14f*2.f;
+                desiredRotation += M_PI*2.f;
             }
         }
         
