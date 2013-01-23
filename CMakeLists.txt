@@ -1,9 +1,9 @@
 cmake_minimum_required (VERSION 2.8.10)
-project (doublewow)
+project (starbandits)
 
 include (pixelboost/build.cmake)
 
-pixelboost_setup_pre(pixelboost doublewow "com.pixelballoon.doublewow" "The Double Wow Factor")
+pixelboost_setup_pre(pixelboost starbandits "com.pixelballoon.starbandits" "Star Bandits")
 
 include_directories("source")
 
