@@ -67,9 +67,12 @@ pb::Uid LevelSegment::Create()
     } else if (_EntityIt->second->GetType() == pb::TypeHash("StealthBomber"))
     {
         entity = new StealthBomber(_Scene, position);
-    } else if (_EntityIt->second->GetType() == pb::TypeHash("Turret"))
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretHoming"))
     {
-        entity = new Turret(_Scene, position, rand()%2 ? kProjectileTypeHoming : kProjectileTypeLaser);
+        entity = new Turret(_Scene, position, kProjectileTypeHoming);
+    } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretLaser"))
+    {
+        entity = new Turret(_Scene, position, kProjectileTypeLaser);
     }
     
     _EntityIt++;

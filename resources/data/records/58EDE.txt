@@ -162,8 +162,8 @@
 			}
 		},
 		{
-			"Type" : "Turret",
-			"Name" : "Turret",
+			"Type" : "TurretHoming",
+			"Name" : "TurretHoming",
 			"Uid" : 12858797,
 			"Properties" : {},
 			"Transform" : {

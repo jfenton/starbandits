@@ -4,31 +4,37 @@ record LevelSegment
 	float Length;
 }
 
-[Visualisation(type:"model", model:"homingMine", texture:"ship")]
+[Visualisation(type:"model", model:"homingMine", texture:"homingMine_active_DIFF", rotation:"90,90,0")]
 entity HomingMine
 {
 	
 }
 
-[Visualisation(type:"model", model:"staticMine", texture:"ship")]
+[Visualisation(type:"model", model:"staticMine", texture:"staticMine_DIFF", rotation:"90,90,0")]
 entity StaticMine
 {
 	
 }
 
-[Visualisation(type:"model", model:"stealthBomber", texture:"ship")]
+[Visualisation(type:"model", model:"stealthBomber", texture:"stealthBomber_DIFF", rotation:"90,180,0")]
 entity StealthBomber
 {
 	
 }
 
-[Visualisation(type:"model", model:"turret", texture:"ship")]
-entity Turret
+[Visualisation(type:"model", model:"turret", texture:"turret_homing", rotation:"90,90,0")]
+entity TurretHoming
 {
 	
 }
 
-[Visualisation(type:"model", model:"asteroid01", texture:"asteroid")]
+[Visualisation(type:"model", model:"turret", texture:"turret_laser", rotation:"90,90,0")]
+entity TurretLaser
+{
+	
+}
+
+[Visualisation(type:"model", model:"asteroid01", texture:"asteroid", rotation:"90,90,0")]
 entity Asteroid
 {
 	float Speed;

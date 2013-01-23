@@ -2,9 +2,16 @@
 
 #include "database/entities/turret.h"
 
-TurretDefinition::TurretDefinition()
+TurretHomingDefinition::TurretHomingDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(TurretDefinition, "Turret")
+TurretLaserDefinition::TurretLaserDefinition()
+{
+}
+
+PIXELBOOST_START_STRUCT(TurretHomingDefinition, "TurretHoming")
+PIXELBOOST_END_STRUCT
+
+PIXELBOOST_START_STRUCT(TurretLaserDefinition, "TurretLaser")
 PIXELBOOST_END_STRUCT

@@ -1,6 +1,11 @@
 #pragma once
 
-struct TurretDefinition
+struct TurretHomingDefinition
 {
-    TurretDefinition();
+    TurretHomingDefinition();
+};
+
+struct TurretLaserDefinition
+{
+    TurretLaserDefinition();
 };
