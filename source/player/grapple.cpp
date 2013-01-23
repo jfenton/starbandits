@@ -59,7 +59,7 @@ void Grapple::OnUpdate(const pb::Message& message)
     
     PlayerShip* playerShip = static_cast<PlayerShip*>(GetScene()->GetEntityById(_PlayerId));
     
-    if (playerShip->GetEnergy() < 0.1f)
+    if (!playerShip || playerShip->GetEnergy() < 0.1f)
     {
         Destroy();
         return;

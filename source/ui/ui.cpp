@@ -15,16 +15,18 @@
 #include "player/player.h"
 #include "ui/ui.h"
 
-GameUi::GameUi(pb::Scene* scene)
+GameUi::GameUi(pb::Scene* scene, pb::Uid playerId, int index)
     : pb::Entity(scene, 0)
+    , _PlayerId(playerId)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(glm::vec3(-640.f/32.f, 360.f/32.f - 1.f, 0));
+    transform->SetPosition(glm::vec3(index == 0 ? -620.f/32.f : 620.f/32.f, 360.f/32.f - 1.f, 0));
     
     pb::FontComponent* text = new pb::FontComponent(this, "font", "");
-    text->SetAlignment(pb::kFontAlignLeft);
+    text->SetAlignment(index == 0 ? pb::kFontAlignLeft : pb::kFontAlignRight);
     text->SetRenderPass(pb::kRenderPassUi);
     text->SetLayer(kGraphicLayerUi);
+    text->SetSize(0.8f);
     
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &GameUi::OnUpdate));
 }
@@ -48,18 +50,16 @@ void GameUi::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    pb::Scene::EntityMap ships = GetScene()->GetEntitiesByType<PlayerShip>();
-    
-    if (!ships.size())
-        return;
-    
-    PlayerShip* ship = static_cast<PlayerShip*>(ships.begin()->second);
+    PlayerShip* ship = static_cast<PlayerShip*>(GetScene()->GetEntityById(_PlayerId));
     
     if (!ship)
+    {
+        GetComponentByType<pb::FontComponent>()->SetText("No Life Remaining");
         return;
+    }
     
     float energy = ship->GetEnergy();
-    HealthComponent* health = ships.begin()->second->GetComponentByType<HealthComponent>();
+    HealthComponent* health = ship->GetComponentByType<HealthComponent>();
 
     if (energy && health)
     {

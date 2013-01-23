@@ -119,7 +119,8 @@ void GameScreen::SetActive(bool active)
         
         for (int i=0; i<_NumPlayers; i++)
         {
-            new PlayerShip(_Scene, i);
+            PlayerShip* ship = new PlayerShip(_Scene, i);
+            new GameUi(_Scene, ship->GetUid(), i);
         }
         
         _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
@@ -127,8 +128,6 @@ void GameScreen::SetActive(bool active)
         
         new Planet(_Scene, "planet", glm::vec3(-36, 350, -500), 12.5);
         new Planet(_Scene, "moon", glm::vec3(-90, 150, -501), 12.5);
-        
-        new GameUi(_Scene);
         
         //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true, kGraphicLayerPhysicsDebug);
         

@@ -285,7 +285,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
                                      pb::Engine::Instance()->GetModelRenderer()->GetTexture("shield_DIFF"));
     _Shield->SetLayer(kGraphicLayerShield);
     _Shield->SetAlphaBlend(true);
-    _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.6 : -0.6,0,0)), glm::vec3(1.2,1.2,1.2)));
+    _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.6 : 0.2,0,0)), glm::vec3(1.2,1.2,1.2)));
     
     _SpriteShield = new pb::SpriteComponent(this, "shield");
     _SpriteShield->SetLayer(kGraphicLayerSpriteShield);
