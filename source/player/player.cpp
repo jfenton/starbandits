@@ -455,7 +455,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     transform = glm::rotate(transform, _Tilt + barrelRot, glm::vec3(0,0,1));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
     
-    _Energy += glm::max(((100.f-_Energy)/25.f),1.f)*updateMessage.GetDelta();
+    _Energy += glm::max(((100.f-_Energy)/25.f),1.f)*updateMessage.GetDelta()*2.f;
     _Energy = glm::min(_Energy, 100.f);
     
     if (glm::length(_Input->_GrappleDirection) > 0.35f && !_GrappleActive)
