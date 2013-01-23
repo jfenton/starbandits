@@ -471,7 +471,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             if (it->second == this)
                 continue;
             
-            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret"))
+            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret") && it->second->GetType() != pb::TypeHash("StealthBomber"))
                 continue;
             
             glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
