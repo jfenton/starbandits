@@ -62,6 +62,7 @@ Game::Game(void* viewController)
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "homingMine_active_DIFF", "/data/models/homingMine_active_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "homingMine_armed_DIFF", "/data/models/homingMine_armed_DIFF.png");
     
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "weapon_laser", "/data/models/weapon_laser.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "grey", "/data/models/grey.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_weapons", "/data/models/turret_weapons.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_homing", "/data/models/turret_homing.png");

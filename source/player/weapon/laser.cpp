@@ -23,7 +23,7 @@ LaserComponent::LaserComponent(pb::Entity* entity, PlayerInput* input, const Mou
 {
     _Renderable = new pb::ModelRenderable(0);
     _Renderable->SetModel(Game::Instance()->GetModelRenderer()->GetModel("weapon_laser"));
-    _Renderable->SetTexture(Game::Instance()->GetModelRenderer()->GetTexture("grey"));
+    _Renderable->SetTexture(Game::Instance()->GetModelRenderer()->GetTexture("weapon_laser"));
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetShader(Game::Instance()->GetLitShader());
     
