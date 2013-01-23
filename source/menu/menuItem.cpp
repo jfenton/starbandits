@@ -68,7 +68,7 @@ void MenuItem::OnUpdate(const pb::Message& message)
     
     for (Entity::ComponentList::iterator it = text.begin(); it != text.end(); ++it)
     {
-        bool alpha = glm::mod(Game::Instance()->GetGameTime(), 1.f) > 0.5f;
+        bool alpha = glm::mod(Game::Instance()->GetGameTime(), 1.5f) < 0.75f;
         static_cast<pb::FontComponent*>(*it)->SetTint(glm::vec4(1,1,1,alpha?1.f:0.f));
     }
 }
