@@ -31,7 +31,7 @@ HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("homingMine"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("grey"));
+                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_inactive_DIFF"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
@@ -150,6 +150,10 @@ void HomingMine::OnUpdate(const pb::Message& message)
             
             _PlayerId = 0;
         }
+        
+        GetComponentByType<pb::ModelComponent>()->SetTexture(pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_armed_DIFF"));
+    } else {
+        GetComponentByType<pb::ModelComponent>()->SetTexture(pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_active_DIFF"));
     }
     
     glm::mat4x4 transform;

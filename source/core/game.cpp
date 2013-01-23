@@ -59,6 +59,10 @@ Game::Game(void* viewController)
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_DIFF", "/data/models/staticMine_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "staticMine_armed_DIFF", "/data/models/staticMine_armed_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "stealthBomber_DIFF", "/data/models/stealthBomber_DIFF.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "homingMine_active_DIFF", "/data/models/homingMine_active_DIFF.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "homingMine_inactive_DIFF", "/data/models/homingMine_inactive_DIFF.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "homingMine_armed_DIFF", "/data/models/homingMine_armed_DIFF.png");
+    
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "grey", "/data/models/grey.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_weapons", "/data/models/turret_weapons.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "turret_homing", "/data/models/turret_homing.png");
