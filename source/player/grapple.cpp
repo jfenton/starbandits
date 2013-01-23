@@ -25,6 +25,7 @@ Grapple::Grapple(pb::Scene* scene, pb::Uid playerId, PlayerInput* input, pb::Uid
 {
     _Renderable = new pb::PrimitiveRenderableLine(GetUid());
     _Renderable->SetLayer(kGraphicLayerPlayer);
+    _Renderable->SetColor(glm::vec4(0.f, 150.f/255.f, 231.f/255.f, 1.f));
     GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
     
     _StartDistance = GetDistance();
