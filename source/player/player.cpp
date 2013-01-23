@@ -258,7 +258,7 @@ bool PlayerJoystickInput::OnButtonUp(int joystick, int button)
     return false;
 }
 
-PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
+PlayerShip::PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position)
     : pb::Entity(scene, 0)
     , _BarrelCooldown(0)
     , _Energy(100)
@@ -268,7 +268,8 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId)
     , _ShieldTime(0)
     , _HullTime(0)
 {
-    new pb::BasicTransformComponent(this);
+    pb::TransformComponent* transform = new pb::BasicTransformComponent(this);
+    transform->SetPosition(glm::vec3(position, 0.f));
     
     _Ship = new pb::ModelComponent(this,
                                    pb::Engine::Instance()->GetModelRenderer()->GetModel(playerId == 0 ? "ship_01" : "ship_02"),

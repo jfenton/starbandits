@@ -68,7 +68,7 @@ private:
 class PlayerShip : public pb::Entity
 {
 public:
-    PlayerShip(pb::Scene* scene, int playerId);
+    PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position);
     ~PlayerShip();
     
 public:

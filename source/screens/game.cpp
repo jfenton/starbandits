@@ -119,7 +119,21 @@ void GameScreen::SetActive(bool active)
         
         for (int i=0; i<_NumPlayers; i++)
         {
-            PlayerShip* ship = new PlayerShip(_Scene, i);
+            glm::vec2 position;
+            
+            if (_NumPlayers == 1)
+            {
+                position = glm::vec2(0,0);
+            } else {
+                if (i == 0)
+                {
+                    position = glm::vec2(-5, 0);
+                } else {
+                    position = glm::vec2(5, 0);
+                }
+            }
+            
+            PlayerShip* ship = new PlayerShip(_Scene, i, position);
             new GameUi(_Scene, ship->GetUid(), i);
         }
         
