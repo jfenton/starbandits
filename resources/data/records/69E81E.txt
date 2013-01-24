@@ -43,23 +43,6 @@
 			}
 		},
 		{
-			"Type" : "TurretLaser",
-			"Name" : "TurretLaser",
-			"Uid" : 1073407,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 27.254150390625,
-				"ty" : -8.6591310501098632812,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "StaticMine",
 			"Name" : "StaticMine",
 			"Uid" : 1185671,
@@ -111,40 +94,6 @@
 			}
 		},
 		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 1615414,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 4.400112152099609375,
-				"ty" : -32.72332763671875,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 1869292,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 1.937476038932800293,
-				"ty" : 40.715087890625,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "HomingMine",
 			"Name" : "HomingMine",
 			"Uid" : 2259319,
@@ -179,40 +128,6 @@
 			}
 		},
 		{
-			"Type" : "StaticMine",
-			"Name" : "StaticMine",
-			"Uid" : 2505281,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 2.5371160507202148438,
-				"ty" : -35.233112335205078125,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 3132809,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -3.6950330734252929688,
-				"ty" : 3.0773789882659912109,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "Asteroid",
 			"Name" : "Asteroid",
 			"Uid" : 3200104,
@@ -224,9 +139,9 @@
 				"rx" : 0,
 				"ry" : 0,
 				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
+				"sx" : 1.8890185356140136719,
+				"sy" : 1.8890185356140136719,
+				"sz" : 1.8890185356140136719
 			}
 		},
 		{
@@ -237,23 +152,6 @@
 			"Transform" : {
 				"tx" : -3.2422800064086914062,
 				"ty" : -30.263713836669921875,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 3358290,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -2.8989379405975341797,
-				"ty" : -38.1908111572265625,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -305,23 +203,6 @@
 			"Transform" : {
 				"tx" : 0.032772000879049301147,
 				"ty" : -3.2412109375,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 5312245,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -4.8054561614990234375,
-				"ty" : -26.107940673828125,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -400,23 +281,6 @@
 			}
 		},
 		{
-			"Type" : "TurretLaser",
-			"Name" : "TurretLaser",
-			"Uid" : 6347689,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -28.466464996337890625,
-				"ty" : -7.2531185150146484375,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "HomingMine",
 			"Name" : "HomingMine",
 			"Uid" : 6357744,
@@ -473,8 +337,8 @@
 			"Uid" : 6957031,
 			"Properties" : {},
 			"Transform" : {
-				"tx" : 27.89488983154296875,
-				"ty" : 25.759136199951171875,
+				"tx" : -26.511669158935546875,
+				"ty" : 38.2820281982421875,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -553,23 +417,6 @@
 			}
 		},
 		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 7982391,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 6.1319360733032226562,
-				"ty" : -43.336719512939453125,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "StaticMine",
 			"Name" : "StaticMine",
 			"Uid" : 8303146,
@@ -621,23 +468,6 @@
 			}
 		},
 		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 8797018,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 1.9507739543914794922,
-				"ty" : 35.9034576416015625,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "HomingMine",
 			"Name" : "HomingMine",
 			"Uid" : 8957172,
@@ -679,40 +509,6 @@
 			"Transform" : {
 				"tx" : -5.6245207786560058594,
 				"ty" : 22.132282257080078125,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 9815086,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 6.979412078857421875,
-				"ty" : -29.44766998291015625,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "TurretLaser",
-			"Name" : "TurretLaser",
-			"Uid" : 9852662,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -28.38486480712890625,
-				"ty" : 26.26024627685546875,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -791,40 +587,6 @@
 			}
 		},
 		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 11467932,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -0.040973998606204986572,
-				"ty" : -33.329010009765625,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 11532897,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 4.6177229881286621094,
-				"ty" : -7.1062321662902832031,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
 			"Type" : "StaticMine",
 			"Name" : "StaticMine",
 			"Uid" : 11790073,
@@ -832,40 +594,6 @@
 			"Transform" : {
 				"tx" : 2.7051610946655273438,
 				"ty" : -7.7904992103576660156,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 12038309,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -4.3865537643432617188,
-				"ty" : -10.270059585571289062,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 13416192,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 2.8321011066436767578,
-				"ty" : -11.424609184265136719,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -915,8 +643,8 @@
 			"Uid" : 14961896,
 			"Properties" : {},
 			"Transform" : {
-				"tx" : 27.73168182373046875,
-				"ty" : -43.255115509033203125,
+				"tx" : 27.872713088989257812,
+				"ty" : -3.1777172088623046875,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -934,23 +662,6 @@
 			"Transform" : {
 				"tx" : 2.9814059734344482422,
 				"ty" : 19.658763885498046875,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 15386069,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -0.27671998739242553711,
-				"ty" : 11.946857452392578125,
 				"tz" : 1,
 				"rx" : 0,
 				"ry" : 0,
@@ -992,57 +703,6 @@
 				"sx" : 3.3820581436157226562,
 				"sy" : 3.3820581436157226562,
 				"sz" : 3.3820581436157226562
-			}
-		},
-		{
-			"Type" : "HomingMine",
-			"Name" : "HomingMine",
-			"Uid" : 16169174,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 5.5528478622436523438,
-				"ty" : 15.262409210205078125,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 16257874,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : -6.5687131881713867188,
-				"ty" : 18.224945068359375,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
-			}
-		},
-		{
-			"Type" : "Asteroid",
-			"Name" : "Asteroid",
-			"Uid" : 16290120,
-			"Properties" : {},
-			"Transform" : {
-				"tx" : 3.0545480251312255859,
-				"ty" : -21.000720977783203125,
-				"tz" : 1,
-				"rx" : 0,
-				"ry" : 0,
-				"rz" : 0,
-				"sx" : 1,
-				"sy" : 1,
-				"sz" : 1
 			}
 		},
 		{

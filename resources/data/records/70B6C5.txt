@@ -1,0 +1,182 @@
+{
+	"Type" : "LevelSegment",
+	"Name" : "Segment_05_01",
+	"Uid" : 7386821,
+	"Properties" : {
+		"Length" : {
+			"_atom" : "50"
+		}
+	},
+	"Entities" : [
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 4431203,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -27.701763153076171875,
+				"ty" : -2.5187211036682128906,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1.4260405302047729492,
+				"sy" : 1.4260405302047729492,
+				"sz" : 1.4260405302047729492
+			}
+		},
+		{
+			"Type" : "TurretLaser",
+			"Name" : "TurretLaser",
+			"Uid" : 4560263,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -25.380096435546875,
+				"ty" : -7.7255067825317382812,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "StealthBomber",
+			"Name" : "StealthBomber",
+			"Uid" : 4764011,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 28.066583633422851562,
+				"ty" : -13.22760009765625,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : -292.19207763671875,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 8212996,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 10.460043907165527344,
+				"ty" : 13.720444679260253906,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 12839746,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -24.390657424926757812,
+				"ty" : 2.5698769092559814453,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 5.6246047019958496094,
+				"sy" : 5.6246047019958496094,
+				"sz" : 5.6246047019958496094
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 13761823,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 23.434522628784179688,
+				"ty" : 7.8291540145874023438,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 14799688,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -3.5445799827575683594,
+				"ty" : 17.568225860595703125,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 15942052,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -18.232362747192382812,
+				"ty" : 16.99390411376953125,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 16012317,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -8.446018218994140625,
+				"ty" : -13.916533470153808594,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 16497153,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -20.574296951293945312,
+				"ty" : -3.7584669589996337891,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 0.83661687374114990234,
+				"sy" : 0.83661687374114990234,
+				"sz" : 0.83661687374114990234
+			}
+		}
+	]
+}
