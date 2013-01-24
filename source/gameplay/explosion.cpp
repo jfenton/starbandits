@@ -45,7 +45,7 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     engineDefinition->ModifierScale = scaleValue;
     engineDefinition->Emitter = emitter;
     
-    for (int i=0; i<=power; i+= 4.f)
+    for (int i=0; i<=power; i+= 8.f)
     {
         new Cog(GetScene(), position, glm::vec2(glm::linearRand(-1.f, 1.f), glm::linearRand(-1.f, 1.f)));
     }
