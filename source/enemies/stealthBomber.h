@@ -5,7 +5,7 @@
 class StealthBomber : public pb::Entity
 {
 public:
-	StealthBomber(pb::Scene* scene, glm::vec2 position);
+	StealthBomber(pb::Scene* scene, glm::vec2 position, float rotation);
     ~StealthBomber();
     
     virtual pb::Uid GetType() const;

@@ -57,7 +57,7 @@ pb::Uid LevelSegment::Create()
     
     if (_EntityIt->second->GetType() == pb::TypeHash("Asteroid"))
     {
-        entity = new Asteroid(_Scene, position);
+        entity = new Asteroid(_Scene, position, _EntityIt->second->GetScale().x);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("HomingMine"))
     {
         entity = new HomingMine(_Scene, position);
@@ -66,7 +66,7 @@ pb::Uid LevelSegment::Create()
         entity = new StaticMine(_Scene, position);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("StealthBomber"))
     {
-        entity = new StealthBomber(_Scene, position);
+        entity = new StealthBomber(_Scene, position, _EntityIt->second->GetRotation().z);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretHoming"))
     {
         entity = new Turret(_Scene, position, kProjectileTypeHoming);

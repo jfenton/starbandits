@@ -19,7 +19,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     _Rotation = ((float)rand()/(float)RAND_MAX)*360.f;
     _Speed = ((float)rand()/(float)RAND_MAX)*1.5f;
     _Scale = scale;
-    _Size = (1.5f + ((float)rand()/(float)RAND_MAX)*2.f)*scale;
+    _Roll = 0.f;
     
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
@@ -30,11 +30,11 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel(modelName),
                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("asteroid"));
-    model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(_Size, _Size, _Size)));
+    model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(_Scale, _Scale, _Scale)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Size, _Size));
+    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Scale, _Scale));
     physics->GetBody()->SetLinearVelocity(b2Vec2(cos(_Rotation+glm::radians(90.f))*_Speed, sin(_Rotation+glm::radians(90.f))*_Speed));
     
     physics->GetBody()->GetFixtureList()[0].SetDensity(10.f);
@@ -47,7 +47,7 @@ Asteroid::Asteroid(pb::Scene* scene, glm::vec2 position, float scale)
 
 Asteroid::~Asteroid()
 {
-    if (_Size > 1.f)
+    if (_Scale > 1.f)
     {
         glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
         new Asteroid(GetScene(), glm::vec2(position.x, position.y), _Scale*0.5);
@@ -75,6 +75,6 @@ void Asteroid::OnUpdate(const pb::Message& message)
     
     glm::mat4x4 transform;
     transform = glm::rotate(transform, _Roll, glm::normalize(glm::vec3(0.7,0.1,0.3)));
-    transform = glm::scale(transform, glm::vec3(_Size, _Size, _Size));
+    transform = glm::scale(transform, glm::vec3(_Scale, _Scale, _Scale));
     GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
 }

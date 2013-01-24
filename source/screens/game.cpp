@@ -45,7 +45,7 @@ void GameScreen::Update(float time)
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
-    if (_Camera->Position.y > _CurrentY - (720.f/32.f)*2.f)
+    if (_Camera->Position.y > _CurrentY - (720.f/32.f)*3.f)
     {
         if (_LevelSegment)
         {

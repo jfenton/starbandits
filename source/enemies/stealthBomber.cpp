@@ -17,13 +17,13 @@
 #include "gameplay/health.h"
 #include "player/player.h"
 
-StealthBomber::StealthBomber(pb::Scene* scene, glm::vec2 position)
+StealthBomber::StealthBomber(pb::Scene* scene, glm::vec2 position, float rotation)
 	: pb::Entity(scene, 0)
     , _MineTimer(0)
 {
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
-    transform->SetRotation(glm::vec3(0,0,135));
+    transform->SetRotation(glm::vec3(0,0,rotation));
     
     pb::ModelComponent* model = new pb::ModelComponent(this,
                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("stealthBomber"),
