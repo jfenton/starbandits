@@ -353,7 +353,7 @@ void PlayerShip::OnCollision(const pb::Message& message)
     
     if (collisionMessage.GetOtherComponent()->GetParent()->GetType() == pb::TypeHash("Cog"))
     {
-        Game::Instance()->GetGameScreen()->AddScore(10.f);
+        Game::Instance()->GetGameScreen()->AddScore(100.f);
         collisionMessage.GetOtherComponent()->GetParent()->Destroy();
     }
 }
