@@ -20,6 +20,8 @@
 MenuItem::MenuItem(pb::Scene* scene)
     : pb::Entity(scene, 0)
 {
+    _ShowingControls = false;
+    
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(0.f, 0.f, 0.f));
     
@@ -75,12 +77,37 @@ void MenuItem::OnUpdate(const pb::Message& message)
 
 bool MenuItem::OnButtonDown(int joystick, int button)
 {
-    if (button == 0) {
-        Game::Instance()->GetGameScreen()->SetNumPlayers(1);
+    if (_ShowingControls)
+    {
         Game::Instance()->SetMode(kGameModeGame);
-    } else if (button == 1) {
-        Game::Instance()->GetGameScreen()->SetNumPlayers(2);
-        Game::Instance()->SetMode(kGameModeGame);
+    } else {
+        if (button == 0) {
+            Game::Instance()->GetGameScreen()->SetNumPlayers(1);
+            GetComponentByType<pb::SpriteComponent>()->SetSprite("control");
+            _ShowingControls = true;
+        } else if (button == 1) {
+            Game::Instance()->GetGameScreen()->SetNumPlayers(2);
+            GetComponentByType<pb::SpriteComponent>()->SetSprite("control");
+            _ShowingControls = true;
+        }
+        
+        if (_ShowingControls)
+        {
+            Entity::ComponentList text = GetComponentsByType<pb::FontComponent>();
+            
+            for (Entity::ComponentList::iterator it = text.begin(); it != text.end(); ++it)
+            {
+                DestroyComponent(*it);
+            }
+            
+            pb::FontComponent* single = new pb::FontComponent(this, "font", "Press O to Start");
+            single->SetAlignment(pb::kFontAlignCenter);
+            single->SetRenderPass(pb::kRenderPassUi);
+            single->SetLayer(kGraphicLayerUi);
+            single->SetSize(0.5f);
+            single->SetTint(glm::vec4(0,0,0,1));
+            single->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(0.f, -340.f/32.f, 0.f)));
+        }
     }
     
     return false;

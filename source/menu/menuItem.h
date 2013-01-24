@@ -15,4 +15,7 @@ public:
     
     virtual bool OnButtonDown(int joystick, int button);
     virtual bool OnButtonUp(int joystick, int button);
+    
+private:
+    bool _ShowingControls;
 };
