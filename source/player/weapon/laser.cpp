@@ -1,5 +1,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "pixelboost/audio/soundManager.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/transform.h"
@@ -20,6 +21,7 @@ LaserComponent::LaserComponent(pb::Entity* entity, PlayerInput* input, const Mou
     , _Input(input)
     , _MountInfo(mountInfo)
     , _FiringDelay(0)
+    , _SoundDelay(0)
 {
     _Renderable = new pb::ModelRenderable(0);
     _Renderable->SetModel(Game::Instance()->GetModelRenderer()->GetModel("weapon_laser"));
@@ -62,6 +64,8 @@ void LaserComponent::OnUpdate(const pb::Message& message)
     
     PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
     
+    _SoundDelay = glm::max(_SoundDelay-updateMessage.GetDelta(), 0.f);
+    
     _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
     if (_MountInfo.IsLeft ? _Input->_FiringLeft : _Input->_FiringRight)
     {
@@ -75,6 +79,12 @@ void LaserComponent::OnUpdate(const pb::Message& message)
                 pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
                 
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
+                
+                if (_SoundDelay <= 0.f)
+                {
+                    pb::SoundManager::Instance()->PlaySfx("laser.wav", 0.5f);
+                    _SoundDelay = 0.25f;
+                }
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
                 new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);

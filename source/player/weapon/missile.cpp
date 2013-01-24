@@ -1,5 +1,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 
+#include "pixelboost/audio/soundManager.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/transform.h"
@@ -72,6 +73,8 @@ void MissileComponent::OnUpdate(const pb::Message& message)
                 pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
                 
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
+                
+                pb::SoundManager::Instance()->PlaySfx("missile.wav", 0.5f);
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
                 new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeHoming, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 5.f, 75.f);

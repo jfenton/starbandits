@@ -32,6 +32,11 @@ Game::Game(void* viewController)
     _GameScreen = new GameScreen();
     _MenuScreen = new MenuScreen();
     
+    pb::SoundManager::Instance()->LoadSfx("boom.wav");
+    pb::SoundManager::Instance()->LoadSfx("boom_low.wav");
+    pb::SoundManager::Instance()->LoadSfx("laser.wav");
+    pb::SoundManager::Instance()->LoadSfx("missile.wav");
+    
     pb::Engine::Instance()->GetFontRenderer()->LoadFont(pb::kFileLocationBundle, "font", "/data/fonts/font");
     
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "cog", "/data/models/cog.mdl");

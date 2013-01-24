@@ -1,0 +1,369 @@
+{
+	"Type" : "LevelSegment",
+	"Name" : "Segment_07_01",
+	"Uid" : 9396228,
+	"Properties" : {
+		"Length" : {
+			"_atom" : "50"
+		}
+	},
+	"Entities" : [
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 276692,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -5.9688868522644042969,
+				"ty" : 11.362924575805664062,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 1497484,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -0.15449480712413787842,
+				"ty" : -5.68010711669921875,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1.6491270065307617188,
+				"sy" : 1.6491270065307617188,
+				"sz" : 1.6491270065307617188
+			}
+		},
+		{
+			"Type" : "StaticMine",
+			"Name" : "StaticMine",
+			"Uid" : 1674773,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 14.317117691040039062,
+				"ty" : -20.315629959106445312,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 2487986,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 26.388519287109375,
+				"ty" : -20.469579696655273438,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 3.7983736991882324219,
+				"sy" : 3.7983736991882324219,
+				"sz" : 3.7983736991882324219
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 3462453,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 3.6419150829315185547,
+				"ty" : 14.590635299682617188,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 3478607,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -5.6072301864624023438,
+				"ty" : -3.3157289028167724609,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 2.8900516033172607422,
+				"sy" : 2.8900516033172607422,
+				"sz" : 2.8900516033172607422
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 3763848,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 1.1892789602279663086,
+				"ty" : -13.038014411926269531,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 5181786,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 13.851277351379394531,
+				"ty" : 13.017259597778320312,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 6856966,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -11.620698928833007812,
+				"ty" : 5.5485320091247558594,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 7297828,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 3.8482921123504638672,
+				"ty" : 1.2272219657897949219,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 6.9039106369018554688,
+				"sy" : 6.9039106369018554688,
+				"sz" : 6.9039106369018554688
+			}
+		},
+		{
+			"Type" : "TurretLaser",
+			"Name" : "TurretLaser",
+			"Uid" : 7964806,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -26.683572769165039062,
+				"ty" : 12.419363021850585938,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 9212607,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -25.0073394775390625,
+				"ty" : 19.156812667846679688,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 2.2194516658782958984,
+				"sy" : 2.2194516658782958984,
+				"sz" : 2.2194516658782958984
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 10421631,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 28.826555252075195312,
+				"ty" : -13.990932464599609375,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 11233702,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 18.816934585571289062,
+				"ty" : 23.058069229125976562,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1.6683434247970581055,
+				"sy" : 1.6683434247970581055,
+				"sz" : 1.6683434247970581055
+			}
+		},
+		{
+			"Type" : "Asteroid",
+			"Name" : "Asteroid",
+			"Uid" : 12160355,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 20.951709747314453125,
+				"ty" : 21.136968612670898438,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 12211489,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 9.6175603866577148438,
+				"ty" : -11.450038909912109375,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 12804152,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -12.795256614685058594,
+				"ty" : -3.4789729118347167969,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 12909448,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : -5.1639499664306640625,
+				"ty" : -10.814317703247070312,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 15219210,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 16.89450836181640625,
+				"ty" : -7.4233632087707519531,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 15476798,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 17.256830215454101562,
+				"ty" : 7.1816310882568359375,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		},
+		{
+			"Type" : "HomingMine",
+			"Name" : "HomingMine",
+			"Uid" : 15487300,
+			"Properties" : {},
+			"Transform" : {
+				"tx" : 18.94832611083984375,
+				"ty" : -0.75293701887130737305,
+				"tz" : 1,
+				"rx" : 0,
+				"ry" : 0,
+				"rz" : 0,
+				"sx" : 1,
+				"sy" : 1,
+				"sz" : 1
+			}
+		}
+	]
+}

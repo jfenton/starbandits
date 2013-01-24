@@ -29,6 +29,7 @@ private:
     void UpdateTransform();
     
     float _FiringDelay;
+    float _SoundDelay;
     
     pb::ModelRenderable* _Renderable;
     PlayerInput* _Input;

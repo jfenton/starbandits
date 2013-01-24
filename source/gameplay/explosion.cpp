@@ -1,6 +1,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/random.hpp"
 
+#include "pixelboost/audio/soundManager.h"
 #include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/logic/component/graphics/ellipse.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
@@ -22,6 +23,12 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     transform->SetPosition(glm::vec3(position, 0));
     
+    if (power > 5.f) {
+        pb::SoundManager::Instance()->PlaySfx("boom.wav", 0.6f);
+    } else {
+        pb::SoundManager::Instance()->PlaySfx("boom_low.wav", 0.5f);
+    }
+
     new DamageComponent(this, kHealthTypeNone, 5.f);
     
     pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Power/2.f, _Power/2.f));
