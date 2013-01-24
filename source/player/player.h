@@ -75,6 +75,7 @@ public:
     virtual pb::Uid GetType() const;
     static pb::Uid GetStaticType();
     
+    void OnCollision(const pb::Message& message);
     void OnHullHit(const pb::Message& message);
     void OnShieldsHit(const pb::Message& message);
     void OnUpdate(const pb::Message& message);

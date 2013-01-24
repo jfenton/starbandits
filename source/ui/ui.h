@@ -1,5 +1,10 @@
 #include "pixelboost/logic/entity.h"
 
+namespace pb
+{
+    class FontComponent;
+}
+
 class GameUi : public pb::Entity
 {
 public:
@@ -13,5 +18,7 @@ public:
     void OnUpdate(const pb::Message& message);
 
 private:
+    pb::FontComponent* _Score;
+    
     pb::Uid _PlayerId;
 };

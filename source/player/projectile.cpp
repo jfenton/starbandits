@@ -120,7 +120,7 @@ void Projectile::OnCollision(const pb::Message& message)
     {
         case kProjectileTypeLaser:
         {
-            if (type == GetStaticType() || type == pb::TypeHash("Explosion"))
+            if (type == GetStaticType() || type == pb::TypeHash("Explosion") || type == pb::TypeHash("Cog"))
                 return;
             break;
         }

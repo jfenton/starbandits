@@ -1,4 +1,5 @@
 #include "glm/gtc/matrix_transform.hpp"
+#include "glm/gtc/random.hpp"
 
 #include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/logic/component/graphics/ellipse.h"
@@ -8,6 +9,7 @@
 #include "pixelboost/logic/message/update.h"
 
 #include "common/layers.h"
+#include "gameplay/cog.h"
 #include "gameplay/damage.h"
 #include "gameplay/explosion.h"
 
@@ -43,13 +45,16 @@ Explosion::Explosion(pb::Scene* scene, glm::vec2 position, float power)
     engineDefinition->ModifierScale = scaleValue;
     engineDefinition->Emitter = emitter;
     
-    RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Explosion::OnCollision));
+    for (int i=0; i<=power; i+= 4.f)
+    {
+        new Cog(GetScene(), position, glm::vec2(glm::linearRand(-1.f, 1.f), glm::linearRand(-1.f, 1.f)));
+    }
+    
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Explosion::OnUpdate));
 }
 
 Explosion::~Explosion()
 {
-    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Explosion::OnCollision));
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Explosion::OnUpdate));
 }
 
@@ -61,11 +66,6 @@ pb::Uid Explosion::GetType() const
 pb::Uid Explosion::GetStaticType()
 {
     return pb::TypeHash("Explosion");
-}
-
-void Explosion::OnCollision(const pb::Message& message)
-{
-    
 }
 
 void Explosion::OnUpdate(const pb::Message& message)

@@ -34,6 +34,7 @@ Game::Game(void* viewController)
     
     pb::Engine::Instance()->GetFontRenderer()->LoadFont(pb::kFileLocationBundle, "font", "/data/fonts/font");
     
+    pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "cog", "/data/models/cog.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "skybox", "/data/models/skybox.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "homingMine", "/data/models/homingMine.mdl");
     pb::Engine::Instance()->GetModelRenderer()->LoadModel(pb::kFileLocationBundle, "staticMine", "/data/models/staticMine.mdl");
@@ -53,6 +54,7 @@ Game::Game(void* viewController)
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "star", "/data/models/star.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "asteroid", "/data/models/asteroid.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "skybox", "/data/models/skybox.png");
+    pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "cog_DIFF", "/data/models/cog_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship_01_DIFF", "/data/models/ship_01_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "ship_02_DIFF", "/data/models/ship_02_DIFF.png");
     pb::Engine::Instance()->GetModelRenderer()->LoadTexture(pb::kFileLocationBundle, "shield_DIFF", "/data/models/shield_DIFF.png");

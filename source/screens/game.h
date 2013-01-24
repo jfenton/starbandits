@@ -28,6 +28,9 @@ public:
     pb::PerspectiveCamera* GetCamera();
     glm::vec4 GetArenaBounds();
     
+    void AddScore(float score);
+    float GetScore();
+    
 private:
     pb::PerspectiveCamera* _Camera;
     pb::Scene* _Scene;
@@ -35,6 +38,7 @@ private:
     
     LevelSegment* _LevelSegment;
     
+    float _Score;
     float _CurrentY;
     int _NumPlayers;
     

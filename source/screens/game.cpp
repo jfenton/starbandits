@@ -104,6 +104,7 @@ void GameScreen::SetActive(bool active)
     
     if (active)
     {
+        _Score = 0.f;
         _LevelSegment = 0;
         _CurrentY = 50.f;
         _Camera = new pb::PerspectiveCamera();
@@ -184,4 +185,14 @@ pb::PerspectiveCamera* GameScreen::GetCamera()
 glm::vec4 GameScreen::GetArenaBounds()
 {
     return glm::vec4(_Camera->Position.x, _Camera->Position.y, 31.25, 18.75);
+}
+
+void GameScreen::AddScore(float score)
+{
+    _Score += score;
+}
+
+float GameScreen::GetScore()
+{
+    return _Score;
 }

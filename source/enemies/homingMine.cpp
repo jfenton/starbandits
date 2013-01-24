@@ -80,7 +80,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
         float maxDistance = 100.f;
         for (pb::Scene::EntityMap::iterator it = entityMap.begin(); it != entityMap.end(); ++it)
         {
-            if (it->second->GetType() == GetStaticType() || it->second->GetType() == pb::TypeHash("Projectile"))
+            if (it->second->GetType() == GetStaticType() || it->second->GetType() == pb::TypeHash("Projectile")  || it->second->GetType() == pb::TypeHash("Cog"))
                 continue;
             
             pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();

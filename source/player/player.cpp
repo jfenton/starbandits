@@ -14,6 +14,7 @@
 #include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
 #include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/system/physics/2d/physics.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
@@ -322,6 +323,7 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position)
     
     RegisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
     RegisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
+    RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &PlayerShip::OnCollision));
     RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
 }
 
@@ -329,6 +331,7 @@ PlayerShip::~PlayerShip()
 {
     UnregisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
     UnregisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
+    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &PlayerShip::OnCollision));
     UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
     
     delete _Input;
@@ -342,6 +345,17 @@ pb::Uid PlayerShip::GetType() const
 pb::Uid PlayerShip::GetStaticType()
 {
     return pb::TypeHash("PlayerShip");
+}
+
+void PlayerShip::OnCollision(const pb::Message& message)
+{
+    const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
+    
+    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() == pb::TypeHash("Cog"))
+    {
+        Game::Instance()->GetGameScreen()->AddScore(10.f);
+        collisionMessage.GetOtherComponent()->GetParent()->Destroy();
+    }
 }
 
 void PlayerShip::OnHullHit(const pb::Message& message)
@@ -471,7 +485,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             if (it->second == this)
                 continue;
             
-            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret") && it->second->GetType() != pb::TypeHash("StealthBomber"))
+            if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret") && it->second->GetType() != pb::TypeHash("StealthBomber") && it->second->GetType() != pb::TypeHash("Cog"))
                 continue;
             
             glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();

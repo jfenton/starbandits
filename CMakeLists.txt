@@ -54,6 +54,8 @@ set (ENEMY_SOURCES
 	)
 
 set (GAMEPLAY_SOURCES
+	"source/gameplay/cog.cpp"
+	"source/gameplay/cog.h"
 	"source/gameplay/damage.cpp"
 	"source/gameplay/damage.h"
 	"source/gameplay/explosion.cpp"
