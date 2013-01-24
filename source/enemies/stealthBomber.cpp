@@ -91,7 +91,7 @@ void StealthBomber::OnUpdate(const pb::Message& message)
     
     if (_MineTimer <= 0.f)
     {
-        _MineTimer += 1.5f;
+        _MineTimer += 3.f;
         
         new HomingMine(GetScene(), glm::vec2(position.x, position.y));
     }
