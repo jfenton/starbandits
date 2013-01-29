@@ -30,6 +30,7 @@ public:
     
     void AddScore(float score);
     float GetScore();
+    float GetBestScore();
     
 private:
     pb::PerspectiveCamera* _Camera;
@@ -38,6 +39,7 @@ private:
     
     LevelSegment* _LevelSegment;
     
+    float _BestScore;
     float _Score;
     float _CurrentY;
     int _NumPlayers;

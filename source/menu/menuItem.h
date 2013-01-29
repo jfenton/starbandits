@@ -1,6 +1,11 @@
 #include "pixelboost/input/joystickManager.h"
 #include "pixelboost/logic/entity.h"
 
+namespace pb
+{
+    class FontComponent;
+}
+
 class MenuItem : public pb::Entity, public pb::JoystickHandler
 {
 public:
@@ -18,4 +23,7 @@ public:
     
 private:
     bool _ShowingControls;
+    
+    pb::FontComponent* _Single;
+    pb::FontComponent* _Multi;
 };

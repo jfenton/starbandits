@@ -23,9 +23,11 @@
 #include "ui/ui.h"
 
 GameScreen::GameScreen()
-    : _Camera(0)
+    : _BestScore(0)
+    , _Camera(0)
     , _CurrentY(0.f)
     , _Scene(0)
+    , _Score(0)
     , _Viewport(0)
 {
 
@@ -190,9 +192,16 @@ glm::vec4 GameScreen::GetArenaBounds()
 void GameScreen::AddScore(float score)
 {
     _Score += score;
+    
+    _BestScore = glm::max(_BestScore, _Score);
 }
 
 float GameScreen::GetScore()
 {
     return _Score;
+}
+
+float GameScreen::GetBestScore()
+{
+    return _BestScore;
 }
