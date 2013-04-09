@@ -2,8 +2,8 @@
 
 #include "database/records/register.h"
 
-PIXELBOOST_DECLARE_CLASS(LevelSegmentDefinition);
+PB_DB_DECLARE_STRUCT(LevelSegment)
 
-PIXELBOOST_START_REGISTER(RegisterRecordCreation)
-    PIXELBOOST_REGISTER(LevelSegmentDefinition)
-PIXELBOOST_END_REGISTER
+PB_DB_BEGIN_NAMESPACE(GameRecords)
+    PB_DB_REGISTER_STRUCT(LevelSegment)
+PB_DB_END_NAMESPACE

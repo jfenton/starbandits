@@ -14,14 +14,15 @@ class PlayerInput;
 
 class MissileComponent : public pb::Component
 {
+    PB_DECLARE_COMPONENT
+    
 public:
-    MissileComponent(pb::Entity* entity, PlayerInput* input, const MountInfo& mountInfo);
+    MissileComponent(pb::Entity* entity);
     ~MissileComponent();
     
-public:
-    virtual pb::Uid GetType();
-    static pb::Uid GetStaticType();
+    void Initialise(PlayerInput* input, const MountInfo& mountInfo);
     
+public:
     virtual void OnTransformChanged(const pb::Message& message);
     virtual void OnUpdate(const pb::Message& message);
     
@@ -31,5 +32,5 @@ private:
     bool _Fired;
     pb::ModelRenderable* _Renderable;
     PlayerInput* _Input;
-    const MountInfo& _MountInfo;
+    MountInfo _MountInfo;
 };

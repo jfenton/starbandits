@@ -2,8 +2,8 @@
 
 #include <vector>
 
-#include "pixelboost/db/definitions.h"
 #include "pixelboost/db/record.h"
+#include "pixelboost/db/register.h"
 
 namespace pb
 {
@@ -14,7 +14,7 @@ namespace pb
 class LevelSegment
 {
 public:
-    LevelSegment(pb::Scene* scene, float offset);
+    LevelSegment(pb::Scene* scene);
     ~LevelSegment();
     
     pb::Uid Create();
@@ -26,5 +26,4 @@ private:
     
     const pb::DbRecord* _Record;
     pb::Scene* _Scene;
-    float _Offset;
 };

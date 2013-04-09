@@ -1,6 +1,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "pixelboost/audio/soundManager.h"
+#include "pixelboost/audio/audioManagerSimple.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/transform.h"
@@ -16,21 +16,30 @@
 #include "player/projectile.h"
 #include "player/player.h"
 
-LaserComponent::LaserComponent(pb::Entity* entity, PlayerInput* input, const MountInfo& mountInfo)
+PB_DEFINE_COMPONENT(LaserComponent)
+
+LaserComponent::LaserComponent(pb::Entity* entity)
     : pb::Component(entity)
-    , _Input(input)
-    , _MountInfo(mountInfo)
     , _FiringDelay(0)
     , _SoundDelay(0)
+    , _Input(0)
 {
-    _Renderable = new pb::ModelRenderable(0);
-    _Renderable->SetModel(Game::Instance()->GetModelRenderer()->GetModel("weapon_laser"));
-    _Renderable->SetTexture(Game::Instance()->GetModelRenderer()->GetTexture("weapon_laser"));
+    
+}
+
+void LaserComponent::Initialise(PlayerInput* input, const MountInfo& mountInfo)
+{
+    _Input = input;
+    _MountInfo = mountInfo;
+    
+    _Renderable = new pb::ModelRenderable();
+    _Renderable->SetModel(pb::ModelRenderer::Instance()->GetModel("weapon_laser"));
+    _Renderable->SetTexture(pb::ModelRenderer::Instance()->GetTexture("weapon_laser"));
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetShader(Game::Instance()->GetLitShader());
     
-    GetParent()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnTransformChanged));
-    GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnUpdate));
+    GetEntity()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &LaserComponent::OnTransformChanged));
+    GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &LaserComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
     
     UpdateTransform();
@@ -38,19 +47,9 @@ LaserComponent::LaserComponent(pb::Entity* entity, PlayerInput* input, const Mou
 
 LaserComponent::~LaserComponent()
 {
-    GetParent()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnTransformChanged));
-    GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &LaserComponent::OnUpdate));
+    GetEntity()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &LaserComponent::OnTransformChanged));
+    GetEntity()->UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &LaserComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
-}
-
-pb::Uid LaserComponent::GetType()
-{
-    return GetStaticType();
-}
-
-pb::Uid LaserComponent::GetStaticType()
-{
-    return pb::TypeHash("LaserComponent");
 }
 
 void LaserComponent::OnTransformChanged(const pb::Message& message)
@@ -62,11 +61,11 @@ void LaserComponent::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+    PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
     
-    _SoundDelay = glm::max(_SoundDelay-updateMessage.GetDelta(), 0.f);
+    _SoundDelay = glm::max(_SoundDelay-updateMessage.GetGameDelta(), 0.f);
     
-    _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetDelta());
+    _FiringDelay = glm::max(0.f, _FiringDelay-updateMessage.GetGameDelta());
     if (_MountInfo.IsLeft ? _Input->_FiringLeft : _Input->_FiringRight)
     {
         if (_FiringDelay <= 0.f)
@@ -76,18 +75,18 @@ void LaserComponent::OnUpdate(const pb::Message& message)
             const float energyCost = 0.3f;
             if (ship->GetEnergy() > energyCost)
             {
-                pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
+                pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
                 
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
                 
                 if (_SoundDelay <= 0.f)
                 {
-                    pb::SoundManager::Instance()->PlaySfx("laser.wav", 0.5f);
+                    pb::AudioManagerSimple::Instance()->PlaySfx("laser.wav", 0.5f);
                     _SoundDelay = 0.25f;
                 }
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
+                GetScene()->CreateEntity<Projectile>(0, 0)->Initialise(kHealthTypePlayer, kProjectileTypeLaser, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 40.f, 5.f);
                 ship->RemoveEnergy(energyCost);
             }
             
@@ -97,9 +96,9 @@ void LaserComponent::OnUpdate(const pb::Message& message)
 
 void LaserComponent::UpdateTransform()
 {
-    PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+    PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
     
-    pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
+    pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, ship->GetTilt(), glm::vec3(0,1,0));

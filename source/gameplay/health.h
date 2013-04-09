@@ -12,12 +12,13 @@ enum HealthType
 
 class HealthComponent : public pb::Component
 {
+    PB_DECLARE_COMPONENT
+    
 public:
-    HealthComponent(pb::Entity* entity, HealthType healthType, float health, float shields);
+    HealthComponent(pb::Entity* entity);
     ~HealthComponent();
     
-    virtual pb::Uid GetType();
-    static pb::Uid GetStaticType();
+    void Initialise(HealthType healthType, float health, float shields);
     
     HealthType GetHealthType();
     
@@ -40,36 +41,33 @@ private:
 
 class HullHitMessage : public pb::Message
 {
+    PB_DECLARE_MESSAGE
+    
 public:
     HullHitMessage(pb::Entity* entity);
     ~HullHitMessage();
-    
-    pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
     
 private:
 };
 
 class ShieldsHitMessage : public pb::Message
 {
+    PB_DECLARE_MESSAGE
+    
 public:
     ShieldsHitMessage(pb::Entity* entity);
     ~ShieldsHitMessage();
-    
-    pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
     
 private:
 };
 
 class HealthDepletedMessage : public pb::Message
 {
+    PB_DECLARE_MESSAGE
+    
 public:
     HealthDepletedMessage(pb::Entity* entity);
     ~HealthDepletedMessage();
-    
-    pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
     
 private:
 };

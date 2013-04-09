@@ -8,12 +8,12 @@
 #include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/graphics/renderer/common/renderer.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
-#include "pixelboost/graphics/shader/manager.h"
+//#include "pixelboost/graphics/shader/manager.h"
 #include "pixelboost/graphics/shader/shader.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/system/physics/2d/physics.h"
 #include "pixelboost/logic/message/update.h"
@@ -30,6 +30,7 @@
 #include "player/projectile.h"
 #include "screens/game.h"
 
+/*
 DEFINE_DEBUG_FLOAT(g_LightA_X, "LightA.X", 0.f, -1.f, 1.f);
 DEFINE_DEBUG_FLOAT(g_LightA_Y, "LightA.Y", 0.f, -1.f, 1.f);
 DEFINE_DEBUG_FLOAT(g_LightA_Z, "LightA.Z", 1.f, -1.f, 1.f);
@@ -51,13 +52,14 @@ DEFINE_DEBUG_FLOAT(g_LightC_R, "LightC.R", 0.62f, 0.f, 1.f);
 DEFINE_DEBUG_FLOAT(g_LightC_G, "LightC.G", 0.53f, 0.f, 1.f);
 DEFINE_DEBUG_FLOAT(g_LightC_B, "LightC.B", 0.67f, 0.f, 1.f);
 DEFINE_DEBUG_FLOAT(g_LightC_I, "LightC.I", 0.47f, 0.f, 4.f);
+*/
 
 PlayerInput::PlayerInput()
-    : _BarrelLeft(false)
+    : _FiringLeft(false)
+    , _FiringRight(false)
+    , _BarrelLeft(false)
     , _BarrelRight(false)
     , _Boost(false)
-    , _FiringLeft(false)
-    , _FiringRight(false)
 {
     
 }
@@ -81,62 +83,58 @@ PlayerKeyboardInput::~PlayerKeyboardInput()
     pb::Engine::Instance()->GetKeyboardManager()->RemoveHandler(this);
 }
 
-bool PlayerKeyboardInput::OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifier, char character)
+bool PlayerKeyboardInput::OnKeyboardEvent(pb::KeyboardEvent event)
 {
-    if (key == pb::kKeyboardKeyCharacter)
+    if (event.Type == pb::KeyboardEvent::kKeyboardEventDown)
     {
-        switch (character)
+        if (event.Key == pb::kKeyboardKeyCharacter)
         {
-            case 'w':
-                _KeyUp = true;
-                break;
-            case 'a':
-                _KeyLeft = true;
-                break;
-            case 'd':
-                _KeyRight = true;
-                break;
-            case 's':
-                _KeyDown = true;
-                break;
-            case 'o':
-                _FiringLeft = true;
-                break;
-            case 'p':
-                _FiringRight = true;
-                break;
+            switch (event.Character)
+            {
+                case 'w':
+                    _KeyUp = true;
+                    break;
+                case 'a':
+                    _KeyLeft = true;
+                    break;
+                case 'd':
+                    _KeyRight = true;
+                    break;
+                case 's':
+                    _KeyDown = true;
+                    break;
+                case 'o':
+                    _FiringLeft = true;
+                    break;
+                case 'p':
+                    _FiringRight = true;
+                    break;
+            }
         }
-    }
-    
-    UpdateThrust();
-    
-    return false;
-}
-
-bool PlayerKeyboardInput::OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character)
-{
-    if (key == pb::kKeyboardKeyCharacter)
-    {
-        switch (character)
+    } else {
+        if (event.Key == pb::kKeyboardKeyCharacter)
         {
-            case 'w':
-                _KeyUp = false;
-                break;
-            case 'a':
-                _KeyLeft = false;
-                break;
-            case 'd':
-                _KeyRight = false;
-                break;
-            case 's':
-                _KeyDown = false;
-                break;
-            case 'o':
-                _FiringLeft = false;
-                break;
-            case 'p':
-                _FiringRight = false;
-                break;
+            switch (event.Character)
+            {
+                case 'w':
+                    _KeyUp = false;
+                    break;
+                case 'a':
+                    _KeyLeft = false;
+                    break;
+                case 'd':
+                    _KeyRight = false;
+                    break;
+                case 's':
+                    _KeyDown = false;
+                    break;
+                case 'o':
+                    _FiringLeft = false;
+                    break;
+                case 'p':
+                    _FiringRight = false;
+                    break;
+            }
         }
     }
     
@@ -259,42 +257,54 @@ bool PlayerJoystickInput::OnButtonUp(int joystick, int button)
     return false;
 }
 
-PlayerShip::PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(PlayerShip)
+
+PlayerShip::PlayerShip(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, entity, creationEntity)
     , _BarrelCooldown(0)
     , _Energy(100)
     , _GrappleActive(false)
-    , _PlayerId(playerId)
+    , _PlayerId(0)
     , _Tilt(0)
-    , _ShieldTime(0)
     , _HullTime(0)
+    , _ShieldTime(0)
 {
-    pb::TransformComponent* transform = new pb::BasicTransformComponent(this);
+    
+}
+
+void PlayerShip::Initialise(int playerId, glm::vec2 position)
+{
+    _PlayerId = playerId;
+    
+    pb::TransformComponent* transform = CreateComponent<pb::TransformComponent>();
     transform->SetPosition(glm::vec3(position, 0.f));
     
-    _Ship = new pb::ModelComponent(this,
-                                   pb::Engine::Instance()->GetModelRenderer()->GetModel(playerId == 0 ? "ship_01" : "ship_02"),
-                                   pb::Engine::Instance()->GetModelRenderer()->GetTexture(playerId == 0 ? "ship_01_DIFF" : "ship_02_DIFF"));
+    _Ship = CreateComponent<pb::ModelComponent>();
+    _Ship->SetModel(pb::ModelRenderer::Instance()->GetModel(playerId == 0 ? "ship_01" : "ship_02"));
+    _Ship->SetTexture(pb::ModelRenderer::Instance()->GetTexture(playerId == 0 ? "ship_01_DIFF" : "ship_02_DIFF"));
     _Ship->SetLayer(kGraphicLayerPlayer);
     _Ship->SetShader(Game::Instance()->GetLitShader());
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));
-    
+    pb::PhysicsBody2DComponent* physics = CreateComponent<pb::PhysicsBody2DComponent>();
+    physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));    
     physics->GetBody()->SetAngularDamping(0.9f);
     
+    /*
     _Shield = new pb::ModelComponent(this,
-                                     pb::Engine::Instance()->GetModelRenderer()->GetModel("shield"),
-                                     pb::Engine::Instance()->GetModelRenderer()->GetTexture("shield_DIFF"));
+                                     pb::ModelRenderer::Instance()->GetModel("shield"),
+                                     pb::ModelRenderer::Instance()->GetTexture("shield_DIFF"));
     _Shield->SetLayer(kGraphicLayerShield);
     _Shield->SetAlphaBlend(true);
     _Shield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.6 : 0.2,0,0)), glm::vec3(1.2,1.2,1.2)));
+    */
     
-    _SpriteShield = new pb::SpriteComponent(this, "shield");
+    _SpriteShield = CreateComponent<pb::SpriteComponent>();
+    _SpriteShield->SetSprite("/spritesheets/game", "shield");
     _SpriteShield->SetLayer(kGraphicLayerSpriteShield);
     _SpriteShield->SetLocalTransform(glm::scale(glm::translate(glm::mat4x4(), glm::vec3(playerId == 0 ? 0.2 : -0.2,0,0)), glm::vec3(1.25,1.25,1.25)));
     
-    _Input = new PlayerJoystickInput(_PlayerId);
-//    _Input = new PlayerKeyboardInput();
+//    _Input = new PlayerJoystickInput(_PlayerId);
+    _Input = new PlayerKeyboardInput();
     
     _LeftMount.IsLeft = false;
     _LeftMount.Offset = glm::vec3(-0.61, 0, -0.16);
@@ -308,7 +318,10 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position)
     _MissileMount.Offset = glm::vec3(0.7, 0, -0.16);
     _MissileMount.Rotation = glm::vec3(0,0,15.f);
     
-    new HealthComponent(this, kHealthTypePlayer, 50.f, 10.f);
+    CreateComponent<HealthComponent>()->Initialise(kHealthTypePlayer, 50.f, 10.f);
+    
+    // Fix weapons
+    /*
     new LaserComponent(this, _Input, _LeftMount);
     new LaserComponent(this, _Input, _RightMount);
     new MissileComponent(this, _Input, _MissileMount);
@@ -320,41 +333,32 @@ PlayerShip::PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position)
     SetupEngineParticle(_EngineLeft, glm::vec3(-1.f, -1.f, 0.f), 0.5f);
     SetupEngineParticle(_EngineMain, glm::vec3(0.f, -1.f, 0.f), 1.f);
     SetupEngineParticle(_EngineRight, glm::vec3(1.f, -1.f, 0.f), 0.5f);
+    */
     
-    RegisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
-    RegisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
-    RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &PlayerShip::OnCollision));
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
+    RegisterMessageHandler<HullHitMessage>(pb::MessageHandler(this, &PlayerShip::OnHullHit));
+    RegisterMessageHandler<ShieldsHitMessage>(pb::MessageHandler(this, &PlayerShip::OnShieldsHit));
+    RegisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &PlayerShip::OnCollision));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &PlayerShip::OnUpdate));
 }
 
 PlayerShip::~PlayerShip()
 {
-    UnregisterMessageHandler<HullHitMessage>(MessageHandler(this, &PlayerShip::OnHullHit));
-    UnregisterMessageHandler<ShieldsHitMessage>(MessageHandler(this, &PlayerShip::OnShieldsHit));
-    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &PlayerShip::OnCollision));
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &PlayerShip::OnUpdate));
+    UnregisterMessageHandler<HullHitMessage>(pb::MessageHandler(this, &PlayerShip::OnHullHit));
+    UnregisterMessageHandler<ShieldsHitMessage>(pb::MessageHandler(this, &PlayerShip::OnShieldsHit));
+    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &PlayerShip::OnCollision));
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &PlayerShip::OnUpdate));
     
     delete _Input;
-}
-
-pb::Uid PlayerShip::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid PlayerShip::GetStaticType()
-{
-    return pb::TypeHash("PlayerShip");
 }
 
 void PlayerShip::OnCollision(const pb::Message& message)
 {
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
     
-    if (collisionMessage.GetOtherComponent()->GetParent()->GetType() == pb::TypeHash("Cog"))
+    if (collisionMessage.GetOtherComponent()->GetEntity()->GetType() == pb::TypeHash("Cog"))
     {
         Game::Instance()->GetGameScreen()->AddScore(100.f);
-        collisionMessage.GetOtherComponent()->GetParent()->Destroy();
+        collisionMessage.GetOtherComponent()->GetEntity()->Destroy();
     }
 }
 
@@ -379,9 +383,9 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     bool controlLocked = _BarrelCooldown-(barrelCooldown-barrelControlLock) > 0.f;
     
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
-    float thrustPower = enginePower * updateMessage.GetDelta();
+    float thrustPower = enginePower * updateMessage.GetGameDelta();
     
-    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+    b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
     
     float desiredRotation = glm::atan(_Input->_Thrust.y, _Input->_Thrust.x) - glm::radians(90.f);
     float rotation = body->GetAngle();
@@ -449,14 +453,14 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             velocity = barrelForce + forwardVelocity;
         }
     } else {
-        _BarrelCooldown -= updateMessage.GetDelta();
+        _BarrelCooldown -= updateMessage.GetGameDelta();
     }
     
     velocity.x = glm::clamp(velocity.x, -maxSpeed, maxSpeed) * 0.97f;
     velocity.y = glm::clamp(velocity.y, -maxSpeed, maxSpeed) * 0.97f;
     body->SetLinearVelocity(b2Vec2(velocity.x, velocity.y));
     
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     
     float maxTilt = 90.f;
     float desiredTilt = glm::clamp(-(desiredRotation - rotation)*60.f, -maxTilt, maxTilt) * glm::clamp(glm::length(velocity)/5.f, 0.f, 1.f);
@@ -468,9 +472,9 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     transform = glm::rotate(transform, 90.f, glm::vec3(1,0,0));
     transform = glm::rotate(transform, 180.f, glm::vec3(0,1,0));
     transform = glm::rotate(transform, _Tilt + barrelRot, glm::vec3(0,0,1));
-    GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
+    GetComponent<pb::ModelComponent>()->SetLocalTransform(transform);
     
-    _Energy += glm::max(((100.f-_Energy)/25.f),1.f)*updateMessage.GetDelta()*2.f;
+    _Energy += glm::max(((100.f-_Energy)/25.f),1.f)*updateMessage.GetGameDelta()*2.f;
     _Energy = glm::min(_Energy, 100.f);
     
     if (glm::length(_Input->_GrappleDirection) > 0.35f && !_GrappleActive)
@@ -488,14 +492,14 @@ void PlayerShip::OnUpdate(const pb::Message& message)
             if (it->second->GetType() != pb::TypeHash("Asteroid") && it->second->GetType() != pb::TypeHash("HomingMine") && it->second->GetType() != pb::TypeHash("StaticMine") && it->second->GetType() != pb::TypeHash("Turret") && it->second->GetType() != pb::TypeHash("StealthBomber") && it->second->GetType() != pb::TypeHash("Cog"))
                 continue;
             
-            glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
+            glm::vec3 entityPosition = it->second->GetComponent<pb::TransformComponent>()->GetPosition();
             float dot = glm::dot(glm::normalize(glm::vec2(entityPosition.x - position.x, entityPosition.y - position.y)), glm::normalize(_Input->_GrappleDirection));
             
             if (dot > 0 && glm::degrees(glm::acos(dot)) < 70.f)
             {
                 if (glm::distance(position, entityPosition) < 15.f)
                 {
-                    new Grapple(GetScene(), GetUid(), _Input, it->second->GetUid());
+                    GetScene()->CreateEntity<Grapple>(0,0)->Initialise(GetUid(), _Input, it->second->GetUid());
                 }
             }
         }
@@ -506,6 +510,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     ProcessGameBounds();
     ProcessLighting();
     
+    /*
     pb::ParticleSystem* engineLeft = _EngineLeft->GetSystem();
     pb::ParticleSystem* engineMain = _EngineMain->GetSystem();
     pb::ParticleSystem* engineRight = _EngineRight->GetSystem();
@@ -530,13 +535,14 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         engineRight->Definition->Emitter->EmitSpeed = glm::clamp(glm::abs(rotateThruster) * 1200.f, 0.f, 1200.f);
     }
     
-    _SpriteShield->SetTint(glm::vec4(1.f,1.f,1.f,GetComponentByType<HealthComponent>()->GetShields()/10.f));
+    _SpriteShield->SetTint(glm::vec4(1.f,1.f,1.f,GetComponent<HealthComponent>()->GetShields()/10.f));
     
-    _ShieldTime = glm::max(_ShieldTime-updateMessage.GetDelta(), 0.f);
+    _ShieldTime = glm::max(_ShieldTime-updateMessage.GetGameDelta(), 0.f);
     _Shield->SetTint(glm::vec4(1,1,1,glm::clamp(_ShieldTime*3.f, 0.f, 1.f)));
     
-    _HullTime = glm::max(_HullTime-updateMessage.GetDelta(), 0.f);
+    _HullTime = glm::max(_HullTime-updateMessage.GetGameDelta(), 0.f);
     _Ship->SetTint(glm::vec4(1, 0.5 + glm::clamp((1.f-_HullTime), 0.f, 0.5f), glm::clamp((1.f-_HullTime), 0.f, 1.f), 1.f));
+    */
 }
 
 float PlayerShip::GetEnergy()
@@ -551,7 +557,7 @@ void PlayerShip::RemoveEnergy(float energy)
 
 float PlayerShip::GetSpeedPercentage()
 {
-    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+    b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
     return body->GetLinearVelocity().y / 10.f;
 }
 
@@ -562,8 +568,8 @@ float PlayerShip::GetTilt()
 
 void PlayerShip::ProcessGameBounds()
 {
-    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     
     glm::vec4 bounds = Game::Instance()->GetGameScreen()->GetArenaBounds();
     float forceStrength = 3.f;
@@ -604,7 +610,8 @@ void PlayerShip::ProcessGameBounds()
 
 void PlayerShip::ProcessLighting()
 {
-    pb::Shader* shader = pb::Renderer::Instance()->GetShaderManager()->GetShader("/data/shaders/texturedLit.shc");
+    /*
+    pb::Shader* shader = pb::Renderer::Instance()->GetShaderManager()->GetShader("/shaders/texturedLit.shc");
     pb::ShaderPass* pass = shader->GetTechnique(pb::TypeHash("default"))->GetPass(0);
     pass->Bind();
     
@@ -617,10 +624,12 @@ void PlayerShip::ProcessLighting()
     program->SetUniform("_LightColor[0]", glm::vec3(g_LightA_R, g_LightA_G, g_LightA_B)*(float)g_LightA_I);
     program->SetUniform("_LightColor[1]", glm::vec3(g_LightB_R, g_LightB_G, g_LightB_B)*(float)g_LightB_I);
     program->SetUniform("_LightColor[2]", glm::vec3(g_LightC_R, g_LightC_G, g_LightC_B)*(float)g_LightC_I);
+    */
 }
 
 void PlayerShip::SetupEngineParticle(pb::ParticleComponent* particleComponent, glm::vec3 position, float scale)
 {
+    /*
     particleComponent->SetLayer(kGraphicLayerParticles);
     particleComponent->SetLocalTransform(glm::translate(glm::mat4x4(), position));
     
@@ -635,4 +644,5 @@ void PlayerShip::SetupEngineParticle(pb::ParticleComponent* particleComponent, g
     scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.f), glm::vec2(0.1,0)));
     engineDefinition->ModifierScale = scaleValue;
     engineDefinition->Emitter = emitter;
+    */
 }

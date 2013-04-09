@@ -5,7 +5,7 @@
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
@@ -15,10 +15,18 @@
 #include "gameplay/explosion.h"
 #include "gameplay/health.h"
 #include "player/player.h"
+#include "screens/game.h"
 
-HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
-	: pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(HomingMine)
+
+HomingMine::HomingMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity)
+	: pb::Entity(scene, entity, creationEntity)
     , _PlayerId(0)
+{
+    
+}
+
+void HomingMine::Initialise(glm::vec2 position)
 {
     float size = 1.f;
     
@@ -26,52 +34,43 @@ HomingMine::HomingMine(pb::Scene* scene, glm::vec2 position)
     _Rotation = 0.f;
     _Fuse = 2.f;
     
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(glm::vec3(position, 0));
+    auto transform = CreateComponent<pb::TransformComponent>();
+    transform->SetPosition(glm::vec3(position, 0) + Game::Instance()->GetGameScreen()->GetLevelOffset());
     
-    pb::ModelComponent* model = new pb::ModelComponent(this,
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetModel("homingMine"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_armed_DIFF"));
+    pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
+    model->SetModel(pb::ModelRenderer::Instance()->GetModel("homingMine"));
+    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_armed_DIFF"));
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(size/2.f, size/2.f));
+    pb::PhysicsBody2DComponent* physics = CreateComponent<pb::PhysicsBody2DComponent>();
+    physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(size/2.f, size/2.f));
     
     physics->GetBody()->GetFixtureList()[0].SetDensity(20.f);
     physics->GetBody()->ResetMassData();
     
-    new HealthComponent(this, kHealthTypeEnemy, 5.f, 0.f);
+    CreateComponent<HealthComponent>()->Initialise(kHealthTypeEnemy, 5.f, 0.f);
     
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &HomingMine::OnUpdate));
-    RegisterMessageHandler<HealthDepletedMessage>(MessageHandler(this, &HomingMine::OnHealthDepleted));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HomingMine::OnUpdate));
+    RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &HomingMine::OnHealthDepleted));
 }
 
 HomingMine::~HomingMine()
 {
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &HomingMine::OnUpdate));
-    UnregisterMessageHandler<HealthDepletedMessage>(MessageHandler(this, &HomingMine::OnHealthDepleted));
-}
-
-pb::Uid HomingMine::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid HomingMine::GetStaticType()
-{
-    return pb::TypeHash("HomingMine");
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HomingMine::OnUpdate));
+    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &HomingMine::OnHealthDepleted));
 }
 
 void HomingMine::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
-    _Fuse -= updateMessage.GetDelta();
+    _Fuse -= updateMessage.GetGameDelta();
     
     if (_Fuse > 0.f)
         return;
     
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     
     if (_PlayerId == 0)
     {
@@ -83,7 +82,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
             if (it->second->GetType() == GetStaticType() || it->second->GetType() == pb::TypeHash("Projectile")  || it->second->GetType() == pb::TypeHash("Cog"))
                 continue;
             
-            pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+            pb::TransformComponent* transform = it->second->GetComponent<pb::TransformComponent>();
             
             if (!transform)
                 continue;
@@ -92,7 +91,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
             
             if (glm::distance(position, entityPosition) < 3.f)
             {
-                GetComponentByType<HealthComponent>()->Damage(10.f);
+                GetComponent<HealthComponent>()->Damage(10.f);
             }
             
             if (it->second->GetType() != PlayerShip::GetStaticType())
@@ -121,7 +120,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
             return;
         }
         
-        pb::TransformComponent* transform = entity->GetComponentByType<pb::TransformComponent>();
+        pb::TransformComponent* transform = entity->GetComponent<pb::TransformComponent>();
         
         if (!transform)
         {
@@ -131,7 +130,7 @@ void HomingMine::OnUpdate(const pb::Message& message)
         
         glm::vec3 entityPosition = transform->GetPosition();
         
-        b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+        b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
         
         float maxSpeed = 8.f;
         float force = 150.f;
@@ -151,21 +150,21 @@ void HomingMine::OnUpdate(const pb::Message& message)
             _PlayerId = 0;
         }
         
-        GetComponentByType<pb::ModelComponent>()->SetTexture(pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_active_DIFF"));
+        GetComponent<pb::ModelComponent>()->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_active_DIFF"));
     } else {
-        GetComponentByType<pb::ModelComponent>()->SetTexture(pb::Engine::Instance()->GetModelRenderer()->GetTexture("homingMine_armed_DIFF"));
+        GetComponent<pb::ModelComponent>()->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_armed_DIFF"));
     }
     
     glm::mat4x4 transform;
     transform = glm::rotate(transform, _Rotation, glm::normalize(glm::vec3(0.4, 0.1, 0.7)));
     
-    GetComponentByType<pb::ModelComponent>()->SetLocalTransform(transform);
+    GetComponent<pb::ModelComponent>()->SetLocalTransform(transform);
 }
 
 void HomingMine::OnHealthDepleted(const pb::Message& message)
 {
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     
     Destroy();
-    new Explosion(GetScene(), glm::vec2(position.x, position.y), 5.f);
+    GetScene()->CreateEntity<Explosion>(0,0)->Initialise(glm::vec2(position.x, position.y), 5.f);
 }

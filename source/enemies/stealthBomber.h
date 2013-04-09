@@ -4,12 +4,11 @@
 
 class StealthBomber : public pb::Entity
 {
-public:
-	StealthBomber(pb::Scene* scene, glm::vec2 position, float rotation);
-    ~StealthBomber();
+    PB_DECLARE_ENTITY
     
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+public:
+	StealthBomber(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
+    ~StealthBomber();
     
     void OnUpdate(const pb::Message& message);
     void OnHealthDepleted(const pb::Message& message);

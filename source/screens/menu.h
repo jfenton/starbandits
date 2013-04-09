@@ -13,7 +13,7 @@ public:
     ~MenuScreen();
     
 public:
-    virtual void Update(float time);
+    virtual void Update(float timeDelta, float gameDelta);
     
     virtual void SetActive(bool active);
     

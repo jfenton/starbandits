@@ -10,7 +10,7 @@
 #include "pixelboost/logic/component/graphics/buffer.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/scene.h"
@@ -18,15 +18,18 @@
 #include "background/stars.h"
 #include "common/layers.h"
 
-BackgroundStars::BackgroundStars(pb::Scene* scene)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(BackgroundStars)
+
+BackgroundStars::BackgroundStars(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, parent, creationEntity)
 {
+    /*
     pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
     
     pb::IndexBuffer* starsIndex = pb::GraphicsDevice::Instance()->CreateIndexBuffer(pb::kBufferFormatStatic, 1000*6);
     pb::VertexBuffer* starsVertex = pb::GraphicsDevice::Instance()->CreateVertexBuffer(pb::kBufferFormatStatic, pb::kVertexFormat_P3_UV, 1000*4);
     
-    pb::BufferComponent* buffer = new pb::BufferComponent(this, starsIndex, starsVertex, pb::Engine::Instance()->GetModelRenderer()->GetTexture("star"), 1000*6);
+    pb::BufferComponent* buffer = new pb::BufferComponent(this, starsIndex, starsVertex, pb::ModelRenderer::Instance()->GetTexture("star"), 1000*6);
     buffer->SetLayer(kGraphicLayerStars);
     
     starsIndex->Lock();
@@ -74,20 +77,10 @@ BackgroundStars::BackgroundStars(pb::Scene* scene)
     }
     
     starsIndex->Unlock();
-    starsVertex->Unlock();
+    starsVertex->Unlock();*/
 }
 
 BackgroundStars::~BackgroundStars()
 {
     
-}
-
-pb::Uid BackgroundStars::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid BackgroundStars::GetStaticType()
-{
-    return pb::TypeHash("BackgroundStars");
 }

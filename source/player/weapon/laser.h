@@ -14,14 +14,15 @@ class PlayerInput;
 
 class LaserComponent : public pb::Component
 {
+    PB_DECLARE_COMPONENT
+    
 public:
-    LaserComponent(pb::Entity* entity, PlayerInput* input, const MountInfo& mountInfo);
+    LaserComponent(pb::Entity* entity);
     ~LaserComponent();
     
-public:
-    virtual pb::Uid GetType();
-    static pb::Uid GetStaticType();
+    void Initialise(PlayerInput* input, const MountInfo& mountInfo);
     
+public:
     virtual void OnTransformChanged(const pb::Message& message);
     virtual void OnUpdate(const pb::Message& message);
     
@@ -33,5 +34,5 @@ private:
     
     pb::ModelRenderable* _Renderable;
     PlayerInput* _Input;
-    const MountInfo& _MountInfo;
+    MountInfo _MountInfo;
 };

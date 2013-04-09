@@ -6,5 +6,5 @@ AsteroidDefinition::AsteroidDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(AsteroidDefinition, "Asteroid")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(Asteroid)
+PB_DB_END_STRUCT

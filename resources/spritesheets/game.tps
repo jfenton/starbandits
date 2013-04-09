@@ -53,7 +53,7 @@
         <key>dataFormat</key>
         <string>json</string>
         <key>textureFileName</key>
-        <filename>exported/game-hdr.png</filename>
+        <filename>exported/game-hdr.tga</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -79,7 +79,7 @@
         <key>textureSubPath</key>
         <string></string>
         <key>textureFormat</key>
-        <enum type="SettingsBase::TextureFormat">png</enum>
+        <enum type="SettingsBase::TextureFormat">tga</enum>
         <key>borderPadding</key>
         <uint>0</uint>
         <key>maxTextureSize</key>

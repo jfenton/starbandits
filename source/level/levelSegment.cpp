@@ -15,9 +15,8 @@
 #include "enemies/turret.h"
 #include "level/levelSegment.h"
 
-LevelSegment::LevelSegment(pb::Scene* scene, float offset)
-    : _Offset(offset)
-    , _Scene(scene)
+LevelSegment::LevelSegment(pb::Scene* scene)
+    : _Scene(scene)
 {
     const pb::Database::RecordDescriptionList& records = pb::Database::Instance()->GetRecordDescriptions();
     
@@ -46,33 +45,39 @@ LevelSegment::~LevelSegment()
 
 pb::Uid LevelSegment::Create()
 {
-    const pb::DbRecord::EntityMap& entities = _Record->GetEntities();
+    //const pb::DbRecord::EntityMap& entities = _Record->GetEntities();
     
     if (_EntityIt == _Record->GetEntities().end())
         return 0;
     
     pb::Entity* entity = 0;
     
-    glm::vec2 position(_EntityIt->second->GetPosition().x, _EntityIt->second->GetPosition().y + _Offset);
+//    glm::vec2 position(_EntityIt->second->GetPosition().x, _EntityIt->second->GetPosition().y + _Offset);
     
     if (_EntityIt->second->GetType() == pb::TypeHash("Asteroid"))
     {
-        entity = new Asteroid(_Scene, position, _EntityIt->second->GetScale().x);
+        entity = _Scene->CreateEntity<Asteroid>(0, _EntityIt->second);
+//        entity = new Asteroid(_Scene, position, _EntityIt->second->GetScale().x);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("HomingMine"))
     {
-        entity = new HomingMine(_Scene, position);
+        entity = _Scene->CreateEntity<HomingMine>(0, _EntityIt->second);
+//        entity = new HomingMine(_Scene, position);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("StaticMine"))
     {
-        entity = new StaticMine(_Scene, position);
+        entity = _Scene->CreateEntity<StaticMine>(0, _EntityIt->second);
+//        entity = new StaticMine(_Scene, position);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("StealthBomber"))
     {
-        entity = new StealthBomber(_Scene, position, _EntityIt->second->GetRotation().z + 90.f);
+        entity = _Scene->CreateEntity<StealthBomber>(0, _EntityIt->second);
+//        entity = new StealthBomber(_Scene, position, _EntityIt->second->GetRotation().z + 90.f);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretHoming"))
     {
-        entity = new Turret(_Scene, position, kProjectileTypeHoming);
+        entity = _Scene->CreateEntity<Turret>(0, _EntityIt->second);
+//        entity = new Turret(_Scene, position, kProjectileTypeHoming);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretLaser"))
     {
-        entity = new Turret(_Scene, position, kProjectileTypeLaser);
+        entity = _Scene->CreateEntity<Turret>(0, _EntityIt->second);
+//        entity = new Turret(_Scene, position, kProjectileTypeLaser);
     }
     
     _EntityIt++;

@@ -8,14 +8,15 @@ namespace pb
 
 class Asteroid : public pb::Entity
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    Asteroid(pb::Scene* scene, glm::vec2 position, float scale);
+    Asteroid(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~Asteroid();
     
-public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    void Initialise(glm::vec2 position, float scale);
     
+public:
     void OnUpdate(const pb::Message& message);
     
 private:

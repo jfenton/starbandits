@@ -39,8 +39,9 @@ public:
     PlayerKeyboardInput();
     ~PlayerKeyboardInput();
     
-    virtual bool OnKeyDown(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
-    virtual bool OnKeyUp(pb::KeyboardKey key, pb::ModifierKeys modifier, char character);
+    virtual int GetInputHandlerPriority() { return 0; }
+    
+    virtual bool OnKeyboardEvent(pb::KeyboardEvent event);
     
 private:
     void UpdateThrust();
@@ -57,6 +58,8 @@ public:
     PlayerJoystickInput(int playerId);
     ~PlayerJoystickInput();
     
+    virtual int GetInputHandlerPriority() { return 0; }
+    
     virtual bool OnAxisChanged(int joystick, int stick, int axis, float value);
     virtual bool OnButtonDown(int joystick, int button);
     virtual bool OnButtonUp(int joystick, int button);
@@ -67,14 +70,15 @@ private:
 
 class PlayerShip : public pb::Entity
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    PlayerShip(pb::Scene* scene, int playerId, glm::vec2 position);
+    PlayerShip(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~PlayerShip();
     
-public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    void Initialise(int playerId, glm::vec2 position);
     
+public:
     void OnCollision(const pb::Message& message);
     void OnHullHit(const pb::Message& message);
     void OnShieldsHit(const pb::Message& message);

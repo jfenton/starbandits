@@ -5,7 +5,7 @@
 #include "pixelboost/graphics/renderer/primitive/primitiveRenderer.h"
 #include "pixelboost/logic/component/graphics/rectangle.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/system/physics/2d/physics.h"
 #include "pixelboost/logic/message/physics/collision.h"
@@ -16,14 +16,25 @@
 #include "player/grapple.h"
 #include "player/player.h"
 
-Grapple::Grapple(pb::Scene* scene, pb::Uid playerId, PlayerInput* input, pb::Uid collisionId)
-    : pb::Entity(scene, 0)
-    , _CollisionId(collisionId)
-    , _Input(input)
-    , _PlayerId(playerId)
+PB_DEFINE_ENTITY(Grapple)
+
+Grapple::Grapple(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, entity, creationEntity)
+    , _PlayerId(0)
+    , _CollisionId(0)
+    , _Input(0)
     , _Renderable(0)
 {
-    _Renderable = new pb::PrimitiveRenderableLine(GetUid());
+    
+}
+
+void Grapple::Initialise(pb::Uid playerId, PlayerInput* input, pb::Uid collisionId)
+{
+    _CollisionId = collisionId;
+    _Input = input;
+    _PlayerId = playerId;
+
+    _Renderable = new pb::PrimitiveRenderableLine();
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetColor(glm::vec4(116.f/255.f, 206.f/255.f, 236.f/255.f, 1.f));
     GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
@@ -31,7 +42,7 @@ Grapple::Grapple(pb::Scene* scene, pb::Uid playerId, PlayerInput* input, pb::Uid
     _StartDistance = GetDistance();
     _StartDistance = glm::max(_StartDistance, 10.f);
     
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Grapple::OnUpdate));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Grapple::OnUpdate));
 }
 
 Grapple::~Grapple()
@@ -41,17 +52,7 @@ Grapple::~Grapple()
     
     delete _Renderable;
 
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Grapple::OnUpdate));
-}
-
-pb::Uid Grapple::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid Grapple::GetStaticType()
-{
-    return pb::TypeHash("Grapple");
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Grapple::OnUpdate));
 }
 
 void Grapple::OnUpdate(const pb::Message& message)
@@ -70,7 +71,7 @@ void Grapple::OnUpdate(const pb::Message& message)
     
     pb::Entity* grappleObject = GetScene()->GetEntityById(_CollisionId);
     
-    b2Body* objectBody = grappleObject ? grappleObject->GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody() : 0;
+    b2Body* objectBody = grappleObject ? grappleObject->GetComponent<pb::PhysicsBody2DComponent>()->GetBody() : 0;
     
     if (!objectBody)
     {
@@ -103,8 +104,8 @@ void Grapple::UpdateData()
         return;
     }
     
-    _ObjectPosition = grappleObject->GetComponentByType<pb::TransformComponent>()->GetPosition();
-    _PlayerPosition = playerShip->GetComponentByType<pb::TransformComponent>()->GetPosition();
+    _ObjectPosition = grappleObject->GetComponent<pb::TransformComponent>()->GetPosition();
+    _PlayerPosition = playerShip->GetComponent<pb::TransformComponent>()->GetPosition();
 }
 
 float Grapple::GetDistance()

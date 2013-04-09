@@ -7,12 +7,13 @@
 
 class DamageComponent : public pb::Component
 {
+    PB_DECLARE_COMPONENT
+    
 public:
-    DamageComponent(pb::Entity* entity, HealthType healthType, float damage);
+    DamageComponent(pb::Entity* entity);
     ~DamageComponent();
     
-    virtual pb::Uid GetType();
-    static pb::Uid GetStaticType();
+    void Initialise(HealthType healthType, float damage);
     
     float GetDamage() const;
     void SetDamage(float damage);
@@ -26,12 +27,11 @@ private:
 
 class DamageMessage : public pb::Message
 {
+    PB_DECLARE_MESSAGE
+    
 public:
     DamageMessage(pb::Entity* entity, pb::Component* component, float damage);
     ~DamageMessage();
-    
-    pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
     
     float GetDamage() const;
     

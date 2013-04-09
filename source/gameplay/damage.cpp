@@ -1,9 +1,9 @@
 #include "gameplay/damage.h"
 
-DamageComponent::DamageComponent(pb::Entity* entity, HealthType healthType, float damage)
+PB_DEFINE_COMPONENT(DamageComponent)
+
+DamageComponent::DamageComponent(pb::Entity* entity)
 	: pb::Component(entity)
-	, _Damage(damage)
-    , _HealthType(healthType)
 {
 
 }
@@ -13,14 +13,10 @@ DamageComponent::~DamageComponent()
 
 }
 
-pb::Uid DamageComponent::GetType()
+void DamageComponent::Initialise(HealthType healthType, float damage)
 {
-	return GetStaticType();
-}
-
-pb::Uid DamageComponent::GetStaticType()
-{
-	return pb::TypeHash("DamageComponent");
+    _Damage = damage;
+    _HealthType = healthType;
 }
 
 float DamageComponent::GetDamage() const
@@ -38,6 +34,8 @@ HealthType DamageComponent::GetHealthType() const
     return _HealthType;
 }
 
+PB_DEFINE_MESSAGE(DamageMessage)
+
 DamageMessage::DamageMessage(pb::Entity* entity, pb::Component* component, float damage)
     : pb::Message(entity, component)
     , _Damage(damage)
@@ -48,16 +46,6 @@ DamageMessage::DamageMessage(pb::Entity* entity, pb::Component* component, float
 DamageMessage::~DamageMessage()
 {
     
-}
-
-pb::Uid DamageMessage::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid DamageMessage::GetStaticType()
-{
-    return pb::TypeHash("DamageHash");
 }
 
 float DamageMessage::GetDamage() const

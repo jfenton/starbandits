@@ -6,5 +6,5 @@ HomingMineDefinition::HomingMineDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(HomingMineDefinition, "HomingMine")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(HomingMine)
+PB_DB_END_STRUCT

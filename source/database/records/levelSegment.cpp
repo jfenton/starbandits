@@ -6,6 +6,6 @@ LevelSegmentDefinition::LevelSegmentDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(LevelSegmentDefinition, "LevelSegment")
-    PIXELBOOST_FIELD_FLOAT(Length, "Length")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(LevelSegment)
+    PB_DB_FIELD_FLOAT(Length)
+PB_DB_END_STRUCT

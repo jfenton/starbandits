@@ -10,11 +10,9 @@ namespace pb
 
 class BackgroundStars : public pb::Entity
 {
-public:
-    BackgroundStars(pb::Scene* scene);
-    ~BackgroundStars();
+    PB_DECLARE_ENTITY
     
 public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    BackgroundStars(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
+    ~BackgroundStars();
 };

@@ -11,11 +11,9 @@ namespace pb
 
 class BackgroundTile : public pb::Entity
 {
-public:
-    BackgroundTile(pb::Scene* scene, glm::vec2 position);
-    ~BackgroundTile();
+    PB_DECLARE_ENTITY
     
 public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    BackgroundTile(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
+    ~BackgroundTile();
 };

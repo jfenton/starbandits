@@ -11,7 +11,7 @@
 #include "pixelboost/logic/component/graphics/buffer.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/scene.h"
@@ -19,15 +19,16 @@
 #include "background/background.h"
 #include "common/layers.h"
 
-BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(BackgroundTile)
+
+BackgroundTile::BackgroundTile(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, parent, creationEntity)
 {
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(glm::vec3(position.x, position.y, 0));
+    CreateComponent<pb::TransformComponent>();
     
-    pb::ModelComponent* model = new pb::ModelComponent(this,
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetModel("skybox"),
-                                                       pb::Engine::Instance()->GetModelRenderer()->GetTexture("skybox"));
+    auto model = CreateComponent<pb::ModelComponent>();
+    model->SetModel(pb::ModelRenderer::Instance()->GetModel("skybox"));
+    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("skybox"));
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
@@ -39,14 +40,4 @@ BackgroundTile::BackgroundTile(pb::Scene* scene, glm::vec2 position)
 BackgroundTile::~BackgroundTile()
 {
     
-}
-
-pb::Uid BackgroundTile::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid BackgroundTile::GetStaticType()
-{
-    return pb::TypeHash("BackgroundTile");
 }

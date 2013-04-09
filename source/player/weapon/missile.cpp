@@ -1,6 +1,6 @@
 #include "glm/gtc/matrix_transform.hpp"
 
-#include "pixelboost/audio/soundManager.h"
+#include "pixelboost/audio/audioManagerSimple.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/transform.h"
@@ -16,20 +16,29 @@
 #include "player/projectile.h"
 #include "player/player.h"
 
-MissileComponent::MissileComponent(pb::Entity* entity, PlayerInput* input, const MountInfo& mountInfo)
+PB_DEFINE_COMPONENT(MissileComponent)
+
+MissileComponent::MissileComponent(pb::Entity* entity)
     : pb::Component(entity)
-    , _Input(input)
-    , _MountInfo(mountInfo)
     , _Fired(false)
+    , _Input(0)
 {
-    _Renderable = new pb::ModelRenderable(0);
-    _Renderable->SetModel(Game::Instance()->GetModelRenderer()->GetModel("missile_01"));
-    _Renderable->SetTexture(Game::Instance()->GetModelRenderer()->GetTexture("grey"));
+    
+}
+
+void MissileComponent::Initialise(PlayerInput* input, const MountInfo& mountInfo)
+{
+    _Input = input;
+    _MountInfo = mountInfo;
+    
+    _Renderable = new pb::ModelRenderable();
+    _Renderable->SetModel(pb::ModelRenderer::Instance()->GetModel("missile_01"));
+    _Renderable->SetTexture(pb::ModelRenderer::Instance()->GetTexture("grey"));
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetShader(Game::Instance()->GetLitShader());
     
-    GetParent()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::Entity::MessageHandler(this, &MissileComponent::OnTransformChanged));
-    GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &MissileComponent::OnUpdate));
+    GetEntity()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &MissileComponent::OnTransformChanged));
+    GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MissileComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
     
     UpdateTransform();
@@ -37,19 +46,9 @@ MissileComponent::MissileComponent(pb::Entity* entity, PlayerInput* input, const
 
 MissileComponent::~MissileComponent()
 {
-    GetParent()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::Entity::MessageHandler(this, &MissileComponent::OnTransformChanged));
-    GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &MissileComponent::OnUpdate));
+    GetEntity()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &MissileComponent::OnTransformChanged));
+    GetEntity()->UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MissileComponent::OnUpdate));
     GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
-}
-
-pb::Uid MissileComponent::GetType()
-{
-    return GetStaticType();
-}
-
-pb::Uid MissileComponent::GetStaticType()
-{
-    return pb::TypeHash("MissileComponent");
 }
 
 void MissileComponent::OnTransformChanged(const pb::Message& message)
@@ -59,7 +58,7 @@ void MissileComponent::OnTransformChanged(const pb::Message& message)
 
 void MissileComponent::OnUpdate(const pb::Message& message)
 {
-    PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+    PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
     
     if (_MountInfo.IsLeft ? _Input->_FiringLeft : _Input->_FiringRight)
     {
@@ -70,14 +69,14 @@ void MissileComponent::OnUpdate(const pb::Message& message)
             const float energyCost = 5.f;
             if (ship->GetEnergy() > energyCost)
             {
-                pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
+                pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
                 
                 glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
                 
-                pb::SoundManager::Instance()->PlaySfx("missile.wav", 0.5f);
+                pb::AudioManagerSimple::Instance()->PlaySfx("missile.wav", 0.5f);
                 
                 float randOffset = (((float)rand()/(float)RAND_MAX)-0.5)/6.f;
-                new Projectile(GetScene(), kHealthTypePlayer, kProjectileTypeHoming, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 5.f, 75.f);
+                GetScene()->CreateEntity<Projectile>(0, 0)->Initialise(kHealthTypePlayer, kProjectileTypeHoming, glm::vec3(position.x, position.y, position.z), glm::radians(transform->GetRotation().z) + randOffset, 5.f, 75.f);
                 ship->RemoveEnergy(energyCost);
             }
         }
@@ -88,9 +87,9 @@ void MissileComponent::OnUpdate(const pb::Message& message)
 
 void MissileComponent::UpdateTransform()
 {
-    PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+    PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
     
-    pb::TransformComponent* transform = GetParent()->GetComponentByType<pb::TransformComponent>();
+    pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, ship->GetTilt(), glm::vec3(0,1,0));

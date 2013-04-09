@@ -1,4 +1,5 @@
 #include "pixelboost/input/joystickManager.h"
+#include "pixelboost/input/keyboardManager.h"
 #include "pixelboost/logic/entity.h"
 
 namespace pb
@@ -6,20 +7,23 @@ namespace pb
     class FontComponent;
 }
 
-class MenuItem : public pb::Entity, public pb::JoystickHandler
+class MenuItem : public pb::Entity, public pb::JoystickHandler, public pb::KeyboardHandler
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    MenuItem(pb::Scene* scene);
+    MenuItem(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~MenuItem();
     
-public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    virtual int GetInputHandlerPriority();
     
+public:
     void OnUpdate(const pb::Message& message);
     
     virtual bool OnButtonDown(int joystick, int button);
     virtual bool OnButtonUp(int joystick, int button);
+    
+    virtual bool OnKeyboardEvent(pb::KeyboardEvent event);
     
 private:
     bool _ShowingControls;

@@ -4,12 +4,13 @@
 
 class Explosion : public pb::Entity
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    Explosion(pb::Scene* scene, glm::vec2 position, float power);
+    Explosion(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~Explosion();
     
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    void Initialise(glm::vec2 position, float power);
     
     void OnUpdate(const pb::Message& message);
     

@@ -19,9 +19,9 @@ MenuScreen::~MenuScreen()
     
 }
 
-void MenuScreen::Update(float time)
+void MenuScreen::Update(float timeDelta, float gameDelta)
 {
-    _Scene->Update(time);
+    _Scene->Update(timeDelta, gameDelta);
 }
 
 void MenuScreen::SetActive(bool active)
@@ -33,7 +33,7 @@ void MenuScreen::SetActive(bool active)
         _Scene = new pb::Scene();
         _Scene->AddSystem(new pb::BoundsRenderSystem());
         
-        new MenuItem(_Scene);
+        _Scene->CreateEntity<MenuItem>(0, 0);
         
         pb::GraphicsDevice::Instance()->SetClearColor(glm::vec4(0.2,0.2,0.2,1));
         

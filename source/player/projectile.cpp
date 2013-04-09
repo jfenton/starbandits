@@ -6,7 +6,7 @@
 #include "pixelboost/graphics/particle/particleSystem.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
@@ -17,21 +17,30 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType type, glm::vec3 position, float rotation, float speed, float damage)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(Projectile)
+
+Projectile::Projectile(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, entity, creationEntity)
     , _Life(2.f)
-    , _Speed(speed)
     , _Target(0)
-    , _Type(type)
 {
-    new DamageComponent(this, healthType, damage);
     
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
+}
+
+void Projectile::Initialise(HealthType healthType, ProjectileType type, glm::vec3 position, float rotation, float speed, float damage)
+{
+    _Speed = speed;
+    _Type = type;
+    
+    CreateComponent<DamageComponent>()->Initialise(healthType, damage);
+    
+    auto transform = CreateComponent<pb::TransformComponent>();
     transform->SetRotation(glm::vec3(0,0,glm::degrees(rotation)));
     transform->SetPosition(position);
     
     if (_Type == kProjectileTypeHoming)
     {
+        /*
         pb::ParticleComponent* particleComponent = new pb::ParticleComponent(this);
         particleComponent->SetLayer(kGraphicLayerProjectiles);
         
@@ -51,13 +60,14 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
         scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.4f), glm::vec2(0.1,0)));
         engineDefinition->ModifierScale = scaleValue;
         engineDefinition->Emitter = emitter;
+        */
     } else {
-        pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "");
+        auto sprite = CreateComponent<pb::SpriteComponent>();
         if (healthType == kHealthTypeEnemy)
         {
-            sprite->SetSprite("laser_red");
+            sprite->SetSprite("/spritesheets/game", "laser_red");
         } else {
-            sprite->SetSprite("laser_green");
+            sprite->SetSprite("/spritesheets/game", "laser_green");
         }
         
         glm::mat4x4 spriteTransform;
@@ -73,7 +83,8 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
         sprite->SetLayer(kGraphicLayerProjectiles);
     }
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.08,0.4));
+    auto physics = CreateComponent<pb::PhysicsBody2DComponent>();
+    physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeRect, glm::vec2(0.08,0.4));
     physics->SetSensor(true);
     physics->GetBody()->SetBullet(true);
     
@@ -88,33 +99,23 @@ Projectile::Projectile(pb::Scene* scene, HealthType healthType, ProjectileType t
         SetTarget();
     }
     
-    RegisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
+    RegisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &Projectile::OnCollision));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Projectile::OnUpdate));
 }
 
 Projectile::~Projectile()
 {
-    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(MessageHandler(this, &Projectile::OnCollision));
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Projectile::OnUpdate));
-}
-
-pb::Uid Projectile::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid Projectile::GetStaticType()
-{
-    return pb::TypeHash("Projectile");
+    UnregisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &Projectile::OnCollision));
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Projectile::OnUpdate));
 }
 
 void Projectile::OnCollision(const pb::Message& message)
 {
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
     
-    HealthComponent* health = collisionMessage.GetOtherComponent()->GetParent()->GetComponentByType<HealthComponent>();
+    HealthComponent* health = collisionMessage.GetOtherComponent()->GetEntity()->GetComponent<HealthComponent>();
     
-    pb::Uid type = collisionMessage.GetOtherComponent()->GetParent()->GetType();
+    pb::Uid type = collisionMessage.GetOtherComponent()->GetEntity()->GetType();
     
     switch (_Type)
     {
@@ -126,7 +127,7 @@ void Projectile::OnCollision(const pb::Message& message)
         }
         case kProjectileTypeHoming:
         {
-            if (type == GetStaticType() && static_cast<Projectile*>(collisionMessage.GetOtherComponent()->GetParent())->_Type == kProjectileTypeHoming)
+            if (type == GetStaticType() && static_cast<Projectile*>(collisionMessage.GetOtherComponent()->GetEntity())->_Type == kProjectileTypeHoming)
                 return;
             break;
         }
@@ -136,7 +137,7 @@ void Projectile::OnCollision(const pb::Message& message)
         }
     }
     
-    if (!health || GetComponentByType<DamageComponent>()->GetHealthType() != health->GetHealthType())
+    if (!health || GetComponent<DamageComponent>()->GetHealthType() != health->GetHealthType())
         Destroy();
 }
 
@@ -144,7 +145,7 @@ void Projectile::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    _Life -= updateMessage.GetDelta();
+    _Life -= updateMessage.GetGameDelta();
     
     if (_Life <= 0.f)
         Destroy();
@@ -164,12 +165,12 @@ void Projectile::UpdateProjectile()
             
         case kProjectileTypeHoming:
         {
-            b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+            b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
             
             glm::vec2 desiredDirection;
             
             pb::Entity* target = GetScene()->GetEntityById(_Target);
-            pb::TransformComponent* targetTransform = target ? target->GetComponentByType<pb::TransformComponent>() : 0;
+            pb::TransformComponent* targetTransform = target ? target->GetComponent<pb::TransformComponent>() : 0;
             
             if (!target || !targetTransform)
             {
@@ -212,8 +213,8 @@ void Projectile::UpdateProjectile()
 
 void Projectile::SetTarget()
 {
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
-    float rotation = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody()->GetAngle();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
+    float rotation = GetComponent<pb::PhysicsBody2DComponent>()->GetBody()->GetAngle();
     float closestTarget = 10000.f;
     
     for (pb::Scene::EntityMap::const_iterator it = GetScene()->GetEntities().begin(); it != GetScene()->GetEntities().end(); ++it)
@@ -221,17 +222,17 @@ void Projectile::SetTarget()
         if (it->second->GetType() == GetStaticType() || it->second->GetType() == pb::TypeHash("Explosion"))
             continue;
         
-        pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+        pb::TransformComponent* transform = it->second->GetComponent<pb::TransformComponent>();
         
-        HealthComponent* health = it->second->GetComponentByType<HealthComponent>();
+        HealthComponent* health = it->second->GetComponent<HealthComponent>();
         
         if (!transform || !health)
             continue;
         
-        if (health->GetHealthType() == GetComponentByType<DamageComponent>()->GetHealthType())
+        if (health->GetHealthType() == GetComponent<DamageComponent>()->GetHealthType())
             continue;
         
-        glm::vec3 entityPosition = it->second->GetComponentByType<pb::TransformComponent>()->GetPosition();
+        glm::vec3 entityPosition = it->second->GetComponent<pb::TransformComponent>()->GetPosition();
         glm::vec2 entityDirection = glm::normalize(glm::vec2(entityPosition.x - position.x, entityPosition.y - position.y));
         glm::vec2 currentDirection(glm::cos(rotation+glm::radians(90.f)), glm::sin(rotation+glm::radians(90.f)));
         float dot = glm::dot(entityDirection, currentDirection);

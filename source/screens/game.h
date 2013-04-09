@@ -18,7 +18,7 @@ public:
     ~GameScreen();
     
 public:
-    virtual void Update(float time);
+    virtual void Update(float timeDelta, float gameDelta);
     
     virtual void SetActive(bool active);
     
@@ -31,6 +31,8 @@ public:
     void AddScore(float score);
     float GetScore();
     float GetBestScore();
+    
+    glm::vec3 GetLevelOffset();
     
 private:
     pb::PerspectiveCamera* _Camera;

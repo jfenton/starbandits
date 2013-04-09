@@ -10,8 +10,8 @@ TurretLaserDefinition::TurretLaserDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(TurretHomingDefinition, "TurretHoming")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(TurretHoming)
+PB_DB_END_STRUCT
 
-PIXELBOOST_START_STRUCT(TurretLaserDefinition, "TurretLaser")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(TurretLaser)
+PB_DB_END_STRUCT

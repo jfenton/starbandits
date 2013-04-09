@@ -5,7 +5,7 @@
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/scene.h"
@@ -13,38 +13,36 @@
 #include "background/planet.h"
 #include "common/layers.h"
 
-Planet::Planet(pb::Scene* scene, const std::string& name, glm::vec3 position, float size)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(Planet)
+
+Planet::Planet(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, parent, creationEntity)
 {
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
-    transform->SetPosition(position);
-    transform->SetScale(glm::vec3(size, size, size));
-    
-    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, name);
-    sprite->SetLayer(kGraphicLayerPlanets);
-    
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Planet::OnUpdate));
+
 }
 
 Planet::~Planet()
 {
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Planet::OnUpdate));
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Planet::OnUpdate));
 }
 
-pb::Uid Planet::GetType() const
+void Planet::Initialise(const std::string& name, glm::vec3 position, float size)
 {
-    return GetStaticType();
-}
-
-pb::Uid Planet::GetStaticType()
-{
-    return pb::TypeHash("Planet");
+    auto transform = CreateComponent<pb::TransformComponent>();
+    transform->SetPosition(position);
+    transform->SetScale(glm::vec3(size, size, size));
+    
+    auto sprite = CreateComponent<pb::SpriteComponent>();
+    sprite->SetSprite("/spritesheets/game", name);
+    sprite->SetLayer(kGraphicLayerPlanets);
+    
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Planet::OnUpdate));
 }
 
 void Planet::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
-    GetComponentByType<pb::TransformComponent>()->SetPosition(position + glm::vec3(-0.03, 0, 0.02));
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
+    GetComponent<pb::TransformComponent>()->SetPosition(position + glm::vec3(-0.03, 0, 0.02));
 }

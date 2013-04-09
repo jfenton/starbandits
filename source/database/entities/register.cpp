@@ -2,18 +2,18 @@
 
 #include "database/entities/register.h"
 
-PIXELBOOST_DECLARE_CLASS(AsteroidDefinition);
-PIXELBOOST_DECLARE_CLASS(HomingMineDefinition);
-PIXELBOOST_DECLARE_CLASS(StaticMineDefinition);
-PIXELBOOST_DECLARE_CLASS(StealthBomberDefinition);
-PIXELBOOST_DECLARE_CLASS(TurretHomingDefinition);
-PIXELBOOST_DECLARE_CLASS(TurretLaserDefinition);
+PB_DB_DECLARE_STRUCT(Asteroid);
+PB_DB_DECLARE_STRUCT(HomingMine);
+PB_DB_DECLARE_STRUCT(StaticMine);
+PB_DB_DECLARE_STRUCT(StealthBomber);
+PB_DB_DECLARE_STRUCT(TurretHoming);
+PB_DB_DECLARE_STRUCT(TurretLaser);
 
-PIXELBOOST_START_REGISTER(RegisterEntityCreation)
-    PIXELBOOST_REGISTER(AsteroidDefinition)
-    PIXELBOOST_REGISTER(HomingMineDefinition)
-    PIXELBOOST_REGISTER(StaticMineDefinition)
-    PIXELBOOST_REGISTER(StealthBomberDefinition)
-    PIXELBOOST_REGISTER(TurretHomingDefinition)
-    PIXELBOOST_REGISTER(TurretLaserDefinition)
-PIXELBOOST_END_REGISTER
+PB_DB_BEGIN_NAMESPACE(GameEntities)
+    PB_DB_REGISTER_STRUCT(Asteroid)
+    PB_DB_REGISTER_STRUCT(HomingMine)
+    PB_DB_REGISTER_STRUCT(StaticMine)
+    PB_DB_REGISTER_STRUCT(StealthBomber)
+    PB_DB_REGISTER_STRUCT(TurretHoming)
+    PB_DB_REGISTER_STRUCT(TurretLaser)
+PB_DB_END_NAMESPACE

@@ -13,14 +13,15 @@ class PlayerInput;
 
 class Grapple : public pb::Entity
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    Grapple(pb::Scene* scene, pb::Uid playerId, PlayerInput* input, pb::Uid collisionId);
+    Grapple(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity);
     ~Grapple();
     
-public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    void Initialise(pb::Uid playerId, PlayerInput* input, pb::Uid collisionId);
     
+public:
     void OnCollision(const pb::Message& message);
     void OnUpdate(const pb::Message& message);
     

@@ -5,7 +5,7 @@
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/logic/component/graphics/model.h"
 #include "pixelboost/logic/component/physics/2d/physicsBody.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
 
@@ -17,69 +17,70 @@
 #include "player/player.h"
 #include "player/projectile.h"
 
-Turret::Turret(pb::Scene* scene, glm::vec2 position, ProjectileType type)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(Turret)
+
+Turret::Turret(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, parent, creationEntity)
+    , _Type(kProjectileTypeBeam)
     , _ShootTimer(0)
-    , _Type(type)
 {
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
+    
+}
+
+void Turret::Initialise(glm::vec2 position, ProjectileType type)
+{
+    _Type = type;
+    
+    auto transform = CreateComponent<pb::TransformComponent>();
     transform->SetPosition(glm::vec3(position, 0));
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
     localTransform = glm::rotate(localTransform, 180.f, glm::vec3(0,1,0));
     
-    pb::ModelComponent* turret = new pb::ModelComponent(this,
-                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel("turret"),
-                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture(type == kProjectileTypeHoming ? "turret_homing" : "turret_laser"));
+    auto turret = CreateComponent<pb::ModelComponent>();
+    turret->SetModel(pb::ModelRenderer::Instance()->GetModel("turret"));
+    turret->SetTexture(pb::ModelRenderer::Instance()->GetTexture(type == kProjectileTypeHoming ? "turret_homing" : "turret_laser"));
     turret->SetLocalTransform(localTransform);
     turret->SetLayer(kGraphicLayerEnemies);
     turret->SetShader(Game::Instance()->GetLitShader());
     
+    /*
     pb::ModelComponent* weapon = new pb::ModelComponent(this,
-                                                        pb::Engine::Instance()->GetModelRenderer()->GetModel(type == kProjectileTypeHoming ? "turret_homing" : "turret_laser"),
-                                                        pb::Engine::Instance()->GetModelRenderer()->GetTexture("turret_weapons"));
+                                                        pb::ModelRenderer::Instance()->GetModel(type == kProjectileTypeHoming ? "turret_homing" : "turret_laser"),
+                                                        pb::ModelRenderer::Instance()->GetTexture("turret_weapons"));
     weapon->SetLocalTransform(localTransform);
     weapon->SetLayer(kGraphicLayerEnemies);
     weapon->SetShader(Game::Instance()->GetLitShader());
+    */
     
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
-    
+    auto physics = CreateComponent<pb::PhysicsBody2DComponent>();
+    physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
     physics->GetBody()->GetFixtureList()[0].SetDensity(20.f);
     physics->GetBody()->ResetMassData();
     
-    new HealthComponent(this, kHealthTypeEnemy, 75.f, 0.f);
+    CreateComponent<HealthComponent>()->Initialise(kHealthTypeEnemy, 75.f, 0.f);
     
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Turret::OnUpdate));
-    RegisterMessageHandler<HealthDepletedMessage>(MessageHandler(this, &Turret::OnHealthDepleted));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Turret::OnUpdate));
+    RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &Turret::OnHealthDepleted));
 }
 
 Turret::~Turret()
 {
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Turret::OnUpdate));
-    UnregisterMessageHandler<HealthDepletedMessage>(MessageHandler(this, &Turret::OnHealthDepleted));
-}
-
-pb::Uid Turret::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid Turret::GetStaticType()
-{
-    return pb::TypeHash("Turret");
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Turret::OnUpdate));
+    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &Turret::OnHealthDepleted));
 }
 
 void Turret::OnUpdate(const pb::Message& message)
 {
     const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
     
-    pb::TransformComponent* transform = GetComponentByType<pb::TransformComponent>();
+    pb::TransformComponent* transform = GetComponent<pb::TransformComponent>();
     glm::vec3 position = transform->GetPosition();
     
-    b2Body* body = GetComponentByType<pb::PhysicsBody2DComponent>()->GetBody();
+    b2Body* body = GetComponent<pb::PhysicsBody2DComponent>()->GetBody();
     
-    _ShootTimer -= updateMessage.GetDelta();
+    _ShootTimer -= updateMessage.GetGameDelta();
     
     glm::vec3 direction = GetNearestPlayer() - position;
     
@@ -108,17 +109,17 @@ void Turret::OnUpdate(const pb::Message& message)
     
     if (_ShootTimer <= 0.f)
     {
-        new Projectile(GetScene(), kHealthTypeEnemy, _Type, position, body->GetAngle(), _Type == kProjectileTypeHoming ? 2.5f : 10.f, 20.f);
+        GetScene()->CreateEntity<Projectile>(0,0)->Initialise(kHealthTypeEnemy, _Type, position, body->GetAngle(), _Type == kProjectileTypeHoming ? 2.5f : 10.f, 20.f);
         _ShootTimer = _Type == kProjectileTypeHoming ? 2.5f : 1.f;
     }
 }
 
 void Turret::OnHealthDepleted(const pb::Message& message)
 {
-    glm::vec3 position = GetComponentByType<pb::TransformComponent>()->GetPosition();
+    glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     
     Destroy();
-    new Explosion(GetScene(), glm::vec2(position.x, position.y), 3.f);
+    GetScene()->CreateEntity<Explosion>(0,0)->Initialise(glm::vec2(position.x, position.y), 3.f);
 }
 
 glm::vec3 Turret::GetNearestPlayer()
@@ -128,7 +129,7 @@ glm::vec3 Turret::GetNearestPlayer()
         if (it->second->GetType() != pb::TypeHash("PlayerShip"))
             continue;
         
-        pb::TransformComponent* transform = it->second->GetComponentByType<pb::TransformComponent>();
+        pb::TransformComponent* transform = it->second->GetComponent<pb::TransformComponent>();
         
         return transform->GetPosition();
     }

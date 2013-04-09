@@ -19,13 +19,13 @@ enum ProjectileType
 
 class Projectile : public pb::Entity
 {
-public:
-	Projectile(pb::Scene* scene, HealthType healthType, ProjectileType behaviour, glm::vec3 position, float rotation, float speed, float damage);
-    ~Projectile();
+    PB_DECLARE_ENTITY
     
 public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+	Projectile(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
+    ~Projectile();
+    
+    void Initialise(HealthType healthType, ProjectileType behaviour, glm::vec3 position, float rotation, float speed, float damage);
     
 private:
     void OnCollision(const pb::Message& message);

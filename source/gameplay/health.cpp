@@ -8,33 +8,35 @@
 #include "gameplay/health.h"
 #include "player/player.h"
 
-HealthComponent::HealthComponent(pb::Entity* entity, HealthType healthType, float health, float shields)
+PB_DEFINE_COMPONENT(HealthComponent)
+
+HealthComponent::HealthComponent(pb::Entity* entity)
     : pb::Component(entity)
-    , _Health(health)
-    , _HealthType(healthType)
-    , _MaxShields(shields)
-    , _Shields(shields)
+    , _Health(0)
+    , _MaxShields(0)
+    , _Shields(0)
+    , _HealthType(kHealthTypeNone)
 {
-    GetParent()->RegisterMessageHandler<DamageMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnDamage));
-    GetParent()->RegisterMessageHandler<pb::PhysicsCollisionMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnCollision));
-    GetParent()->RegisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnUpdate));
+    
+}
+
+void HealthComponent::Initialise(HealthType healthType, float health, float shields)
+{
+    _Health = health;
+    _HealthType = healthType;
+    _MaxShields = shields;
+    _Shields = shields;
+    
+    GetEntity()->RegisterMessageHandler<DamageMessage>(pb::MessageHandler(this, &HealthComponent::OnDamage));
+    GetEntity()->RegisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &HealthComponent::OnCollision));
+    GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HealthComponent::OnUpdate));
 }
 
 HealthComponent::~HealthComponent()
 {
-    GetParent()->UnregisterMessageHandler<DamageMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnDamage));
-    GetParent()->UnregisterMessageHandler<pb::PhysicsCollisionMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnCollision));
-    GetParent()->UnregisterMessageHandler<pb::UpdateMessage>(pb::Entity::MessageHandler(this, &HealthComponent::OnUpdate));
-}
-
-pb::Uid HealthComponent::GetType()
-{
-    return GetStaticType();
-}
-
-pb::Uid HealthComponent::GetStaticType()
-{
-    return pb::TypeHash("HealthComponent");
+    GetEntity()->UnregisterMessageHandler<DamageMessage>(pb::MessageHandler(this, &HealthComponent::OnDamage));
+    GetEntity()->UnregisterMessageHandler<pb::PhysicsCollisionMessage>(pb::MessageHandler(this, &HealthComponent::OnCollision));
+    GetEntity()->UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HealthComponent::OnUpdate));
 }
 
 HealthType HealthComponent::GetHealthType()
@@ -56,7 +58,7 @@ void HealthComponent::OnCollision(const pb::Message& message)
 {
     const pb::PhysicsCollisionMessage& collisionMessage = static_cast<const pb::PhysicsCollisionMessage&>(message);
     
-    DamageComponent* damage = collisionMessage.GetOtherComponent()->GetParent()->GetComponentByType<DamageComponent>();
+    DamageComponent* damage = collisionMessage.GetOtherComponent()->GetEntity()->GetComponent<DamageComponent>();
     
     if (damage)
     {
@@ -81,14 +83,14 @@ void HealthComponent::OnUpdate(const pb::Message& message)
     float rechargeAmount = 0.f;
     if (_Shields < _MaxShields)
     {
-        rechargeAmount = glm::min(_MaxShields-_Shields, glm::max(((_MaxShields-_Shields)/(_MaxShields/4.f)),1.f)*updateMessage.GetDelta());
+        rechargeAmount = glm::min(_MaxShields-_Shields, glm::max(((_MaxShields-_Shields)/(_MaxShields/4.f)),1.f)*updateMessage.GetGameDelta());
     }
 
-    if (GetParent()->GetType() == PlayerShip::GetStaticType())
+    if (GetEntity()->GetType() == PlayerShip::GetStaticType())
     {
         float rechargeCost = rechargeAmount * 2.f;
         
-        PlayerShip* ship = static_cast<PlayerShip*>(GetParent());
+        PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
 
         if (ship->GetEnergy() > rechargeCost)
         {
@@ -103,9 +105,9 @@ void HealthComponent::OnUpdate(const pb::Message& message)
     
     if (_Health <= 0.f)
     {
-        HealthDepletedMessage healthDepleted(GetParent());
-        GetScene()->SendMessage(GetParentUid(), healthDepleted);
-        GetParent()->Destroy();
+        HealthDepletedMessage healthDepleted(GetEntity());
+        GetScene()->SendMessage(GetEntityUid(), healthDepleted);
+        GetEntity()->Destroy();
     }
 }
 
@@ -115,13 +117,13 @@ void HealthComponent::Damage(float damage)
     {
         _Shields -= damage;
         
-        ShieldsHitMessage shieldsHit(GetParent());
-        GetScene()->SendMessage(GetParentUid(), shieldsHit);
+        ShieldsHitMessage shieldsHit(GetEntity());
+        GetScene()->SendMessage(GetEntityUid(), shieldsHit);
     } else {
         _Health -= damage;
         
-        HullHitMessage hullHit(GetParent());
-        GetScene()->SendMessage(GetParentUid(), hullHit);
+        HullHitMessage hullHit(GetEntity());
+        GetScene()->SendMessage(GetEntityUid(), hullHit);
     }
     
     if (_Shields < 0.f)
@@ -129,12 +131,14 @@ void HealthComponent::Damage(float damage)
         _Health += _Shields;
         _Shields = 0.f;
         
-        HullHitMessage hullHit(GetParent());
-        GetScene()->SendMessage(GetParentUid(), hullHit);
+        HullHitMessage hullHit(GetEntity());
+        GetScene()->SendMessage(GetEntityUid(), hullHit);
     }
     
     _Health = glm::max(_Health, 0.f);
 }
+
+PB_DEFINE_MESSAGE(HealthDepletedMessage)
 
 HealthDepletedMessage::HealthDepletedMessage(pb::Entity* entity)
     : pb::Message(entity, 0)
@@ -147,15 +151,7 @@ HealthDepletedMessage::~HealthDepletedMessage()
     
 }
 
-pb::Uid HealthDepletedMessage::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid HealthDepletedMessage::GetStaticType()
-{
-    return pb::TypeHash("HealthDepletedMessage");
-}
+PB_DEFINE_MESSAGE(HullHitMessage)
 
 HullHitMessage::HullHitMessage(pb::Entity* entity)
     : pb::Message(entity, 0)
@@ -168,16 +164,7 @@ HullHitMessage::~HullHitMessage()
     
 }
 
-pb::Uid HullHitMessage::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid HullHitMessage::GetStaticType()
-{
-    return pb::TypeHash("HullHitMessage");
-}
-
+PB_DEFINE_MESSAGE(ShieldsHitMessage)
 
 ShieldsHitMessage::ShieldsHitMessage(pb::Entity* entity)
     : pb::Message(entity, 0)
@@ -188,14 +175,4 @@ ShieldsHitMessage::ShieldsHitMessage(pb::Entity* entity)
 ShieldsHitMessage::~ShieldsHitMessage()
 {
     
-}
-
-pb::Uid ShieldsHitMessage::GetType() const
-{
-    return GetStaticType();
-}
-
-pb::Uid ShieldsHitMessage::GetStaticType()
-{
-    return pb::TypeHash("ShieldsHitMessage");
 }

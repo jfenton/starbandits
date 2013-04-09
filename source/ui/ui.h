@@ -7,14 +7,15 @@ namespace pb
 
 class GameUi : public pb::Entity
 {
+    PB_DECLARE_ENTITY
+    
 public:
-    GameUi(pb::Scene* scene, pb::Uid playerId, int index);
+    GameUi(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity);
     ~GameUi();
     
-public:
-    virtual pb::Uid GetType() const;
-    static pb::Uid GetStaticType();
+    void Initialise(pb::Uid playerId, int index);
     
+public:
     void OnUpdate(const pb::Message& message);
 
 private:

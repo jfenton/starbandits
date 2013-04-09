@@ -128,4 +128,4 @@ source_group (player FILES ${PLAYER_SOURCES})
 source_group (screens FILES ${SCREENS_SOURCES})
 source_group (ui FILES ${UI_SOURCES})
 
-pixelboost_setup_post()
+pixelboost_setup_post("${GAME_SOURCES}")

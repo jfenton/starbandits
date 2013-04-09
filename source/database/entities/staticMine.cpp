@@ -6,5 +6,5 @@ StaticMineDefinition::StaticMineDefinition()
 {
 }
 
-PIXELBOOST_START_STRUCT(StaticMineDefinition, "StaticMine")
-PIXELBOOST_END_STRUCT
+PB_DB_BEGIN_STRUCT(StaticMine)
+PB_DB_END_STRUCT

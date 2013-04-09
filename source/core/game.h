@@ -19,12 +19,12 @@ enum GameMode
 class Game : public pb::Engine
 {
 public:
-    Game(void* viewController);
+    Game(void* platformContext, int argc, const char** argv);
     ~Game();
     
     static Game* Instance();
     
-    virtual void Update(float time);
+    virtual void Update(float timeDelta, float gameDelta);
     virtual void Render();
     
     void SetMode(GameMode mode);

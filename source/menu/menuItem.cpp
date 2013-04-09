@@ -5,7 +5,7 @@
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/logic/component/graphics/font.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
-#include "pixelboost/logic/component/transform/basic.h"
+#include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
 #include "pixelboost/logic/scene.h"
@@ -17,15 +17,18 @@
 #include "player/player.h"
 #include "screens/game.h"
 
-MenuItem::MenuItem(pb::Scene* scene)
-    : pb::Entity(scene, 0)
+PB_DEFINE_ENTITY(MenuItem)
+
+MenuItem::MenuItem(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
+    : pb::Entity(scene, parent, creationEntity)
 {
     _ShowingControls = false;
     
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
+    auto transform = CreateComponent<pb::TransformComponent>();
     transform->SetPosition(glm::vec3(0.f, 0.f, 0.f));
     
-    pb::SpriteComponent* sprite = new pb::SpriteComponent(this, "menu");
+    auto sprite = CreateComponent<pb::SpriteComponent>();
+    sprite->SetSprite("/spritesheets/game", "menu");
     sprite->SetRenderPass(pb::kRenderPassUi);
     
     char highscoreText[128];
@@ -34,6 +37,7 @@ MenuItem::MenuItem(pb::Scene* scene)
     char lastScoreText[128];
     snprintf(lastScoreText, 128, "Last Score: %08.f", Game::Instance()->GetGameScreen()->GetScore());
     
+    /*
     pb::FontComponent* highscore = new pb::FontComponent(this, "font", highscoreText);
     highscore->SetAlignment(pb::kFontAlignCenter);
     highscore->SetRenderPass(pb::kRenderPassUi);
@@ -63,37 +67,37 @@ MenuItem::MenuItem(pb::Scene* scene)
     _Multi->SetLayer(kGraphicLayerUi);
     _Multi->SetSize(0.5f);
     _Multi->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(620.f/32.f, 340.f/32.f, 0.f)));
+    */
     
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &MenuItem::OnUpdate));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MenuItem::OnUpdate));
     
     pb::Engine::Instance()->GetJoystickManager()->AddHandler(this);
+    pb::Engine::Instance()->GetKeyboardManager()->AddHandler(this);
 }
 
 MenuItem::~MenuItem()
 {
     pb::Engine::Instance()->GetJoystickManager()->RemoveHandler(this);
+    pb::Engine::Instance()->GetKeyboardManager()->RemoveHandler(this);
     
-    UnregisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &MenuItem::OnUpdate));
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MenuItem::OnUpdate));
 }
 
-pb::Uid MenuItem::GetType() const
+int MenuItem::GetInputHandlerPriority()
 {
-    return GetStaticType();
-}
-
-pb::Uid MenuItem::GetStaticType()
-{
-    return pb::TypeHash("MenuItem");
+    return 0;
 }
 
 void MenuItem::OnUpdate(const pb::Message& message)
 {
+    /*
     bool alpha = glm::mod(Game::Instance()->GetGameTime(), 1.5f) < 0.75f;
     if (_Single && _Multi)
     {
         _Single->SetTint(glm::vec4(1,1,1,alpha?1.f:0.f));
         _Multi->SetTint(glm::vec4(1,1,1,alpha?1.f:0.f));
     }
+    */
 }
 
 bool MenuItem::OnButtonDown(int joystick, int button)
@@ -104,26 +108,22 @@ bool MenuItem::OnButtonDown(int joystick, int button)
     } else {
         if (button == 0) {
             Game::Instance()->GetGameScreen()->SetNumPlayers(1);
-            GetComponentByType<pb::SpriteComponent>()->SetSprite("control");
+            GetComponent<pb::SpriteComponent>()->SetSprite("/spritesheets/game", "control");
             _ShowingControls = true;
         } else if (button == 1) {
             Game::Instance()->GetGameScreen()->SetNumPlayers(2);
-            GetComponentByType<pb::SpriteComponent>()->SetSprite("control");
+            GetComponent<pb::SpriteComponent>()->SetSprite("/spritesheets/game", "control");
             _ShowingControls = true;
         }
         
         if (_ShowingControls)
         {
-            Entity::ComponentList text = GetComponentsByType<pb::FontComponent>();
-            
-            for (Entity::ComponentList::iterator it = text.begin(); it != text.end(); ++it)
-            {
-                DestroyComponent(*it);
-            }
+            DestroyComponent(GetComponent<pb::FontComponent>());
             
             _Single = 0;
             _Multi = 0;
             
+            /*
             pb::FontComponent* single = new pb::FontComponent(this, "font", "Press O to Start");
             single->SetAlignment(pb::kFontAlignCenter);
             single->SetRenderPass(pb::kRenderPassUi);
@@ -131,6 +131,7 @@ bool MenuItem::OnButtonDown(int joystick, int button)
             single->SetSize(0.5f);
             single->SetTint(glm::vec4(0,0,0,1));
             single->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(0.f, -340.f/32.f, 0.f)));
+            */
         }
     }
     
@@ -139,5 +140,16 @@ bool MenuItem::OnButtonDown(int joystick, int button)
 
 bool MenuItem::OnButtonUp(int joystick, int button)
 {
+    return false;
+}
+
+bool MenuItem::OnKeyboardEvent(pb::KeyboardEvent event)
+{
+    if (event.Type == pb::KeyboardEvent::kKeyboardEventDown)
+    {
+        Game::Instance()->GetGameScreen()->SetNumPlayers(1);
+        Game::Instance()->SetMode(kGameModeGame);
+    }
+    
     return false;
 }

@@ -2,7 +2,7 @@
 #include "pixelboost/graphics/camera/camera.h"
 #include "pixelboost/graphics/camera/viewport.h"
 #include "pixelboost/graphics/device/device.h"
-#include "pixelboost/graphics/shader/manager.h"
+//#include "pixelboost/graphics/shader/manager.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/system/debug/render.h"
 #include "pixelboost/logic/system/graphics/render/bounds.h"
@@ -23,12 +23,12 @@
 #include "ui/ui.h"
 
 GameScreen::GameScreen()
-    : _BestScore(0)
-    , _Camera(0)
-    , _CurrentY(0.f)
+    : _Camera(0)
     , _Scene(0)
-    , _Score(0)
     , _Viewport(0)
+    , _BestScore(0)
+    , _Score(0)
+    , _CurrentY(0.f)
 {
 
 }
@@ -38,12 +38,12 @@ GameScreen::~GameScreen()
     
 }
 
-void GameScreen::Update(float time)
+void GameScreen::Update(float timeDelta, float gameDelta)
 {
-    _Scene->Update(time);
+    _Scene->Update(timeDelta, gameDelta);
     
-    _Camera->Position.y += time * 4.f;
-    _Background->GetComponentByType<pb::TransformComponent>()->SetPosition(_Camera->Position);
+    _Camera->Position.y += gameDelta * 4.f;
+    _Background->GetComponent<pb::TransformComponent>()->SetPosition(_Camera->Position);
     
     pb::Scene::EntityMap tiles = _Scene->GetEntitiesByType<BackgroundTile>();
     
@@ -54,7 +54,7 @@ void GameScreen::Update(float time)
             delete _LevelSegment;
         }
         
-        _LevelSegment = new LevelSegment(_Scene, _CurrentY);
+        _LevelSegment = new LevelSegment(_Scene);
         
         _CurrentY = _CurrentY + _LevelSegment->GetLength();
     }
@@ -79,7 +79,7 @@ void GameScreen::Update(float time)
         if (type == PlayerShip::GetStaticType() || type == Planet::GetStaticType() || type == BackgroundStars::GetStaticType() || type == GameUi::GetStaticType())
             continue;
         
-        pb::TransformComponent* transform = entity->GetComponentByType<pb::TransformComponent>();
+        pb::TransformComponent* transform = entity->GetComponent<pb::TransformComponent>();
         
         if (!transform)
             continue;
@@ -136,15 +136,16 @@ void GameScreen::SetActive(bool active)
                 }
             }
             
-            PlayerShip* ship = new PlayerShip(_Scene, i, position);
-            new GameUi(_Scene, ship->GetUid(), i);
+            PlayerShip* ship = _Scene->CreateEntity<PlayerShip>(0, 0);
+            ship->Initialise(i, position);
+            _Scene->CreateEntity<GameUi>(0,0)->Initialise(ship->GetUid(), i);
         }
         
-        _Background = new BackgroundTile(_Scene, glm::vec2(0,0));
-        new BackgroundStars(_Scene);
+        _Background = _Scene->CreateEntity<BackgroundTile>(0,0);
+        _Scene->CreateEntity<BackgroundStars>(0,0);
         
-        new Planet(_Scene, "planet", glm::vec3(-36, 350, -500), 12.5);
-        new Planet(_Scene, "moon", glm::vec3(-90, 150, -501), 12.5);
+        _Scene->CreateEntity<Planet>(0, 0)->Initialise("planet", glm::vec3(-36, 350, -500), 12.5);
+        _Scene->CreateEntity<Planet>(0, 0)->Initialise("moon", glm::vec3(-90, 150, -501), 12.5);
         
         //_Scene->GetSystemByType<pb::PhysicsSystem2D>()->SetDebugRender(true, kGraphicLayerPhysicsDebug);
         
@@ -204,4 +205,9 @@ float GameScreen::GetScore()
 float GameScreen::GetBestScore()
 {
     return _BestScore;
+}
+
+glm::vec3 GameScreen::GetLevelOffset()
+{
+    return glm::vec3(0,_CurrentY,0);
 }

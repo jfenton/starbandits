@@ -1,0 +1,14 @@
+{
+	"project_root" : "../../",
+	"common_schema" : "pixelboost/engine/resources/data/schema/main.txt",
+	"model_roots" : [
+		"data/models/"
+	],
+	"image_roots" : [
+		"resources/spritesheets/images/"
+	],
+	"export_dir" : "../../data/database/",
+	"pixel_unit" : 32,
+	"assets" : {
+	}
+}
