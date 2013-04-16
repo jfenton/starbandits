@@ -41,8 +41,6 @@ void Planet::Initialise(const std::string& name, glm::vec3 position, float size)
 
 void Planet::OnUpdate(const pb::Message& message)
 {
-    const pb::UpdateMessage& updateMessage = static_cast<const pb::UpdateMessage&>(message);
-    
     glm::vec3 position = GetComponent<pb::TransformComponent>()->GetPosition();
     GetComponent<pb::TransformComponent>()->SetPosition(position + glm::vec3(-0.03, 0, 0.02));
 }

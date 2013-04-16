@@ -98,12 +98,12 @@ private:
     PlayerInput* _Input;
     
     pb::ModelComponent* _Ship;
-    pb::ModelComponent* _Shield;
+    //pb::ModelComponent* _Shield;
     pb::SpriteComponent* _SpriteShield;
     
-    pb::ParticleComponent* _EngineMain;
-    pb::ParticleComponent* _EngineLeft;
-    pb::ParticleComponent* _EngineRight;
+    //pb::ParticleComponent* _EngineMain;
+    //pb::ParticleComponent* _EngineLeft;
+    //pb::ParticleComponent* _EngineRight;
     
     float _BarrelCooldown;
     float _Energy;

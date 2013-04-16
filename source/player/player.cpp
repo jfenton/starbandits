@@ -436,7 +436,7 @@ void PlayerShip::OnUpdate(const pb::Message& message)
     
     if (_BarrelCooldown < 0.f)
     {
-        float barrelForceStrength = 20.f;//4000.f;
+        float barrelForceStrength = 20.f;
         if (_Input->_BarrelLeft)
         {
             _BarrelCooldown = barrelCooldown;
@@ -534,15 +534,14 @@ void PlayerShip::OnUpdate(const pb::Message& message)
         engineRight->Definition->StartSpeed.Set(30.f * rotateThruster, 30.f * rotateThruster);
         engineRight->Definition->Emitter->EmitSpeed = glm::clamp(glm::abs(rotateThruster) * 1200.f, 0.f, 1200.f);
     }
-    
-    _SpriteShield->SetTint(glm::vec4(1.f,1.f,1.f,GetComponent<HealthComponent>()->GetShields()/10.f));
+    */
+    _SpriteShield->GetRenderable()->SetTint(glm::vec4(1.f,1.f,1.f,GetComponent<HealthComponent>()->GetShields()/10.f));
     
     _ShieldTime = glm::max(_ShieldTime-updateMessage.GetGameDelta(), 0.f);
-    _Shield->SetTint(glm::vec4(1,1,1,glm::clamp(_ShieldTime*3.f, 0.f, 1.f)));
+    //_Shield->GetRenderable()->SetTint(glm::vec4(1,1,1,glm::clamp(_ShieldTime*3.f, 0.f, 1.f)));
     
     _HullTime = glm::max(_HullTime-updateMessage.GetGameDelta(), 0.f);
     _Ship->SetTint(glm::vec4(1, 0.5 + glm::clamp((1.f-_HullTime), 0.f, 0.5f), glm::clamp((1.f-_HullTime), 0.f, 1.f), 1.f));
-    */
 }
 
 float PlayerShip::GetEnergy()
