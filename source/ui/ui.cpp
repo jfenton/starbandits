@@ -4,7 +4,7 @@
 
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
-#include "pixelboost/logic/component/graphics/font.h"
+#include "pixelboost/logic/component/graphics/text.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
@@ -32,7 +32,7 @@ void GameUi::Initialise(pb::Uid playerId, int index)
 
     CreateComponent<pb::TransformComponent>();
     
-    pb::FontComponent* text = CreateComponent<pb::FontComponent>();
+    pb::TextComponent* text = CreateComponent<pb::TextComponent>();
     text->SetFont("font");
     text->SetAlignment(index == 0 ? pb::kFontAlignLeft : pb::kFontAlignRight);
     text->SetRenderPass(pb::kRenderPassUi);
@@ -43,7 +43,7 @@ void GameUi::Initialise(pb::Uid playerId, int index)
     /*
     if (index == 0)
     {
-        _Score = new pb::FontComponent(this, "font", "00000000");
+        _Score = new pb::TextComponent(this, "font", "00000000");
         _Score->SetAlignment(pb::kFontAlignCenter);
         _Score->SetRenderPass(pb::kRenderPassUi);
         _Score->SetLayer(kGraphicLayerUi);
@@ -75,7 +75,7 @@ void GameUi::OnUpdate(const pb::Message& message)
     
     if (!ship)
     {
-        GetComponent<pb::FontComponent>()->SetText("No Life Remaining");
+        GetComponent<pb::TextComponent>()->SetText("No Life Remaining");
         return;
     }
     
@@ -86,6 +86,6 @@ void GameUi::OnUpdate(const pb::Message& message)
     {
         char text[128];
         snprintf(text, 128, "Health: %.0f\nShields: %.0f\nEnergy: %.0f", health->GetHealth(), health->GetShields(), energy);
-        GetComponent<pb::FontComponent>()->SetText(text);
+        GetComponent<pb::TextComponent>()->SetText(text);
     }
 }

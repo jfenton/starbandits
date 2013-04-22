@@ -2,9 +2,9 @@
 #include "pixelboost/db/database.h"
 #include "pixelboost/db/register.h"
 #include "pixelboost/graphics/renderer/common/renderer.h"
-#include "pixelboost/graphics/renderer/font/fontRenderer.h"
 #include "pixelboost/graphics/renderer/model/modelRenderer.h"
 #include "pixelboost/graphics/renderer/sprite/spriteRenderer.h"
+#include "pixelboost/graphics/renderer/text/textRenderer.h"
 #include "pixelboost/graphics/resources/modelResource.h"
 #include "pixelboost/graphics/resources/shaderResource.h"
 #include "pixelboost/resource/resourceManager.h"
@@ -43,7 +43,7 @@ Game::Game(void* platformContext, int argc, const char** argv)
     
     pb::ResourceManager::Instance()->GetPool("default")->CacheResource<pb::ShaderResource>("/shaders/texturedLit.shc");
     
-    pb::FontRenderer::Instance()->LoadFont("font", "/fonts/font");
+    pb::TextRenderer::Instance()->LoadFont("font", "/fonts/font");
     
     pb::ResourceManager::Instance()->GetPool("default")->CacheResource<pb::ModelResource>("/models/cog.mdl");
     pb::ResourceManager::Instance()->GetPool("default")->CacheResource<pb::ModelResource>("/models/skybox.mdl");

@@ -1,7 +1,7 @@
 #include "pixelboost/framework/engine.h"
 #include "pixelboost/graphics/camera/viewport.h"
 #include "pixelboost/graphics/device/device.h"
-#include "pixelboost/graphics/renderer/font/fontRenderer.h"
+#include "pixelboost/graphics/renderer/text/textRenderer.h"
 #include "pixelboost/logic/system/graphics/render/bounds.h"
 #include "pixelboost/logic/scene.h"
 

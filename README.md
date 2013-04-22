@@ -5,7 +5,9 @@ This is the code for an entry into the OUYA game jam, see http://www.youtube.com
 
 License
 ---
+
 All game code is licensed under the MIT license.
+
 Engine code (in the pixelboost submodule) is also MIT, but has dependencies that follow similar licenses (ZLib/Apache, etc...), see pixelboost/README for details.
 
 Installation
@@ -18,10 +20,12 @@ Installation
 
 Known Issues
 ---
+
 * Models aren't currently rendering
 
 Credits
 ---
-Code:        Jamie Hales
-Art:         Aidan Ward
-Music & SFX: Jake Worrell
+
+* Code:        Jamie Hales
+* Art:         Aidan Ward
+* Music & SFX: Jake Worrell

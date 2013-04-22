@@ -3,8 +3,8 @@
 #include "glm/gtc/random.hpp"
 
 #include "pixelboost/framework/engine.h"
-#include "pixelboost/logic/component/graphics/font.h"
 #include "pixelboost/logic/component/graphics/sprite.h"
+#include "pixelboost/logic/component/graphics/text.h"
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/system/graphics/render/render.h"
@@ -38,7 +38,7 @@ MenuItem::MenuItem(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationE
     snprintf(lastScoreText, 128, "Last Score: %08.f", Game::Instance()->GetGameScreen()->GetScore());
     
     /*
-    pb::FontComponent* highscore = new pb::FontComponent(this, "font", highscoreText);
+    pb::TextComponent* highscore = new pb::TextComponent(this, "font", highscoreText);
     highscore->SetAlignment(pb::kFontAlignCenter);
     highscore->SetRenderPass(pb::kRenderPassUi);
     highscore->SetLayer(kGraphicLayerUi);
@@ -46,7 +46,7 @@ MenuItem::MenuItem(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationE
     highscore->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(0.f, 340.f/32.f, 0.f)));
     highscore->SetTint(glm::vec4(1,0,0,1));
     
-    pb::FontComponent* lastscore = new pb::FontComponent(this, "font", lastScoreText);
+    pb::TextComponent* lastscore = new pb::TextComponent(this, "font", lastScoreText);
     lastscore->SetAlignment(pb::kFontAlignCenter);
     lastscore->SetRenderPass(pb::kRenderPassUi);
     lastscore->SetLayer(kGraphicLayerUi);
@@ -54,14 +54,14 @@ MenuItem::MenuItem(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationE
     lastscore->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(0.f, 310.f/32.f, 0.f)));
     lastscore->SetTint(glm::vec4(1,0,0,1));
     
-    _Single = new pb::FontComponent(this, "font", "Press O for One Player");
+    _Single = new pb::TextComponent(this, "font", "Press O for One Player");
     _Single->SetAlignment(pb::kFontAlignLeft);
     _Single->SetRenderPass(pb::kRenderPassUi);
     _Single->SetLayer(kGraphicLayerUi);
     _Single->SetSize(0.5f);
     _Single->SetLocalTransform(glm::translate(glm::mat4x4(), glm::vec3(-620.f/32.f, 340.f/32.f, 0.f)));
     
-    _Multi = new pb::FontComponent(this, "font", "Press A for Two Player");
+    _Multi = new pb::TextComponent(this, "font", "Press A for Two Player");
     _Multi->SetAlignment(pb::kFontAlignRight);
     _Multi->SetRenderPass(pb::kRenderPassUi);
     _Multi->SetLayer(kGraphicLayerUi);
@@ -118,13 +118,13 @@ bool MenuItem::OnButtonDown(int joystick, int button)
         
         if (_ShowingControls)
         {
-            DestroyComponent(GetComponent<pb::FontComponent>());
+            DestroyComponent(GetComponent<pb::TextComponent>());
             
             _Single = 0;
             _Multi = 0;
             
             /*
-            pb::FontComponent* single = new pb::FontComponent(this, "font", "Press O to Start");
+            pb::TextComponent* single = new pb::TextComponent(this, "font", "Press O to Start");
             single->SetAlignment(pb::kFontAlignCenter);
             single->SetRenderPass(pb::kRenderPassUi);
             single->SetLayer(kGraphicLayerUi);

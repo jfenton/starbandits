@@ -2,7 +2,7 @@
 
 namespace pb
 {
-    class FontComponent;
+    class TextComponent;
 }
 
 class GameUi : public pb::Entity
@@ -19,7 +19,7 @@ public:
     void OnUpdate(const pb::Message& message);
 
 private:
-    pb::FontComponent* _Score;
+    pb::TextComponent* _Score;
     
     pb::Uid _PlayerId;
 };

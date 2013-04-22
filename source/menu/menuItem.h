@@ -4,7 +4,7 @@
 
 namespace pb
 {
-    class FontComponent;
+    class TextComponent;
 }
 
 class MenuItem : public pb::Entity, public pb::JoystickHandler, public pb::KeyboardHandler
@@ -28,6 +28,6 @@ public:
 private:
     bool _ShowingControls;
     
-    pb::FontComponent* _Single;
-    pb::FontComponent* _Multi;
+    pb::TextComponent* _Single;
+    pb::TextComponent* _Multi;
 };
