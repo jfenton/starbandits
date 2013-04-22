@@ -13,10 +13,9 @@ Engine code (in the pixelboost submodule) is also MIT, but has dependencies that
 Installation
 ---
 
-1) Make sure all submodules are grabbed using:
-	git submodule update --init --recursive
-2) Follow the instructions in the pixelboost README.
-3) Open the level editor using launchtools.command and choosing 'Run Editor'. Press 'Export'. This will export all relevant game data in the correct locations.
+1. Make sure all submodules are grabbed using 'git submodule update --init --recursive'
+2. Follow the instructions in the pixelboost README.
+3. Open the level editor using launchtools.command and choosing 'Run Editor'. Press 'Export'. This will export all relevant game data in the correct locations.
 
 Known Issues
 ---
