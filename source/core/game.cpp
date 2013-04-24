@@ -27,12 +27,29 @@ namespace pb
 Game::Game(void* platformContext, int argc, const char** argv)
     : pb::Engine(platformContext, argc, argv)
 {
+    
+}
+
+Game::~Game()
+{
+    delete _GameScreen;
+}
+
+Game* Game::Instance()
+{
+    return static_cast<Game*>(pb::Engine::Instance());
+}
+
+void Game::Initialise()
+{
+    pb::Engine::Initialise();
+    
     PB_DB_REGISTER_NAMESPACE(pb::Database::Instance(), GameEntities)
     PB_DB_REGISTER_NAMESPACE(pb::Database::Instance(), GameRecords)
     
     pb::Database::Instance()->SetLocation("/database/");
     pb::Database::Instance()->OpenDatabase();
-
+    
     _GameScreen = new GameScreen();
     _MenuScreen = new MenuScreen();
     
@@ -63,23 +80,23 @@ Game::Game(void* platformContext, int argc, const char** argv)
     pb::ResourceManager::Instance()->GetPool("default")->CacheResource<pb::ModelResource>("/models/weapon_laser.mdl");
     
     /*
-    pb::ModelRenderer::Instance()->LoadModel("cog", "/models/cog.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("skybox", "/models/skybox.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("homingMine", "/models/homingMine.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("staticMine", "/models/staticMine.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("stealthBomber", "/models/stealthBomber.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("turret", "/models/turret.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("turret_homing", "/models/turret_homing.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("turret_laser", "/models/turret_laser.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("ship_01", "/models/ship_01.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("ship_02", "/models/ship_02.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("shield", "/models/shield.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("asteroid_01", "/models/asteroid01.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("asteroid_02", "/models/asteroid02.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("asteroid_03", "/models/asteroid03.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("asteroid_04", "/models/asteroid04.mdl");
-    pb::ModelRenderer::Instance()->LoadModel("weapon_laser", "/models/weapon_laser.mdl");
-    */
+     pb::ModelRenderer::Instance()->LoadModel("cog", "/models/cog.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("skybox", "/models/skybox.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("homingMine", "/models/homingMine.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("staticMine", "/models/staticMine.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("stealthBomber", "/models/stealthBomber.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("turret", "/models/turret.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("turret_homing", "/models/turret_homing.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("turret_laser", "/models/turret_laser.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("ship_01", "/models/ship_01.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("ship_02", "/models/ship_02.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("shield", "/models/shield.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("asteroid_01", "/models/asteroid01.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("asteroid_02", "/models/asteroid02.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("asteroid_03", "/models/asteroid03.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("asteroid_04", "/models/asteroid04.mdl");
+     pb::ModelRenderer::Instance()->LoadModel("weapon_laser", "/models/weapon_laser.mdl");
+     */
     
     pb::ModelRenderer::Instance()->LoadTexture("star", "/models/star.png");
     pb::ModelRenderer::Instance()->LoadTexture("asteroid", "/models/asteroid.png");
@@ -101,23 +118,13 @@ Game::Game(void* platformContext, int argc, const char** argv)
     pb::ModelRenderer::Instance()->LoadTexture("turret_laser", "/models/turret_laser.png");
     
     // TODO: Handle shader loading
-//    pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet("game", "jpa");
-//    pb::Renderer::Instance()->GetShaderManager()->LoadShader("/shaders/texturedLit.shc");
+    //    pb::Engine::Instance()->GetSpriteRenderer()->LoadSpriteSheet("game", "jpa");
+    //    pb::Renderer::Instance()->GetShaderManager()->LoadShader("/shaders/texturedLit.shc");
     
     _Mode = kGameModeMenu;
     _MenuScreen->SetActive(true);
-
+    
     pb::AudioManagerSimple::Instance()->PlayBgm("music.m4a", true);
-}
-
-Game::~Game()
-{
-    delete _GameScreen;
-}
-
-Game* Game::Instance()
-{
-    return static_cast<Game*>(pb::Engine::Instance());
 }
 
 void Game::Update(float timeDelta, float gameDelta)

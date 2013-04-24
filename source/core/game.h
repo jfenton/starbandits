@@ -24,6 +24,8 @@ public:
     
     static Game* Instance();
     
+    virtual void Initialise();
+    
     virtual void Update(float timeDelta, float gameDelta);
     virtual void Render();
     
