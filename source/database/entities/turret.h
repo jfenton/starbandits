@@ -1,11 +1,9 @@
 #pragma once
 
-struct TurretHomingDefinition
-{
-    TurretHomingDefinition();
-};
+#include "pixelboost/db/register.h"
 
-struct TurretLaserDefinition
-{
-    TurretLaserDefinition();
-};
+PB_DB_DECLARE_BEGIN_STRUCT(TurretHoming)
+PB_DB_DECLARE_END_STRUCT
+
+PB_DB_DECLARE_BEGIN_STRUCT(TurretLaser)
+PB_DB_DECLARE_END_STRUCT
