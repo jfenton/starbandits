@@ -10,6 +10,8 @@ public:
 	StealthBomber(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~StealthBomber();
     
+    StealthBomber* Initialise(glm::vec2 position);
+    
     void OnUpdate(const pb::Message& message);
     void OnHealthDepleted(const pb::Message& message);
     

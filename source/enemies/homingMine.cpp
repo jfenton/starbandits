@@ -48,7 +48,6 @@ HomingMine* HomingMine::Initialise(glm::vec2 position)
     model->SetMaterial("/materials/homingMine_armed");
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
-    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = CreateComponent<pb::PhysicsBody2DComponent>();
     physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(size/2.f, size/2.f));

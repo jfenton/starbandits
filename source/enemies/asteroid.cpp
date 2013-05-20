@@ -41,7 +41,6 @@ void Asteroid::Initialise(glm::vec2 position, float scale)
     model->SetMaterial("/materials/asteroid");
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(_Scale, _Scale, _Scale)));
     model->SetLayer(kGraphicLayerEnemies);
-    model->SetShader(Game::Instance()->GetLitShader());
     
     auto physics = CreateComponent<pb::PhysicsBody2DComponent>();
     physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Scale, _Scale));

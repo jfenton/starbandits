@@ -1,0 +1,4 @@
+shader(/shaders/texturedLit)
+blend(off)
+depth(on)
+property(texture2D;_DiffuseTexture;/models/stealthBomber_DIFF.png)

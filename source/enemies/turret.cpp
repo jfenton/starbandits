@@ -8,6 +8,7 @@
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
+#include "pixelboost/maths/matrixHelpers.h"
 
 #include "common/layers.h"
 #include "core/game.h"
@@ -34,16 +35,11 @@ Turret* Turret::Initialise(glm::vec2 position, ProjectileType type)
     auto transform = CreateComponent<pb::TransformComponent>();
     transform->SetPosition(glm::vec3(position, 0));
     
-    glm::mat4x4 localTransform;
-    localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
-    localTransform = glm::rotate(localTransform, 180.f, glm::vec3(0,1,0));
-    
     auto turret = CreateComponent<pb::ModelComponent>();
     turret->SetModel("/models/turret");
     turret->SetMaterial(type == kProjectileTypeHoming ? "/materials/turret_homing" : "/materials/turret_laser");
-    turret->SetLocalTransform(localTransform);
+    turret->SetLocalTransform(pb::CreateRotateMatrix(pb::kRotationOrder_XYZ, glm::vec3(90.f,180.f,0.f)));
     turret->SetLayer(kGraphicLayerEnemies);
-    turret->SetShader(Game::Instance()->GetLitShader());
     
     /*
     pb::ModelComponent* weapon = new pb::ModelComponent(this,

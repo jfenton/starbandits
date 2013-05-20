@@ -282,7 +282,6 @@ void PlayerShip::Initialise(int playerId, glm::vec2 position)
     _Ship->SetModel(playerId == 0 ? "/models/ship_01" : "/models/ship_02");
     _Ship->SetMaterial(playerId == 0 ? "/materials/ship_01" : "/materials/ship_02");
     _Ship->SetLayer(kGraphicLayerPlayer);
-    _Ship->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = CreateComponent<pb::PhysicsBody2DComponent>();
     physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1,1));

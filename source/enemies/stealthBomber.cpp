@@ -8,6 +8,7 @@
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/update.h"
 #include "pixelboost/logic/scene.h"
+#include "pixelboost/maths/matrixHelpers.h"
 
 #include "common/layers.h"
 #include "core/game.h"
@@ -24,19 +25,26 @@ StealthBomber::StealthBomber(pb::Scene* scene, pb::Entity* parent, pb::DbEntity*
 	: pb::Entity(scene, parent, creationEntity)
     , _MineTimer(0)
 {
+    
+}
+
+StealthBomber::~StealthBomber()
+{
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StealthBomber::OnUpdate));
+    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StealthBomber::OnHealthDepleted));
+}
+
+StealthBomber* StealthBomber::Initialise(glm::vec2 position)
+{
     auto transform = CreateComponent<pb::TransformComponent>();
-    transform->SetPosition(glm::vec3(creationEntity->GetPosition().x, creationEntity->GetPosition().y, 0) + Game::Instance()->GetGameScreen()->GetLevelOffset());
-    transform->SetRotation(glm::vec3(0,0,creationEntity->GetRotation().z));
+    transform->SetPosition(glm::vec3(position.x, position.y, 0));
+    transform->SetRotation(glm::vec3(0,0,GetCreationEntity()->GetRotation().z+90.f));
     
     pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
     model->SetModel("/models/stealthBomber");
-    
-    glm::mat4x4 localTransform;
-    localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));
-    localTransform = glm::rotate(localTransform, 90.f, glm::vec3(0,1,0));
-    model->SetLocalTransform(localTransform);
+    model->SetMaterial("/materials/stealthBomber");
+    model->SetLocalTransform(pb::CreateRotateMatrix(pb::kRotationOrder_XYZ, glm::vec3(90.f,90.f,0.f)));
     model->SetLayer(kGraphicLayerEnemies);
-    model->SetShader(Game::Instance()->GetLitShader());
     
     pb::PhysicsBody2DComponent* physics = CreateComponent<pb::PhysicsBody2DComponent>();
     physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
@@ -49,12 +57,8 @@ StealthBomber::StealthBomber(pb::Scene* scene, pb::Entity* parent, pb::DbEntity*
     
     RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StealthBomber::OnUpdate));
     RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StealthBomber::OnHealthDepleted));
-}
-
-StealthBomber::~StealthBomber()
-{
-    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StealthBomber::OnUpdate));
-    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StealthBomber::OnHealthDepleted));
+    
+    return this;
 }
 
 void StealthBomber::OnUpdate(const pb::Message& message)

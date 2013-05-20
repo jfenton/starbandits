@@ -68,15 +68,13 @@ pb::Uid LevelSegment::Create()
         entity = _Scene->CreateEntity<StaticMine>(0, _EntityIt->second)->Initialise(position);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("StealthBomber"))
     {
-        entity = _Scene->CreateEntity<StealthBomber>(0, _EntityIt->second);
-//        entity = new StealthBomber(_Scene, position, _EntityIt->second->GetRotation().z + 90.f);
+        entity = _Scene->CreateEntity<StealthBomber>(0, _EntityIt->second)->Initialise(position);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretHoming"))
     {
         entity = _Scene->CreateEntity<Turret>(0, _EntityIt->second)->Initialise(position, kProjectileTypeHoming);
     } else if (_EntityIt->second->GetType() == pb::TypeHash("TurretLaser"))
     {
         entity = _Scene->CreateEntity<Turret>(0, _EntityIt->second)->Initialise(position, kProjectileTypeLaser);
-//        entity = new Turret(_Scene, position, kProjectileTypeLaser);
     }
     
     _EntityIt++;
