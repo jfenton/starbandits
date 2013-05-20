@@ -45,25 +45,25 @@ void Explosion::Initialise(glm::vec2 position, float power)
     physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(_Power/2.f, _Power/2.f));
     physics->SetSensor(true);
     
-    // TODO: Re-implement particles
-    /*
-    auto particle = CreateComponent<pb::ParticleComponent>();
-    particle->SetLayer(kGraphicLayerExplosions);
+    auto particleComponent = CreateComponent<pb::ParticleComponent>();
+    particleComponent->SetLayer(kGraphicLayerExplosions);
     
-    pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
+    pb::ParticleSystemDefinition* systemDefinition = particleComponent->GetSystem()->Definition;
     pb::ParticleDefinitionEmitterCone* emitter = new pb::ParticleDefinitionEmitterCone();
     emitter->EmitCount = 5.f;
     emitter->EmitSpeed = 30.f;
     emitter->Range = 180.f;
-    engineDefinition->RenderSprite = new pb::ParticleSpriteDefinition("engine");
-    engineDefinition->StartLife.Set(0.25f, 0.5f);
-    engineDefinition->StartSpeed.Set(0.5f, 1.f);
+    systemDefinition->RenderSprite = new pb::ParticleSpriteDefinition("engine");
+    systemDefinition->StartLife.Set(0.25f, 0.5f);
+    systemDefinition->StartSpeed.Set(0.5f, 1.f);
     pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
-    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,7.5f), glm::vec2(0.5,0)));
-    scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.3f), glm::vec2(0.1,0)));
-    engineDefinition->ModifierScale = scaleValue;
-    engineDefinition->Emitter = emitter;
-    */
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve1D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,7.5f), glm::vec2(0.5,0)));
+    scaleValue->Curve.Points.push_back(pb::HermiteCurve1D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.3f), glm::vec2(0.1,0)));
+    systemDefinition->ModifierScale = scaleValue;
+    systemDefinition->Emitter = emitter;
+    
+    particleComponent->SetSpriteSheet("/spritesheets/game");
+    
     for (int i=0; i<=power; i+= 8.f)
     {
         GetScene()->CreateEntity<Cog>(0,0)->Initialise(position, glm::vec2(glm::linearRand(-1.f, 1.f), glm::linearRand(-1.f, 1.f)));
