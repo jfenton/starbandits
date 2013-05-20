@@ -16,6 +16,7 @@
 #include "gameplay/explosion.h"
 #include "gameplay/health.h"
 #include "player/player.h"
+#include "screens/game.h"
 
 PB_DEFINE_ENTITY(StaticMine)
 
@@ -24,17 +25,28 @@ StaticMine::StaticMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creat
     , _Active(false)
     , _Countdown(1.f)
 {
+    
+}
+
+StaticMine::~StaticMine()
+{
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StaticMine::OnUpdate));
+    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StaticMine::OnHealthDepleted));
+}
+
+StaticMine* StaticMine::Initialise(glm::vec2 position)
+{
     float size = 1.f;
     
     _DetectDistance = 10.f;
     _Rotation = glm::linearRand(0.f, 360.f);
     
     auto transform = CreateComponent<pb::TransformComponent>();
-    transform->SetPosition(glm::vec3(creationEntity->GetPosition().x, creationEntity->GetPosition().y, 0));
+    transform->SetPosition(glm::vec3(position, 0) + Game::Instance()->GetGameScreen()->GetLevelOffset());
     
     pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
-    model->SetModel(pb::ModelRenderer::Instance()->GetModel("staticMine"));
-    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("staticMine_DIFF"));
+    model->SetModel("/models/staticMine");
+    model->SetMaterial("/materials/staticMine");
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
@@ -48,12 +60,8 @@ StaticMine::StaticMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creat
     
     RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StaticMine::OnUpdate));
     RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StaticMine::OnHealthDepleted));
-}
-
-StaticMine::~StaticMine()
-{
-    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &StaticMine::OnUpdate));
-    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &StaticMine::OnHealthDepleted));
+    
+    return this;
 }
 
 void StaticMine::OnUpdate(const pb::Message& message)
@@ -88,7 +96,7 @@ void StaticMine::OnUpdate(const pb::Message& message)
             {
                 _Active = true;
                 
-                GetComponent<pb::ModelComponent>()->SetTexture(pb::ModelRenderer::Instance()->GetTexture("staticMine_armed_DIFF"));
+                GetComponent<pb::ModelComponent>()->SetMaterial("/materials/staticMine_armed");
             }
         }
     }

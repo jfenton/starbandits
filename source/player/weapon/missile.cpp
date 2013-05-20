@@ -31,29 +31,19 @@ void MissileComponent::Initialise(PlayerInput* input, const MountInfo& mountInfo
     _Input = input;
     _MountInfo = mountInfo;
     
+    /*
     _Renderable = new pb::ModelRenderable();
-    _Renderable->SetModel(pb::ModelRenderer::Instance()->GetModel("missile_01"));
-    _Renderable->SetTexture(pb::ModelRenderer::Instance()->GetTexture("grey"));
+    _Renderable->SetModel("/models/missile_01");
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetShader(Game::Instance()->GetLitShader());
+    */
     
-    GetEntity()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &MissileComponent::OnTransformChanged));
-    GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MissileComponent::OnUpdate));
-    GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
-    
-    UpdateTransform();
+    GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MissileComponent::OnUpdate));    
 }
 
 MissileComponent::~MissileComponent()
 {
-    GetEntity()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &MissileComponent::OnTransformChanged));
     GetEntity()->UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &MissileComponent::OnUpdate));
-    GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
-}
-
-void MissileComponent::OnTransformChanged(const pb::Message& message)
-{
-    UpdateTransform();
 }
 
 void MissileComponent::OnUpdate(const pb::Message& message)
@@ -71,7 +61,7 @@ void MissileComponent::OnUpdate(const pb::Message& message)
             {
                 pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
                 
-                glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
+                glm::vec4 position = transform->GetMatrix() * glm::vec4(0,0,0.5,1);
                 
                 pb::AudioManagerSimple::Instance()->PlaySfx("missile.wav", 0.5f);
                 
@@ -85,6 +75,7 @@ void MissileComponent::OnUpdate(const pb::Message& message)
     }
 }
 
+/*
 void MissileComponent::UpdateTransform()
 {
     PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
@@ -97,3 +88,4 @@ void MissileComponent::UpdateTransform()
     
     _Renderable->SetTransform(transform->GetMatrix() * localTransform);
 }
+*/

@@ -27,7 +27,7 @@ Turret::Turret(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntit
     
 }
 
-void Turret::Initialise(glm::vec2 position, ProjectileType type)
+Turret* Turret::Initialise(glm::vec2 position, ProjectileType type)
 {
     _Type = type;
     
@@ -39,8 +39,8 @@ void Turret::Initialise(glm::vec2 position, ProjectileType type)
     localTransform = glm::rotate(localTransform, 180.f, glm::vec3(0,1,0));
     
     auto turret = CreateComponent<pb::ModelComponent>();
-    turret->SetModel(pb::ModelRenderer::Instance()->GetModel("turret"));
-    turret->SetTexture(pb::ModelRenderer::Instance()->GetTexture(type == kProjectileTypeHoming ? "turret_homing" : "turret_laser"));
+    turret->SetModel("/models/turret");
+    turret->SetMaterial(type == kProjectileTypeHoming ? "/materials/turret_homing" : "/materials/turret_laser");
     turret->SetLocalTransform(localTransform);
     turret->SetLayer(kGraphicLayerEnemies);
     turret->SetShader(Game::Instance()->GetLitShader());
@@ -63,6 +63,8 @@ void Turret::Initialise(glm::vec2 position, ProjectileType type)
     
     RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Turret::OnUpdate));
     RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &Turret::OnHealthDepleted));
+    
+    return this;
 }
 
 Turret::~Turret()

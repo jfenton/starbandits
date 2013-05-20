@@ -1,0 +1,4 @@
+shader(/shaders/texturedLit)
+blend(off)
+depth(on)
+property(texture2D;_DiffuseTexture;/models/homingMine_active_DIFF.png)

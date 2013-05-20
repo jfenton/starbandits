@@ -29,8 +29,7 @@ StealthBomber::StealthBomber(pb::Scene* scene, pb::Entity* parent, pb::DbEntity*
     transform->SetRotation(glm::vec3(0,0,creationEntity->GetRotation().z));
     
     pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
-    model->SetModel(pb::ModelRenderer::Instance()->GetModel("stealthBomber"));
-    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("stealthBomber_DIFF"));
+    model->SetModel("/models/stealthBomber");
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));

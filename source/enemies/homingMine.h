@@ -10,7 +10,7 @@ public:
 	HomingMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity);
     ~HomingMine();
     
-    void Initialise(glm::vec2 position);
+    HomingMine* Initialise(glm::vec2 position);
     
     void OnUpdate(const pb::Message& message);
     void OnHealthDepleted(const pb::Message& message);

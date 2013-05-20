@@ -21,33 +21,34 @@ Cog::Cog(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity)
 {
 }
 
-void Cog::Initialise(glm::vec2 position, glm::vec2 speed)
+Cog::~Cog()
 {
-    /*
-    pb::BasicTransformComponent* transform = new pb::BasicTransformComponent(this);
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Cog::OnUpdate));
+}
+
+Cog* Cog::Initialise(glm::vec2 position, glm::vec2 speed)
+{
+    auto transform = CreateComponent<pb::TransformComponent>();
     transform->SetPosition(glm::vec3(position, 0));
     transform->SetRotation(glm::vec3(0.f, 0.f, glm::linearRand(0.f, 360.f)));
-    
-    pb::PhysicsBody2DComponent* physics = new pb::PhysicsBody2DComponent(this, pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
+
+    auto physics = CreateComponent<pb::PhysicsBody2DComponent>();
+    physics->Initialise(pb::PhysicsBody2DComponent::kBodyTypeDynamic, pb::PhysicsBody2DComponent::kBodyShapeCircle, glm::vec2(1.f, 1.f));
     physics->SetSensor(true);
     physics->GetBody()->SetLinearVelocity(b2Vec2(speed.x, speed.y));
 
-    pb::ModelComponent* model = new pb::ModelComponent(this,
-                                   pb::ModelRenderer::Instance()->GetModel("cog"),
-                                   pb::ModelRenderer::Instance()->GetTexture("cog_DIFF"));
+    auto model = CreateComponent<pb::ModelComponent>();
+    model->SetModel("/models/cog");
+    model->SetMaterial("/materials/cog");
     model->SetLayer(kGraphicLayerPlayer);
     model->SetShader(Game::Instance()->GetLitShader());
 
     _Rotation = glm::linearRand(0.f, (float)M_PI*2.f);
     _RotationVector = glm::normalize(glm::vec3(glm::linearRand(0.f,1.f), glm::linearRand(0.f,1.f), glm::linearRand(0.f,1.f)));
-    
-    RegisterMessageHandler<pb::UpdateMessage>(MessageHandler(this, &Cog::OnUpdate));
-    */
-}
 
-Cog::~Cog()
-{
-    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Cog::OnUpdate));
+    RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Cog::OnUpdate));
+    
+    return this;
 }
 
 void Cog::OnUpdate(const pb::Message& message)

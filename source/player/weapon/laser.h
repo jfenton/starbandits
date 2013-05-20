@@ -7,7 +7,6 @@
 namespace pb
 {
     class Message;
-    class ModelRenderable;
 }
 
 class PlayerInput;
@@ -23,16 +22,12 @@ public:
     void Initialise(PlayerInput* input, const MountInfo& mountInfo);
     
 public:
-    virtual void OnTransformChanged(const pb::Message& message);
     virtual void OnUpdate(const pb::Message& message);
     
 private:
-    void UpdateTransform();
-    
     float _FiringDelay;
     float _SoundDelay;
     
-    pb::ModelRenderable* _Renderable;
     PlayerInput* _Input;
     MountInfo _MountInfo;
 };

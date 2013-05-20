@@ -8,6 +8,7 @@
 #include "pixelboost/logic/component/transform.h"
 #include "pixelboost/logic/message/physics/collision.h"
 #include "pixelboost/logic/message/update.h"
+#include "pixelboost/logic/scene.h"
 
 #include "common/layers.h"
 #include "gameplay/cog.h"
@@ -65,7 +66,7 @@ void Explosion::Initialise(glm::vec2 position, float power)
     */
     for (int i=0; i<=power; i+= 8.f)
     {
-//        new Cog(GetScene(), position, glm::vec2(glm::linearRand(-1.f, 1.f), glm::linearRand(-1.f, 1.f)));
+        GetScene()->CreateEntity<Cog>(0,0)->Initialise(position, glm::vec2(glm::linearRand(-1.f, 1.f), glm::linearRand(-1.f, 1.f)));
     }
     
     RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &Explosion::OnUpdate));

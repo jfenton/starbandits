@@ -16,6 +16,12 @@ set (BACKGROUND_SOURCES
 	"source/background/stars.h"
 )
 
+set (COMMON_SOURCES
+	"source/common/layers.h"
+	"source/common/simpleModel.cpp"
+	"source/common/simpleModel.h"
+	)
+
 set (CORE_SOURCES
 	"source/core/game.cpp"
 	"source/core/game.h"
@@ -104,6 +110,7 @@ set (UI_SOURCES
 
 set (GAME_SOURCES
 	${BACKGROUND_SOURCES}
+	${COMMON_SOURCES}
 	${CORE_SOURCES}
 	${DATABASE_SOURCES}
 	${ENEMY_SOURCES}
@@ -117,6 +124,7 @@ set (GAME_SOURCES
 	)
 
 source_group (background FILES ${BACKGROUND_SOURCES})
+source_group (common FILES ${COMMON_SOURCES})
 source_group (core FILES ${CORE_SOURCES})
 source_group (database FILES ${DATABASE_SOURCES})
 source_group (enemies FILES ${ENEMY_SOURCES})

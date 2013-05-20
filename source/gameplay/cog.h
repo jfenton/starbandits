@@ -10,7 +10,7 @@ public:
     Cog(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~Cog();
     
-    void Initialise(glm::vec2 position, glm::vec2 speed);
+    Cog* Initialise(glm::vec2 position, glm::vec2 speed);
     
     void OnUpdate(const pb::Message& message);
     

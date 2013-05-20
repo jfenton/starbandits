@@ -12,7 +12,7 @@ public:
 	Turret(pb::Scene* scene, pb::Entity* parent, pb::DbEntity* creationEntity);
     ~Turret();
     
-    void Initialise(glm::vec2 position, ProjectileType type);
+    Turret* Initialise(glm::vec2 position, ProjectileType type);
     
     void OnUpdate(const pb::Message& message);
     void OnHealthDepleted(const pb::Message& message);

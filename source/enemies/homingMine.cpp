@@ -26,7 +26,13 @@ HomingMine::HomingMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creat
     
 }
 
-void HomingMine::Initialise(glm::vec2 position)
+HomingMine::~HomingMine()
+{
+    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HomingMine::OnUpdate));
+    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &HomingMine::OnHealthDepleted));
+}
+
+HomingMine* HomingMine::Initialise(glm::vec2 position)
 {
     float size = 1.f;
     
@@ -38,8 +44,8 @@ void HomingMine::Initialise(glm::vec2 position)
     transform->SetPosition(glm::vec3(position, 0) + Game::Instance()->GetGameScreen()->GetLevelOffset());
     
     pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
-    model->SetModel(pb::ModelRenderer::Instance()->GetModel("homingMine"));
-    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_armed_DIFF"));
+    model->SetModel("/models/homingMine");
+    model->SetMaterial("/materials/homingMine_armed");
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(size, size, size)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());
@@ -54,12 +60,8 @@ void HomingMine::Initialise(glm::vec2 position)
     
     RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HomingMine::OnUpdate));
     RegisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &HomingMine::OnHealthDepleted));
-}
-
-HomingMine::~HomingMine()
-{
-    UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &HomingMine::OnUpdate));
-    UnregisterMessageHandler<HealthDepletedMessage>(pb::MessageHandler(this, &HomingMine::OnHealthDepleted));
+    
+    return this;
 }
 
 void HomingMine::OnUpdate(const pb::Message& message)
@@ -150,9 +152,9 @@ void HomingMine::OnUpdate(const pb::Message& message)
             _PlayerId = 0;
         }
         
-        GetComponent<pb::ModelComponent>()->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_active_DIFF"));
+        GetComponent<pb::ModelComponent>()->SetMaterial("/materials/homingMine_active");
     } else {
-        GetComponent<pb::ModelComponent>()->SetTexture(pb::ModelRenderer::Instance()->GetTexture("homingMine_armed_DIFF"));
+        GetComponent<pb::ModelComponent>()->SetMaterial("/materials/homingMine_armed");
     }
     
     glm::mat4x4 transform;

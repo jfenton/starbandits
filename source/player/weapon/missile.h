@@ -23,14 +23,10 @@ public:
     void Initialise(PlayerInput* input, const MountInfo& mountInfo);
     
 public:
-    virtual void OnTransformChanged(const pb::Message& message);
     virtual void OnUpdate(const pb::Message& message);
     
 private:
-    void UpdateTransform();
-    
     bool _Fired;
-    pb::ModelRenderable* _Renderable;
     PlayerInput* _Input;
     MountInfo _MountInfo;
 };

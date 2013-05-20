@@ -13,6 +13,7 @@
 #include "core/game.h"
 #include "enemies/asteroid.h"
 #include "gameplay/health.h"
+#include "screens/game.h"
 
 PB_DEFINE_ENTITY(Asteroid)
 
@@ -30,14 +31,14 @@ void Asteroid::Initialise(glm::vec2 position, float scale)
     _Roll = 0.f;
     
     auto transform = CreateComponent<pb::TransformComponent>();
-    transform->SetPosition(glm::vec3(position, 0));
+    transform->SetPosition(glm::vec3(position, 0) + Game::Instance()->GetGameScreen()->GetLevelOffset());
     
     char modelName[64];
-    sprintf(modelName, "asteroid_%02d", (rand()%4)+1);
+    sprintf(modelName, "/models/asteroid%02d", (rand()%4)+1);
     
     pb::ModelComponent* model = CreateComponent<pb::ModelComponent>();
-    model->SetModel(pb::ModelRenderer::Instance()->GetModel(modelName));
-    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("asteroid"));
+    model->SetModel(modelName);
+    model->SetMaterial("/materials/asteroid");
     model->SetLocalTransform(glm::scale(glm::mat4x4(), glm::vec3(_Scale, _Scale, _Scale)));
     model->SetLayer(kGraphicLayerEnemies);
     model->SetShader(Game::Instance()->GetLitShader());

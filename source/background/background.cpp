@@ -27,8 +27,8 @@ BackgroundTile::BackgroundTile(pb::Scene* scene, pb::Entity* parent, pb::DbEntit
     CreateComponent<pb::TransformComponent>();
     
     auto model = CreateComponent<pb::ModelComponent>();
-    model->SetModel(pb::ModelRenderer::Instance()->GetModel("skybox"));
-    model->SetTexture(pb::ModelRenderer::Instance()->GetTexture("skybox"));
+    model->SetModel("/models/skybox");
+    model->SetMaterial("/materials/skybox");
     
     glm::mat4x4 localTransform;
     localTransform = glm::rotate(localTransform, 90.f, glm::vec3(1,0,0));

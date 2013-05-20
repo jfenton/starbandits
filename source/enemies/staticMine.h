@@ -10,6 +10,8 @@ public:
 	StaticMine(pb::Scene* scene, pb::Entity* entity, pb::DbEntity* creationEntity);
     ~StaticMine();
     
+    StaticMine* Initialise(glm::vec2 position);
+    
     void OnUpdate(const pb::Message& message);
     void OnHealthDepleted(const pb::Message& message);
     

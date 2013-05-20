@@ -32,29 +32,19 @@ void LaserComponent::Initialise(PlayerInput* input, const MountInfo& mountInfo)
     _Input = input;
     _MountInfo = mountInfo;
     
+    /*
     _Renderable = new pb::ModelRenderable();
-    _Renderable->SetModel(pb::ModelRenderer::Instance()->GetModel("weapon_laser"));
-    _Renderable->SetTexture(pb::ModelRenderer::Instance()->GetTexture("weapon_laser"));
+    _Renderable->SetModel("/models/weapon_laser");
     _Renderable->SetLayer(kGraphicLayerPlayer);
     _Renderable->SetShader(Game::Instance()->GetLitShader());
+    */
     
-    GetEntity()->RegisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &LaserComponent::OnTransformChanged));
     GetEntity()->RegisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &LaserComponent::OnUpdate));
-    GetScene()->GetSystemByType<pb::RenderSystem>()->AddItem(_Renderable);
-    
-    UpdateTransform();
 }
 
 LaserComponent::~LaserComponent()
 {
-    GetEntity()->UnregisterMessageHandler<pb::TransformChangedMessage>(pb::MessageHandler(this, &LaserComponent::OnTransformChanged));
     GetEntity()->UnregisterMessageHandler<pb::UpdateMessage>(pb::MessageHandler(this, &LaserComponent::OnUpdate));
-    GetScene()->GetSystemByType<pb::RenderSystem>()->RemoveItem(_Renderable);
-}
-
-void LaserComponent::OnTransformChanged(const pb::Message& message)
-{
-    UpdateTransform();
 }
 
 void LaserComponent::OnUpdate(const pb::Message& message)
@@ -77,7 +67,7 @@ void LaserComponent::OnUpdate(const pb::Message& message)
             {
                 pb::TransformComponent* transform = GetEntity()->GetComponent<pb::TransformComponent>();
                 
-                glm::vec4 position = _Renderable->GetTransform() * glm::vec4(0,0,0.5,1);
+                glm::vec4 position = transform->GetMatrix() * glm::vec4(0,0,0.5,1);
                 
                 if (_SoundDelay <= 0.f)
                 {
@@ -94,6 +84,7 @@ void LaserComponent::OnUpdate(const pb::Message& message)
     }
 }
 
+/*
 void LaserComponent::UpdateTransform()
 {
     PlayerShip* ship = static_cast<PlayerShip*>(GetEntity());
@@ -106,3 +97,4 @@ void LaserComponent::UpdateTransform()
     
     _Renderable->SetTransform(transform->GetMatrix() * localTransform);
 }
+*/

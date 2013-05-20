@@ -40,8 +40,7 @@ void Projectile::Initialise(HealthType healthType, ProjectileType type, glm::vec
     
     if (_Type == kProjectileTypeHoming)
     {
-        /*
-        pb::ParticleComponent* particleComponent = new pb::ParticleComponent(this);
+        pb::ParticleComponent* particleComponent = CreateComponent<pb::ParticleComponent>();
         particleComponent->SetLayer(kGraphicLayerProjectiles);
         
         pb::ParticleSystemDefinition* engineDefinition = particleComponent->GetSystem()->Definition;
@@ -56,11 +55,10 @@ void Projectile::Initialise(HealthType healthType, ProjectileType type, glm::vec
         }
         engineDefinition->StartLife.Set(0.05f, 0.1f);
         pb::ParticleValueCurve1D* scaleValue = new pb::ParticleValueCurve1D();
-        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,1.5f), glm::vec2(0.5,0)));
-        scaleValue->Curve.Points.push_back(pb::HermiteCurve2D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.4f), glm::vec2(0.1,0)));
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve1D::Point(glm::vec2(-0.1,0), glm::vec2(0.f,1.5f), glm::vec2(0.5,0)));
+        scaleValue->Curve.Points.push_back(pb::HermiteCurve1D::Point(glm::vec2(-0.2,0), glm::vec2(1.f,0.4f), glm::vec2(0.1,0)));
         engineDefinition->ModifierScale = scaleValue;
         engineDefinition->Emitter = emitter;
-        */
     } else {
         auto sprite = CreateComponent<pb::SpriteComponent>();
         if (healthType == kHealthTypeEnemy)
